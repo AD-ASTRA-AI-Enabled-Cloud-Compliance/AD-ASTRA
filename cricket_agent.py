@@ -6,7 +6,7 @@ from qdrant_client import QdrantClient
 from sentence_transformers import SentenceTransformer
 import numpy as np
 import os
-
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 # ==== Setup FastAPI ====
 app = FastAPI()
 
