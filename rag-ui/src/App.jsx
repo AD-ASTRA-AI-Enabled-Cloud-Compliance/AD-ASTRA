@@ -5,6 +5,8 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [question, setQuestion] = useState("");
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const askQuestion = async () => {
     if (!question.trim()) return;
@@ -20,69 +22,43 @@ function App() {
       });
 
       const data = await res.json();
-      const aiRaw = data.answer || "No response.";
-      simulateThinking(aiRaw);
+      const aiMsg = { role: "ai", content: data.answer || "No response." };
+      setMessages((prev) => [...prev, aiMsg]);
     } catch {
       setMessages((prev) => [...prev, { role: "ai", content: "❌ Backend error" }]);
-      setLoading(false);
     } finally {
+      setLoading(false);
       setQuestion("");
     }
   };
 
-  const simulateThinking = async (text) => {
-    const steps = {
-      Thought: "",
-      Action: "",
-      Observation: "",
-      Response: "",
-    };
+  const handleUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-    const lines = text.split(/\n+/);
-    let current = "";
+    const formData = new FormData();
+    formData.append("file", file);
 
-    for (let line of lines) {
-      if (line.startsWith("Thought:")) {
-        current = "Thought";
-        steps.Thought = line.replace("Thought:", "").trim();
-      } else if (line.startsWith("Action:")) {
-        current = "Action";
-        steps.Action = line.replace("Action:", "").trim();
-      } else if (line.startsWith("Observation:")) {
-        current = "Observation";
-        steps.Observation = line.replace("Observation:", "").trim();
-      } else if (line.startsWith("Final Answer:")) {
-        current = "Response";
-        steps.Response = line.replace("Final Answer:", "").trim();
-      } else if (current) {
-        steps[current] += " " + line.trim();
+    setUploading(true);
+    setProgress(0);
+
+    try {
+      const res = await fetch("http://127.0.0.1:8000/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (res.ok) {
+        alert("✅ File uploaded and processed!");
+      } else {
+        alert("❌ Upload failed.");
       }
-    }
-
-    const addMeta = (label, value) =>
-      setMessages((prev) => [...prev, { role: "ai", content: `${label}: ${value}`, meta: true }]);
-
-    setMessages((prev) => [...prev, { role: "ai", content: "", meta: true }]);
-    await new Promise((r) => setTimeout(r, 300));
-    if (steps.Thought) await addMeta("Thought", steps.Thought);
-    await new Promise((r) => setTimeout(r, 400));
-    if (steps.Action) await addMeta("Action", steps.Action);
-    await new Promise((r) => setTimeout(r, 400));
-    if (steps.Observation) await addMeta("Observation", steps.Observation);
-    await new Promise((r) => setTimeout(r, 1200));
-
-    // Replace last meta with final response
-    setMessages((prev) => [
-      ...prev.filter((m) => !m.meta),
-      { role: "ai", content: `Response: ${steps.Response}`, meta: false },
-    ]);
-    setLoading(false);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      askQuestion();
+    } catch {
+      alert("❌ Backend error during upload.");
+    } finally {
+      setUploading(false);
+      setProgress(100);
+      setTimeout(() => setProgress(0), 2000);
     }
   };
 
@@ -92,14 +68,16 @@ function App() {
         <div className="chat-header bg-primary text-white text-center py-2">
           <h3 className="mb-0">🏏 Cric AI</h3>
         </div>
+
         <div className="chat-body">
           {messages.map((msg, i) => (
             <div key={i} className={`chat-message ${msg.role}`}>
-              <span className={msg.meta ? "meta-text" : ""}>{msg.content}</span>
+              <span>{msg.content}</span>
             </div>
           ))}
-          {loading && <div className="chat-message ai meta-text">Typing...</div>}
+          {loading && <div className="chat-message ai">Typing...</div>}
         </div>
+
         <div className="chat-input">
           <textarea
             className="form-control"
@@ -107,15 +85,21 @@ function App() {
             placeholder="Ask something about cricket..."
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
-            onKeyDown={handleKeyDown}
+            onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && askQuestion()}
           />
-          <button
-            className="btn btn-primary"
-            onClick={askQuestion}
-            disabled={loading || !question.trim()}
-          >
+          <button className="btn btn-primary" onClick={askQuestion} disabled={loading}>
             Send
           </button>
+        </div>
+
+        <div className="upload-box mt-3 px-3">
+          <input
+            type="file"
+            accept=".pdf,.json,.doc,.docx"
+            onChange={handleUpload}
+            disabled={uploading}
+          />
+          {uploading && <progress value={progress} max="100" style={{ width: "100%" }} />}
         </div>
       </div>
     </div>
