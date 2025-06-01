@@ -47,6 +47,15 @@ Pull Request [your branch → dev] (not main)
     - **Repeat the push workflow**
 - If no changes, reviewers will merge the code to the parent branch [dev]
 
+#### PR description template
+you can copy this for quick reference
+```
+TL;DR: 
+
+Description:
+```
+
+### Workflow Summary
 ```
 (dev = developer, Rev = reviewer)
 
