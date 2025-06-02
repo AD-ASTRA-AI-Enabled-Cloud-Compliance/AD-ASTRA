@@ -1,5 +1,5 @@
 
-## Development Cheat sheet
+## SVC management
 ### Pre-push
 Before pushing changes pull the dev branch, **merge your code locally and resolve any conflicts**
   ```bash
