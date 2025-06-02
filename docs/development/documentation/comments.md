@@ -1,7 +1,5 @@
 ### Documentation instructions
 
-[Summary of Python recommendations](/docs/documentation/recommendatios.md)
-
 For each file or module developed make sure it requires the following header
 ```
 #--------------------------------------------------------------------------------------------------------------#
