@@ -16,8 +16,10 @@ from qdrant_client.models import Filter, FieldCondition, MatchValue
 
 # Base paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = os.path.join(BASE_DIR, "../uploads")
-OUTPUT_FOLDER = os.path.join(BASE_DIR, "../cloud_outputs")
+UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", os.path.join(os.path.dirname(__file__), "../uploads"))
+OUTPUT_FOLDER = os.getenv("OUTPUT_FOLDER", os.path.join(os.path.dirname(__file__), "../cloud_outputs"))
+UPLOAD_FOLDER = os.path.abspath(UPLOAD_FOLDER)
+OUTPUT_FOLDER = os.path.abspath(OUTPUT_FOLDER)
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 

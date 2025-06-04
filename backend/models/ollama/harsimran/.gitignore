@@ -51,7 +51,6 @@ yarn.lock
 # Docker
 # ----------------------
 .dockerignore
-Dockerfile
 
 # ----------------------
 # OS-Specific
@@ -63,3 +62,17 @@ Desktop.ini
 # Linux/macOS
 *.bak
 *~
+
+# Add common backup file formats
+*.old
+*.orig
+*.tmp
+
+# Ignore macOS metadata recursively
+**/.DS_Store
+
+# Ignore log and output folders if dynamically generated
+uploads/
+cloud_outputs/
+logs/
+
