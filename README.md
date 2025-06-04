@@ -25,7 +25,7 @@ Cloud computing has revolutionized the way organizations manage their IT infrast
 - Deepika Mehta  
 - Harsimran Kaur  
 - Puneet Sharma  
-- Reginald Tumini Hart  
+- Tumini Reginald Abbey Hart  
 
 ## Conclusion
 AD-ASTRA is a powerful tool for organizations seeking to ensure cloud security compliance efficiently and effectively. By automating critical processes and providing actionable insights, it empowers businesses to focus on innovation while maintaining a secure and compliant cloud infrastructure.
