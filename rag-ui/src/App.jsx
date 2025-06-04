@@ -1,11 +1,15 @@
 import { useState } from "react";
 import "./App.css";
+import axios from "axios";
 
 function App() {
   const [messages, setMessages] = useState([]);
   const [question, setQuestion] = useState("");
   const [loading, setLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [file, setFile] = useState(null);
 
+  // Send question to backend
   const askQuestion = async () => {
     if (!question.trim()) return;
     const userMsg = { role: "user", content: question };
@@ -20,65 +24,37 @@ function App() {
       });
 
       const data = await res.json();
-      const aiRaw = data.answer || "No response.";
-      simulateThinking(aiRaw);
-    } catch {
+      const aiMsg = { role: "ai", content: data.answer || "No response." };
+      setMessages((prev) => [...prev, aiMsg]);
+    } catch (err) {
       setMessages((prev) => [...prev, { role: "ai", content: "❌ Backend error" }]);
-      setLoading(false);
     } finally {
+      setLoading(false);
       setQuestion("");
     }
   };
 
-  const simulateThinking = async (text) => {
-    const steps = {
-      Thought: "",
-      Action: "",
-      Observation: "",
-      Response: "",
-    };
+  // Upload document
+  const uploadFile = async () => {
+    if (!file) return;
 
-    const lines = text.split(/\n+/);
-    let current = "";
+    const formData = new FormData();
+    formData.append("file", file);
 
-    for (let line of lines) {
-      if (line.startsWith("Thought:")) {
-        current = "Thought";
-        steps.Thought = line.replace("Thought:", "").trim();
-      } else if (line.startsWith("Action:")) {
-        current = "Action";
-        steps.Action = line.replace("Action:", "").trim();
-      } else if (line.startsWith("Observation:")) {
-        current = "Observation";
-        steps.Observation = line.replace("Observation:", "").trim();
-      } else if (line.startsWith("Final Answer:")) {
-        current = "Response";
-        steps.Response = line.replace("Final Answer:", "").trim();
-      } else if (current) {
-        steps[current] += " " + line.trim();
-      }
+    try {
+      await axios.post("http://127.0.0.1:8000/upload", formData, {
+        onUploadProgress: (progressEvent) => {
+          const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setUploadProgress(percent);
+        },
+      });
+      alert("✅ File uploaded successfully!");
+    } catch (err) {
+      alert("❌ Upload failed");
     }
-
-    const addMeta = (label, value) =>
-      setMessages((prev) => [...prev, { role: "ai", content: `${label}: ${value}`, meta: true }]);
-
-    setMessages((prev) => [...prev, { role: "ai", content: "", meta: true }]);
-    await new Promise((r) => setTimeout(r, 300));
-    if (steps.Thought) await addMeta("Thought", steps.Thought);
-    await new Promise((r) => setTimeout(r, 400));
-    if (steps.Action) await addMeta("Action", steps.Action);
-    await new Promise((r) => setTimeout(r, 400));
-    if (steps.Observation) await addMeta("Observation", steps.Observation);
-    await new Promise((r) => setTimeout(r, 1200));
-
-    // Replace last meta with final response
-    setMessages((prev) => [
-      ...prev.filter((m) => !m.meta),
-      { role: "ai", content: `Response: ${steps.Response}`, meta: false },
-    ]);
-    setLoading(false);
   };
 
+  // Handle Enter key
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -87,36 +63,51 @@ function App() {
   };
 
   return (
-    <div className="chat-wrapper">
-      <div className="chat-container shadow">
-        <div className="chat-header bg-primary text-white text-center py-2">
-          <h3 className="mb-0">🏏 Cric AI</h3>
-        </div>
-        <div className="chat-body">
-          {messages.map((msg, i) => (
-            <div key={i} className={`chat-message ${msg.role}`}>
-              <span className={msg.meta ? "meta-text" : ""}>{msg.content}</span>
-            </div>
-          ))}
-          {loading && <div className="chat-message ai meta-text">Typing...</div>}
-        </div>
-        <div className="chat-input">
-          <textarea
-            className="form-control"
-            rows="2"
-            placeholder="Ask something about cricket..."
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-          <button
-            className="btn btn-primary"
-            onClick={askQuestion}
-            disabled={loading || !question.trim()}
-          >
-            Send
-          </button>
-        </div>
+    <div className="chat-container">
+      <header className="header">
+        <h1>🏏 Cric AI</h1>
+      </header>
+
+      <div className="chat-box">
+        {messages.map((msg, i) => (
+          <div key={i} className={`chat-message ${msg.role}`}>
+            <span style={{ whiteSpace: "pre-wrap" }}>
+              {msg.content.split("\n").map((line, idx) =>
+                /^(Thought|Action|Observation):/i.test(line) ? (
+                  <span key={idx} className="meta-text">{line}<br /></span>
+                ) : line.toLowerCase().startsWith("final answer:") ? (
+                  <strong key={idx}>Response: {line.replace(/final answer:\s*/i, "")}<br /></strong>
+                ) : (
+                  <span key={idx}>{line}<br /></span>
+                )
+              )}
+            </span>
+          </div>
+        ))}
+        {loading && <div className="chat-message ai">Thinking...</div>}
+      </div>
+
+      <div className="input-area">
+        <textarea
+          rows="2"
+          placeholder="Ask something about cricket..."
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          onKeyDown={handleKeyDown}
+        />
+        <button onClick={askQuestion} disabled={loading || !question.trim()}>
+          Send
+        </button>
+      </div>
+
+      <div className="upload-section">
+        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+        <button onClick={uploadFile}>Upload Document</button>
+        {uploadProgress > 0 && uploadProgress < 100 && (
+          <div className="progress-bar">
+            Uploading: {uploadProgress}%
+          </div>
+        )}
       </div>
     </div>
   );
