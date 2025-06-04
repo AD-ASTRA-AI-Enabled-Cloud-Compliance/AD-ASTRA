@@ -5,7 +5,8 @@ from transformers import AutoTokenizer, AutoModel
 import torch
 
 # 🔁 Renamed for clarity: This calls Ollama running Gemma 2B
-def call_ollama(prompt: str, temperature: float = 0.05, model: str = "gemma:2b") -> str:
+def call_ollama(system_prompt: str, user_prompt: str, temperature: float = 0.05, model: str = "gemma:2b") -> str:
+    prompt = f"{system_prompt.strip()}\n\n{user_prompt.strip()}"
     try:
         response = requests.post("http://localhost:11434/api/generate", json={
             "model": model,
@@ -20,7 +21,8 @@ def call_ollama(prompt: str, temperature: float = 0.05, model: str = "gemma:2b")
         return content
     except Exception as e:
         print(f"❌ Ollama API call error: {e}")
-        return "[]"
+        return "I'm sorry, I couldn't generate a response at the moment."
+
 
 # ✅ Local transformer-based embedding for Qdrant
 class SimpleEmbedding:

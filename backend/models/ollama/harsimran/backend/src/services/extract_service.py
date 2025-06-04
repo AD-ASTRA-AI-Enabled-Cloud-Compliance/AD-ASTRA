@@ -1,4 +1,4 @@
-# extract_service.py (Updated for Full PDF Rule Extraction via Ollama + Chunking)
+# extract_service.py (Fixed Ollama Call)
 
 import os
 import json
@@ -26,7 +26,7 @@ def extract_text_with_ocr(filepath):
     doc = fitz.open(filepath)
     text = []
 
-    for i in range(len(doc)):  # ✅ Read entire document now
+    for i in range(len(doc)):
         page_text = doc[i].get_text().strip()
         if len(page_text) > 20:
             text.append(page_text)
@@ -62,11 +62,11 @@ def process_document(req):
     print("🧠 Storing chunks to Qdrant...")
     store_document_chunks(full_text, doc_id)
 
-    # ✨ New: Extract rules directly from chunks
     from src.utils.vector_store import search_chunks_and_rules
     rules = []
     print("📑 Extracting rules from stored chunks...")
     chunks_only = search_chunks_and_rules("Extract security and compliance rules", doc_id, top_k=30)
+
     max_token_limit = 6000
     combined = []
     current_token_count = 0
@@ -93,28 +93,27 @@ def process_document(req):
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump(rules, f, indent=2)
 
-        # count_rules_in_qdrant(doc_id)
-
     print("✅ Processing completed.")
     return {"message": "✅ Uploaded and processed", "rules_saved": f"{doc_id}.json"}
 
-
 # 🧠 Rule extraction logic (Ollama)
 def extract_compliance_rules_from_text(text, framework="Custom"):
-    # Step 1: Summarize first to help small models like Gemma
-    summary_prompt = f"""
-You are a document summarization assistant.
-Summarize the key actionable security and compliance concepts from this document.
-Return only bullet points that highlight rules, requirements, or obligations:
+    try:
+        # Step 1: Summarize chunks
+        system_prompt_1 = "You are a document summarization assistant. Summarize key actionable security and compliance concepts."
+        user_prompt_1 = f"""
+Summarize the following document into bullet points highlighting rules, requirements, or obligations:
 
 {text}
 """
-    summary = call_ollama(summary_prompt)
-    with open(f"debug_summary_{framework}.txt", "w", encoding="utf-8") as f:
-        f.write(summary)
+        summary = call_ollama(system_prompt_1, user_prompt_1)
 
-    # Step 2: Use few-shot prompt with summary for rule extraction
-    prompt = f"""
+        with open(f"debug_summary_{framework}.txt", "w", encoding="utf-8") as f:
+            f.write(summary)
+
+        # Step 2: Extract rules from the summary
+        system_prompt_2 = "You are a cybersecurity compliance rule extraction AI."
+        user_prompt_2 = f"""
 You are a cybersecurity compliance rule extraction AI.
 
 Your job is to extract clear, cloud-agnostic security compliance rules from the summary of a security document. These rules should be specific, actionable best practices.
@@ -138,10 +137,11 @@ Now extract more rules from the following summary and return them as a valid JSO
 
 {summary}
 """
-    try:
-        response = call_ollama(prompt)
+        response = call_ollama(system_prompt_2, user_prompt_2)
+
         with open(f"debug_ollama_output_{framework}.txt", "w", encoding="utf-8") as f:
             f.write(response)
+
         print("📥 Ollama response preview:\n", response[:300])
 
         match = re.search(r"(\{.*\}|\[.*\])", response, re.DOTALL)
@@ -170,20 +170,3 @@ def list_documents():
         print("⚠️ cloud_outputs folder not found.")
         return []
     return [f.replace(".json", "") for f in os.listdir(OUTPUT_FOLDER) if f.endswith(".json")]
-
-# 🧪 Rule count check utility
-# def count_rules_in_qdrant(doc_id):
-#     try:
-#         client = QdrantClient(host="localhost", port=6333)
-#         count = client.count(
-#             collection_name="framework_rules",
-#             exact=True,
-#             filter=Filter(
-#                 must=[FieldCondition(key="doc_id", match=MatchValue(value=doc_id))]
-#             )
-#         ).count
-#         print(f"🔢 Qdrant rule count for '{doc_id}': {count}")
-#         return count
-#     except Exception as e:
-#         print(f"❌ Failed to count rules in Qdrant: {e}")
-#         return 0
