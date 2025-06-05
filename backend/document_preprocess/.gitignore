@@ -1,0 +1,4 @@
+commands
+.env
+*__pycache__*
+/local
