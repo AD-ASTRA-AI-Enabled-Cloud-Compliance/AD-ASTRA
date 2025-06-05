@@ -1,14 +1,16 @@
 import os
 import numpy as np
-from pdf2image import convert_from_path
+import fitz 
 import easyocr
+from PIL import Image
+from io import BytesIO
 from werkzeug.datastructures import FileStorage
 
 reader = easyocr.Reader(['en'])
 
 def extract_text_from_file(file: FileStorage) -> str:
     """
-    Save and extract text from a PDF or image using EasyOCR.
+    Save and extract text from a PDF or image using EasyOCR with PyMuPDF.
 
     Args:
         file (FileStorage): Uploaded file object
@@ -26,8 +28,10 @@ def extract_text_from_file(file: FileStorage) -> str:
 
     if ext == '.pdf':
         try:
-            images = convert_from_path(upload_path)
-            for img in images:
+            doc = fitz.open(upload_path)
+            for page in doc:
+                pix = page.get_pixmap(dpi=300)  # High-res rendering
+                img = Image.open(BytesIO(pix.tobytes("png")))  # Convert to PIL Image
                 result = reader.readtext(np.array(img), detail=0)
                 extracted_text += "\n".join(result) + "\n"
         except Exception as e:
