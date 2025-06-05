@@ -1,12 +1,22 @@
 # syntax=docker/dockerfile:1
-
 FROM python:3.10-slim-buster
 
-WORKDIR /python-docker
+# Set working directory
+WORKDIR /app
 
-COPY requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
+# Copy requirements and install them
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy rest of the app
 COPY . .
 
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+# Set environment variables
+ENV FLASK_APP=app.py
+ENV FLASK_RUN_PORT=3030
+
+# Expose port (matches your dev config)
+EXPOSE 3030
+
+# Run Flask via Python entrypoint (your modular setup)
+CMD ["python", "app.py"]
