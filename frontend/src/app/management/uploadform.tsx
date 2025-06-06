@@ -45,7 +45,7 @@ export default function UploadForm() {
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow space-y-6">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="name">Your Name</Label>
           <Input
             id="name"
             value={name}
