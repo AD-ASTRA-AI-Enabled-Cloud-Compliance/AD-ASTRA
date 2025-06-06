@@ -1,7 +1,4 @@
- HEAD
- HEAD
- HEAD
- dev
+
 # AD-ASTRA: Cloud Security Compliance Tool
 
 ## Abstract
@@ -29,7 +26,6 @@ Cloud computing has revolutionized the way organizations manage their IT infrast
 - Deepika Mehta  
 - Harsimran Kaur  
 - Puneet Sharma  
- HEAD
 - Reginald Tumini Hart  
 
 - Tumini Reginald Abbey Hart  
@@ -44,7 +40,7 @@ AD-ASTRA is a powerful tool for organizations seeking to ensure cloud security c
 - NIST Cybersecurity Framework  
 - General Data Protection Regulation (GDPR)  
 
- HEAD
+
 ##
 
 # RAG Agent F1 
@@ -55,4 +51,3 @@ AD-ASTRA is a powerful tool for organizations seeking to ensure cloud security c
 
 ## Documentation
 - [Documentation](./docs/README.md)
-dev
