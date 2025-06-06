@@ -1,3 +1,4 @@
+
 # AD-ASTRA: Cloud Security Compliance Tool
 
 ## Abstract
@@ -25,7 +26,10 @@ Cloud computing has revolutionized the way organizations manage their IT infrast
 - Deepika Mehta  
 - Harsimran Kaur  
 - Puneet Sharma  
+- Reginald Tumini Hart  
+
 - Tumini Reginald Abbey Hart  
+ dev
 
 ## Conclusion
 AD-ASTRA is a powerful tool for organizations seeking to ensure cloud security compliance efficiently and effectively. By automating critical processes and providing actionable insights, it empowers businesses to focus on innovation while maintaining a secure and compliant cloud infrastructure.
@@ -35,6 +39,15 @@ AD-ASTRA is a powerful tool for organizations seeking to ensure cloud security c
 - ISO/IEC 27001: Information Security Management  
 - NIST Cybersecurity Framework  
 - General Data Protection Regulation (GDPR)  
+
+
+##
+
+# RAG Agent F1 
+ 36e5ec3 (first commit)
+
+# RAG Agent F1 
+ 3c0b35de1521e5bab5cc48b7b41a48a839cb7ae2
 
 ## Documentation
 - [Documentation](./docs/README.md)
