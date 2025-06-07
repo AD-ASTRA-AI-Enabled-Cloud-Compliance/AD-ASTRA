@@ -1,5 +1,5 @@
 import * as React from "react"
-import { type LucideIcon } from "lucide-react"
+import { type Icon } from "@tabler/icons-react"
 
 import {
   SidebarGroup,
@@ -16,7 +16,7 @@ export function NavSecondary({
   items: {
     title: string
     url: string
-    icon: LucideIcon
+    icon: Icon
   }[]
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (
@@ -25,6 +25,7 @@ export function NavSecondary({
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton asChild>
               <SidebarMenuButton asChild size="sm">
                 <a href={item.url}>
                   <item.icon />
