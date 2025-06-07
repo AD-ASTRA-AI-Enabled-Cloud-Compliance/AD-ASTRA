@@ -2,7 +2,8 @@ commands
 .env
 *__pycache__*
 /local
-
+./venv
+venv
 ../../.DS_Store
 ../.DS_Store
 
