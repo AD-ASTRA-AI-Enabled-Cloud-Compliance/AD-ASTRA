@@ -23,13 +23,17 @@ def extract_text_from_file(file: FileStorage) -> str:
     os.makedirs("uploads", exist_ok=True)
     file.save(upload_path)
 
+    print(f"Processing file: {filename}")
+
     ext = os.path.splitext(upload_path)[-1].lower()
     extracted_text = ""
 
     if ext == '.pdf':
         try:
             doc = fitz.open(upload_path)
-            for page in doc:
+            total_pages = len(doc)
+            for page_num, page in enumerate(doc, 1):
+                print(f"Processing PDF page {page_num}/{total_pages}")
                 pix = page.get_pixmap(dpi=300)  # High-res rendering
                 img = Image.open(BytesIO(pix.tobytes("png")))  # Convert to PIL Image
                 result = reader.readtext(np.array(img), detail=0)
@@ -37,7 +41,9 @@ def extract_text_from_file(file: FileStorage) -> str:
         except Exception as e:
             return f"Error reading PDF: {str(e)}"
     else:
+        print("Processing image file")
         result = reader.readtext(upload_path, detail=0)
         extracted_text = "\n".join(result)
 
+    print("Text extraction completed")
     return extracted_text
