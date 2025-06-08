@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea"; // Optional: create via `shadcn add textarea`
+import { apiCallBuilder } from "@/lib/apiCallBuilder";
 
 export default function UploadForm() {
   const [name, setName] = useState("");
@@ -20,17 +21,22 @@ export default function UploadForm() {
       return;
     }
 
-    // Simulate backend response
-    const fakeResponse = {
-      username: name,
-      fileName: file.name,
-      status: "Uploaded successfully",
-      timestamp: new Date().toISOString(),
-    };
+    const formData = new FormData();
+    formData.append('file', file);
 
-    // In real case, you'd POST to an API here
-    setJsonOutput(fakeResponse);
-    setCopied(false); // Reset copied state
+    const url = `${process.env.NEXT_PUBLIC_API_URL_DOC_PREPROCESS_PORT}/upload`;
+    try {
+      const response = await apiCallBuilder(url, "POST", null, formData);
+      if (response?.ok) {
+        const data = await response.json();
+        setJsonOutput(data);
+      } else {
+        alert('Upload failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert('Upload failed. Please try again.');
+    }
   };
 
   const handleCopy = () => {
@@ -43,22 +49,13 @@ export default function UploadForm() {
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow space-y-6">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <Label htmlFor="name">Your Name</Label>
-          <Input
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter your name"
-            required
-          />
-        </div>
 
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <Label htmlFor="file">Upload File</Label>
           <Input
             id="file"
+            name="file"
             type="file"
             onChange={(e) => setFile(e.target.files?.[0] || null)}
             required
