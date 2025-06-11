@@ -1,6 +1,6 @@
 import os
 import numpy as np
-import fitz 
+import fitz
 import easyocr
 import requests
 from PIL import Image
@@ -12,6 +12,8 @@ from src.services.websocket.ws import send_progress_update
 
 
 reader = easyocr.Reader(['en'])
+
+
 def extract_text_from_file(file: FileStorage) -> str:
     """
     Save and extract text from a PDF or image using EasyOCR with PyMuPDF.
@@ -40,9 +42,15 @@ def extract_text_from_file(file: FileStorage) -> str:
                 progress = round(((page_num / total_pages) * 100), 1)
                 msg = f"PDF: {filename} page {page_num}/{total_pages}"
                 print(msg, progress)
-                send_progress_update(msg, progress)
+                send_progress_update(
+                    msg,
+                    progress,
+                    page_num,
+                    total_pages
+                )
                 pix = page.get_pixmap(dpi=300)  # High-res rendering
-                img = Image.open(BytesIO(pix.tobytes("png")))  # Convert to PIL Image
+                img = Image.open(BytesIO(pix.tobytes("png"))
+                                 )  # Convert to PIL Image
                 result = reader.readtext(np.array(img), detail=0)
                 extracted_text += "\n".join(result) + "\n"
         except Exception as e:

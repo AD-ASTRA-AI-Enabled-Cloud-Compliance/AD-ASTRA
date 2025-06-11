@@ -11,7 +11,7 @@ const OCRProgress = () => {
             console.log('[OCRProgress] New message received:', lastMessage);
             setMessages(prev => [...prev, lastMessage]);
             if (lastMessage.progress) {
-                setProgress(lastMessage.progress);
+                setProgress(lastMessage.message ? lastMessage.message : lastMessage.progress);
             }
         }
     }, [lastMessage]);
@@ -21,10 +21,10 @@ const OCRProgress = () => {
             
             <div className="space-y-4">
                 <div className="p-4 border rounded-lg shadow-sm">
-                    <div className="mb-2 text-gray-700">
+                    <div className="mb-2">
                         {isConnected ? '🟢 Connected' : '🔴 Disconnected'}
                     </div>
-                    <div className="mb-2 text-gray-700">
+                    <div className="mb-2">
                         Current Progress: {progress}%
                     </div>
                     {progress > 0 && (

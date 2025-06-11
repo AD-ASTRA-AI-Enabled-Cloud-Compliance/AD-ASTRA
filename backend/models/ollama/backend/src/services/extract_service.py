@@ -9,6 +9,8 @@ from pdf2image import convert_from_path
 import tempfile
 from werkzeug.utils import secure_filename
 from flask import request
+
+from ..services.websocket.ws import WebsocketService
 from .gpt_service import call_ollama
 from src.utils.vector_store import store_document_chunks, store_extracted_rules
 from qdrant_client import QdrantClient
@@ -16,159 +18,201 @@ from qdrant_client.models import Filter, FieldCondition, MatchValue
 
 # Base paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", os.path.join(os.path.dirname(__file__), "../uploads"))
-OUTPUT_FOLDER = os.getenv("OUTPUT_FOLDER", os.path.join(os.path.dirname(__file__), "../cloud_outputs"))
-UPLOAD_FOLDER = os.path.abspath(UPLOAD_FOLDER)
-OUTPUT_FOLDER = os.path.abspath(OUTPUT_FOLDER)
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-# 🔍 OCR fallback logic (reads full document)
-def extract_text_with_ocr(filepath):
-    doc = fitz.open(filepath)
-    text = []
 
-    for i in range(len(doc)):
-        page_text = doc[i].get_text().strip()
-        if len(page_text) > 20:
-            text.append(page_text)
-        else:
-            print(f"📸 OCR fallback for page {i+1}")
-            with tempfile.TemporaryDirectory() as path:
-                images = convert_from_path(filepath, first_page=i+1, last_page=i+1, output_folder=path)
-                if images:
-                    ocr_text = pytesseract.image_to_string(images[0])
-                    text.append(ocr_text)
+class ExtractService:
+    def __init__(self):
+        self.ws = WebsocketService()
+        self.base_dir = os.path.dirname(os.path.abspath(__file__))
+        self.upload_folder = os.getenv("UPLOAD_FOLDER", os.path.join(
+            os.path.dirname(__file__), "../uploads"))
+        self.output_folder = os.getenv("OUTPUT_FOLDER", os.path.join(
+            os.path.dirname(__file__), "../cloud_outputs"))
+        self.upload_folder = os.path.abspath(self.upload_folder)
+        self.output_folder = os.path.abspath(self.output_folder)
+        os.makedirs(self.upload_folder, exist_ok=True)
+        os.makedirs(self.output_folder, exist_ok=True)
 
-    return "\n".join(text)
+    def extract_text_with_ocr(self, filepath):
+        doc = fitz.open(filepath)
+        text = []
 
-# 📥 Main upload handler
-def process_document(req):
-    print("📥 Upload received")
+        for i in range(len(doc)):
+            page_text = doc[i].get_text().strip()
+            if len(page_text) > 20:
+                text.append(page_text)
+            else:
+                print(f"📸 OCR fallback for page {i+1}")
+                with tempfile.TemporaryDirectory() as path:
+                    images = convert_from_path(
+                        filepath, first_page=i+1, last_page=i+1, output_folder=path)
+                    if images:
+                        ocr_text = pytesseract.image_to_string(images[0])
+                        text.append(ocr_text)
 
-    file = req.files.get("file")
-    if not file:
-        return {"error": "No file uploaded"}, 400
 
-    filename = secure_filename(file.filename)
-    filepath = os.path.join(UPLOAD_FOLDER, filename)
-    doc_id = os.path.splitext(filename)[0]
-    json_path = os.path.join(OUTPUT_FOLDER, f"{doc_id}.json")
+        final_text = "\n".join(text).strip()
+        word_count = len(final_text.split())
+        
+        self.ws.send_progress_update(
+            f"📄 Total words: {word_count}"
+        )
+        return "\n".join(text)
 
-    file.save(filepath)
-    print(f"📄 File saved at {filepath}")
+    def process_document(self, request):
+        if not request.form.get("model"):
+            return {"error": "No model selected"}, 400
+        if not request.files.get("file"):
+            return {"error": "No file uploaded"}, 400
 
-    print("🧾 Extracting full text from PDF...")
-    full_text = extract_text_with_ocr(filepath)
+        print("📥 Upload received")
+        self.ws.send_progress_update(
+            "📥 Upload received"
+        )
+        self.model = request.form.get("model")
+        self.file = request.files.get("file")
 
-    print("🧠 Storing chunks to Qdrant...")
-    store_document_chunks(full_text, doc_id)
+        filename = secure_filename(self.file.filename)
+        filepath = os.path.join(self.upload_folder, filename)
+        doc_id = os.path.splitext(filename)[0]
+        json_path = os.path.join(self.output_folder, f"{doc_id}.json")
 
-    from src.utils.vector_store import search_chunks_and_rules
-    rules = []
-    print("📑 Extracting rules from stored chunks...")
-    chunks_only = search_chunks_and_rules("Extract security and compliance rules", doc_id, top_k=30)
+        self.file.save(filepath)
+        print(f"📄 File saved at {filepath}")
+        self.ws.send_progress_update(
+            f"📄 File saved at {filepath}"
+        )
 
-    max_token_limit = 6000
-    combined = []
-    current_token_count = 0
+        print("🧾 Extracting full text from PDF...")
+        self.ws.send_progress_update(
+            "🧾 Extracting full text from PDF..."
+        )
+        full_text = self.extract_text_with_ocr(filepath)
 
-    for chunk in chunks_only:
-        chunk_text = chunk["content"]
-        token_estimate = int(len(chunk_text.split()) * 1.3)
-        if current_token_count + token_estimate <= max_token_limit:
-            combined.append(chunk_text)
-            current_token_count += token_estimate
-        else:
-            break
+        print("🧠 Storing chunks to Qdrant...")
+        self.ws.send_progress_update(
+            "🧠 Storing chunks to Qdrant..."
+        )
+        store_document_chunks(full_text, doc_id)
 
-    combined_text = "\n".join(combined)
+        from src.utils.vector_store import search_chunks_and_rules
+        rules = []
+        print("📑 Extracting rules from stored chunks...")
+        self.ws.send_progress_update(
+            "📑 Extracting rules from stored chunks..."
+        )
+        chunks_only = search_chunks_and_rules(
+            "Extract security and compliance rules", doc_id, top_k=30)
 
-    rules = extract_compliance_rules_from_text(combined_text, framework=doc_id)
-    print(f"📊 Extracted {len(rules)} rules.")
+        max_token_limit = 6000
+        combined = []
+        current_token_count = 0
 
-    if rules:
-        print("🛡️ Storing rules to Qdrant...")
-        store_extracted_rules(rules, doc_id)
+        for chunk in chunks_only:
+            chunk_text = chunk["content"]
+            token_estimate = int(len(chunk_text.split()) * 1.3)
+            if current_token_count + token_estimate <= max_token_limit:
+                combined.append(chunk_text)
+                current_token_count += token_estimate
+            else:
+                break
 
-        print(f"💾 Saving rules JSON to: {json_path}")
-        with open(json_path, "w", encoding="utf-8") as f:
-            json.dump(rules, f, indent=2)
+        combined_text = "\n".join(combined)
 
-    print("✅ Processing completed.")
-    return {"message": "✅ Uploaded and processed", "rules_saved": f"{doc_id}.json"}
+        rules = self.extract_compliance_rules_from_text(
+            combined_text, framework=doc_id)
+        print(f"📊 Extracted {len(rules)} rules.")
 
-# 🧠 Rule extraction logic (Ollama)
-def extract_compliance_rules_from_text(text, framework="Custom"):
-    try:
-        # Step 1: Summarize chunks
-        system_prompt_1 = "You are a document summarization assistant. Summarize key actionable security and compliance concepts."
-        user_prompt_1 = f"""
-Summarize the following document into bullet points highlighting rules, requirements, or obligations:
+        self.ws.send_progress_update(
+            f"📊 Extracted {len(rules)} rules."
+        )
 
-{text}
-"""
-        summary = call_ollama(system_prompt_1, user_prompt_1)
+        if rules:
+            print("🛡️ Storing rules to Qdrant...")
+            store_extracted_rules(rules, doc_id)
+            print(f"💾 Saving rules JSON to: {json_path}")
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(rules, f, indent=2)
+        print("✅ Processing completed.")
+        self.ws.send_progress_update(
+            "✅ Processing completed."
+        )
+        return {"message": "✅ Uploaded and processed", "rules_saved": f"{doc_id}.json"}
 
-        with open(f"debug_summary_{framework}.txt", "w", encoding="utf-8") as f:
-            f.write(summary)
+    def extract_compliance_rules_from_text(self, text, framework="Custom"):
+        try:
+            # Step 1: Summarize chunks
+            system_prompt_1 = "You are a document summarization assistant. Summarize key actionable security and compliance concepts."
+            user_prompt_1 = f"""
+    Summarize the following document into bullet points highlighting rules, requirements, or obligations:
 
-        # Step 2: Extract rules from the summary
-        system_prompt_2 = "You are a cybersecurity compliance rule extraction AI."
-        user_prompt_2 = f"""
-You are a cybersecurity compliance rule extraction AI.
+    {text}
+    """
+            summary = call_ollama(
+                system_prompt_1, user_prompt_1, model=self.model)
 
-Your job is to extract clear, cloud-agnostic security compliance rules from the summary of a security document. These rules should be specific, actionable best practices.
+            with open(f"debug_summary_{framework}.txt", "w", encoding="utf-8") as f:
+                f.write(summary)
 
-Here are a few examples:
+            # Step 2: Extract rules from the summary
+            system_prompt_2 = "You are a cybersecurity compliance rule extraction AI."
+            user_prompt_2 = f"""
+    You are a cybersecurity compliance rule extraction AI.
 
-[
-  {{
-    "rule": "Encrypt all sensitive data at rest and in transit.",
-    "category": "Data Protection",
-    "framework": "{framework}"
-  }},
-  {{
-    "rule": "Limit access to patient records using role-based permissions.",
-    "category": "Identity and Access Management",
-    "framework": "{framework}"
-  }}
-]
+    Your job is to extract clear, cloud-agnostic security compliance rules from the summary of a security document. These rules should be specific, actionable best practices.
 
-Now extract more rules from the following summary and return them as a valid JSON array (no explanations or formatting):
+    Here are a few examples:
 
-{summary}
-"""
-        response = call_ollama(system_prompt_2, user_prompt_2)
+    [
+    {{
+        "rule": "Encrypt all sensitive data at rest and in transit.",
+        "category": "Data Protection",
+        "framework": "{framework}"
+    }},
+    {{
+        "rule": "Limit access to patient records using role-based permissions.",
+        "category": "Identity and Access Management",
+        "framework": "{framework}"
+    }}
+    ]
 
-        with open(f"debug_ollama_output_{framework}.txt", "w", encoding="utf-8") as f:
-            f.write(response)
+    Now extract more rules from the following summary and return them as a valid JSON array (no explanations or formatting):
 
-        print("📥 Ollama response preview:\n", response[:300])
+    {summary}
+    """
+            response = call_ollama(
+                system_prompt_2, user_prompt_2, model=self.model)
 
-        match = re.search(r"(\{.*\}|\[.*\])", response, re.DOTALL)
-        if not match:
-            raise ValueError("❌ No JSON found in Ollama response")
+            with open(f"debug_ollama_output_{framework}.txt", "w", encoding="utf-8") as f:
+                f.write(response)
 
-        json_blob = match.group(0)
-        parsed = json.loads(json_blob)
+            print("📥 Ollama response preview:\n", response[:300])
 
-        if isinstance(parsed, list):
-            return [dict(rule=rule.get("rule", ""), category=rule.get("category", ""), framework=framework)
-                    for rule in parsed if "rule" in rule]
-        elif isinstance(parsed, dict) and "rules" in parsed:
-            return [dict(rule=rule.get("rule", ""), category=rule.get("category", ""), framework=framework)
-                    for rule in parsed["rules"] if "rule" in rule]
-        else:
-            raise ValueError("❌ Unexpected JSON structure")
+            match = re.search(r"(\{.*\}|\[.*\])", response, re.DOTALL)
+            if not match:
+                raise ValueError("❌ No JSON found in Ollama response")
 
-    except Exception as e:
-        print("❌ Ollama rule extraction failed:", e)
-        return []
+            json_blob = match.group(0)
+            parsed = json.loads(json_blob)
 
-# 📄 Safely list JSON rule documents
-def list_documents():
-    if not os.path.exists(OUTPUT_FOLDER):
-        print("⚠️ cloud_outputs folder not found.")
-        return []
-    return [f.replace(".json", "") for f in os.listdir(OUTPUT_FOLDER) if f.endswith(".json")]
+            if isinstance(parsed, list):
+                return [dict(rule=rule.get("rule", ""), category=rule.get("category", ""), framework=framework)
+                        for rule in parsed if "rule" in rule]
+            elif isinstance(parsed, dict) and "rules" in parsed:
+                return [dict(rule=rule.get("rule", ""), category=rule.get("category", ""), framework=framework)
+                        for rule in parsed["rules"] if "rule" in rule]
+            else:
+                raise ValueError("❌ Unexpected JSON structure")
+
+        except Exception as e:
+            print("❌ Ollama rule extraction failed:", e)
+            return []
+
+    @staticmethod
+    def list_documents():
+        output_folder = os.getenv("OUTPUT_FOLDER", os.path.join(
+            os.path.dirname(__file__), "../cloud_outputs"))
+        if not os.path.exists(output_folder):
+            print("⚠️ cloud_outputs folder not found.")
+            return []
+        return [f.replace(".json", "") for f in os.listdir(output_folder) if f.endswith(".json")]

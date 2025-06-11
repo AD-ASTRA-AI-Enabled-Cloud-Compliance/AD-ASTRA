@@ -7,14 +7,23 @@ FRONTEND_PORT = os.getenv("FRONTEND_PORT")
 FRONTEND_WS = os.getenv("FRONTEND_WS")
 
 # NEXTJS_API_URL = 'http://localhost:3000/api/ws' 
-NEXTJS_API_URL = f"{FRONTEND_URL}:{FRONTEND_PORT}{FRONTEND_WS}"
+NEXTJS_API_URL = (f"{FRONTEND_URL}:{FRONTEND_PORT}{FRONTEND_WS}").strip(' ')
 
-def send_progress_update(message: str, progress: float = None):
-    print(NEXTJS_API_URL)
-    """Send progress update to Next.js API."""
-    data = {"message": message}
-    if progress is not None:
-        data["progress"] = progress
+def send_progress_update(
+    message: str, 
+    progress: float = None, 
+    current_page: int = None, 
+    total_pages: int = None
+):
+    """Send structured progress update to Next.js API."""
+    data = {
+        "message": message,
+        "progress": progress if progress is not None else 0,
+        "currentPage": current_page if current_page is not None else 0,
+        "totalPages": total_pages if total_pages is not None else 0,
+        "timestamp": None  # The frontend can add the timestamp if needed
+    }
+
     try:
         print(f"Sending progress update to {NEXTJS_API_URL}: {data}")
         response = requests.post(NEXTJS_API_URL, json=data)
