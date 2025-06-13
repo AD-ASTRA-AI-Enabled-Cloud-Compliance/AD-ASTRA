@@ -5,6 +5,9 @@ from ..services.websocket.ws import WebsocketService
 from src.services.extract_service import ExtractService
 import os
 
+from src.services.terraform_generator import TerraformGenerator
+
+
 main_routes = Blueprint('main_routes', __name__)
 
 
@@ -71,3 +74,23 @@ def download_upload(filename):
 def upload():
     
     return ExtractService().process_document(request)
+
+@main_routes.route("/generate_terraform", methods=["POST"])
+def generate_terraform():
+    try:
+        data = request.get_json()
+
+        # Normalize framework and provider names
+        selected_frameworks = [f.strip().upper() for f in data.get("frameworks", [])]
+        selected_providers = [p.strip().lower() for p in data.get("providers", [])]
+
+        print("✅ Backend: /generate_terraform called")
+        print("📂 Frameworks selected:", selected_frameworks)
+        print("📦 Providers selected:", selected_providers)
+
+        generator = TerraformGenerator()
+        result = generator.generate_modules(selected_frameworks, selected_providers)
+
+        return jsonify({"status": "success", "output_path": result}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500

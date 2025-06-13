@@ -25,6 +25,7 @@
 from qdrant_client import QdrantClient
 
 def log_mongo_status():  # Keeping function name for compatibility
+#def log_qdrant_status():
     try:
         client = QdrantClient(host="localhost", port=6333)
         collections = client.get_collections().collections
