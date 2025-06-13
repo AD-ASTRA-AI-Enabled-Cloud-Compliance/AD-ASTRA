@@ -6,16 +6,20 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea"; // Optional: create via `shadcn add textarea`
 import { apiCallBuilder } from "@/lib/apiCallBuilder";
+import OCRProgress from "../../../components/OCRProgress";
+import { useWebSocket } from "../../../contexts/WebSocketContext";
 
 export default function UploadForm() {
   const [name, setName] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [jsonOutput, setJsonOutput] = useState<object | null>(null);
   const [copied, setCopied] = useState(false);
+  const { lastMessage, setLastMessage } = useWebSocket();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setLastMessage(null)
+    setJsonOutput(null)
     if (!file) {
       alert("Please upload a file.");
       return;
@@ -23,7 +27,7 @@ export default function UploadForm() {
 
     const formData = new FormData();
     formData.append('file', file);
-
+    
     const url = `${process.env.NEXT_PUBLIC_API_URL_DOC_PREPROCESS_PORT}/upload`;
     try {
       const response = await apiCallBuilder(url, "POST", null, formData);
@@ -64,7 +68,7 @@ export default function UploadForm() {
 
         <Button type="submit">Submit</Button>
       </form>
-
+      <OCRProgress />
       {jsonOutput && (
         <div className="space-y-2">
           <Label>Backend JSON Output</Label>

@@ -10,7 +10,8 @@
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
 from uuid import uuid4
-from src.services.gpt_service import get_embedding
+from src.services.websocket.ws import WebsocketService
+from src.services.gpt_service import OllamaEmbedder
 from qdrant_client.http.exceptions import UnexpectedResponse
 from qdrant_client.models import VectorParams, Distance
 import os
@@ -21,7 +22,7 @@ qdrant = QdrantClient(host="localhost", port=6333)
 qdrant_collection_chunks = "framework_chunks"
 qdrant_collection_rules = "framework_rules"
 
-
+embedder = OllamaEmbedder()
 
 def ensure_collection_exists(collection_name, size=384):
     try:
@@ -39,6 +40,7 @@ ensure_collection_exists("framework_rules")
 
 
 def store_document_chunks(text, doc_id):
+    ws = WebsocketService()
     from langchain_text_splitters import RecursiveCharacterTextSplitter
     splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100)
     chunks = splitter.split_text(text)
@@ -46,8 +48,13 @@ def store_document_chunks(text, doc_id):
 
     points = []
     for i, chunk in enumerate(chunks):
-        embedding = get_embedding(chunk)
+        embedding = embedder.embed(chunk)  # Now returns single embedding
+        print(chunk)
         if embedding:
+            # ws.send_progress_update(
+            #     message=f"Generating embedding for chunk {i + 1}/{len(chunks)}...",
+            #     progress=(i + 1) / len(chunks)
+            # )
             points.append(PointStruct(
                 id=str(uuid4()),
                 vector=embedding,
@@ -59,9 +66,10 @@ def store_document_chunks(text, doc_id):
 def store_extracted_rules(rules, doc_id):
     points = []
     for i, rule in enumerate(rules):
+
         rule_text = rule.get("rule")
         if rule_text:
-            embedding = get_embedding(rule_text)
+            embedding = embedder.embed(rule_text)  # Now returns single embedding
             if embedding:
                 points.append(PointStruct(
                     id=str(uuid4()),
@@ -78,12 +86,12 @@ def store_extracted_rules(rules, doc_id):
         qdrant.upsert(collection_name="framework_rules", points=points)
 
 def query_similar_rules(query, doc_id, top_k=10):
-    embedding = get_embedding(query)
+    embedding = embedder.embed(query)  # Now returns single embedding
     if not embedding:
         return []
 
     results = qdrant.search(
-        collection_name=qdrant_collection_rules,
+        collection_name=qdrant_collection_rules, 
         query_vector=embedding,
         limit=top_k,
         query_filter=Filter(
@@ -92,8 +100,8 @@ def query_similar_rules(query, doc_id, top_k=10):
     )
     return [{"score": r.score, "content": r.payload.get("rule")} for r in results]
 
-def search_chunks_and_rules(query, doc_id, top_k=10):
-    embedding = get_embedding(query)
+def search_chunks_and_rules(query, doc_id, top_k=30):
+    embedding = embedder.embed(query)  # Now returns single embedding
     if not embedding:
         return []
 

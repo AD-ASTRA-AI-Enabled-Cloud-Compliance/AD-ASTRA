@@ -3,13 +3,19 @@
 ### Pre-push
 Before pushing changes pull the dev branch, **merge your code locally and resolve any conflicts**
   ```bash
-  # Step into your branch
-git checkout [your branch]
-# Pull latest from remote dev
+
+# Switch to your feature branch
+git checkout [your-branch]
+
+# Fetch latest remote data
 git fetch origin
-# Merge your development with dev (locally)
-git merge origin/dev
-# Review and resolve conflicts
+
+# Rebase your work on top of latest dev
+git rebase origin/dev
+
+# Resolve conflicts if needed
+git add .
+git rebase --continue
   ```
 ### Push
 After resolving conflicts, you can now push your changes to **your assigned branch**
