@@ -3,7 +3,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 
-# Import your configuration and API blueprint using direct/absolute imports
+# Import your configuration and API blueprint using direct
 import config
 from api_routes import api_bp
 
