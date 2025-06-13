@@ -2,9 +2,8 @@
 
 from flask import Flask
 from flask_cors import CORS
-from src.controllers.chat_controller import chat_bp
-from src.controllers.document_controller import doc_bp
-from src.utils.db_status import log_mongo_status  # ✅ Updated for Qdrant
+from src.routes.routes import main_routes
+from src.utils.db_status import log_mongo_status  
 import sys
 import os
 
@@ -19,8 +18,9 @@ def create_app():
     
 
     CORS(app)
-    app.register_blueprint(chat_bp)
-    app.register_blueprint(doc_bp)
+    # app.register_blueprint(chat_bp)
+    app.register_blueprint(main_routes)
+    # app.register_blueprint(doc_bp)
 
     return app
 
