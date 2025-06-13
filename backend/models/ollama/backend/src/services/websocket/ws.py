@@ -27,7 +27,8 @@ class WebsocketService:
         message: str, 
         progress: float = None, 
         current_page: int = None, 
-        total_pages: int = None
+        total_pages: int = None,
+        tf: any = None
     ):
         """Send structured progress update to Next.js API."""
         data = {
@@ -35,7 +36,8 @@ class WebsocketService:
             "progress": progress if progress is not None else 0,
             "currentPage": current_page if current_page is not None else 0,
             "totalPages": total_pages if total_pages is not None else 0,
-            "timestamp": None  # The frontend can add the timestamp if needed
+            "timestamp": None,  # The frontend can add the timestamp if needed
+            "tf": tf  # The frontend can add the timestamp if needed
         }
 
         try:

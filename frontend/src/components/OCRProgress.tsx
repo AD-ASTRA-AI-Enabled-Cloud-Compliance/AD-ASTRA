@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useWebSocket, WebSocketProvider } from '../contexts/WebSocketContext';
+import Markdown from 'react-markdown';
 
 const OCRProgress = () => {
     const [messages, setMessages] = useState<any[]>([]);
@@ -18,7 +19,8 @@ const OCRProgress = () => {
     console.log(lastMessage);
 
     return (
-            
+        <div>
+
             <div className="space-y-4">
                 <div className="p-4 border rounded-lg shadow-sm">
                     <div className="mb-2">
@@ -48,6 +50,12 @@ const OCRProgress = () => {
                     </ol>
                 </div>
             </div>
+
+            <Markdown>
+                {lastMessage && lastMessage.message }
+            </Markdown>
+        </div>
+
 
     );
 };

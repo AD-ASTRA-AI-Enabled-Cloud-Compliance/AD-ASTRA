@@ -50,10 +50,9 @@ class ExtractService:
                         ocr_text = pytesseract.image_to_string(images[0])
                         text.append(ocr_text)
 
-
         final_text = "\n".join(text).strip()
         word_count = len(final_text.split())
-        
+
         self.ws.send_progress_update(
             f"📄 Total words: {word_count}"
         )
@@ -133,6 +132,7 @@ class ExtractService:
             print(f"💾 Saving rules JSON to: {json_path}")
             with open(json_path, "w", encoding="utf-8") as f:
                 json.dump(rules, f, indent=2)
+            self.create_terraform_template(combined_text)
         print("✅ Processing completed.")
         self.ws.send_progress_update(
             "✅ Processing completed."
@@ -141,6 +141,7 @@ class ExtractService:
 
     def extract_compliance_rules_from_text(self, text, framework="Custom"):
         try:
+            self.ws.send_progress_update(f"Using model: {self.model}")
             # Step 1: Summarize chunks
             system_prompt_1 = "You are a document summarization assistant. Summarize key actionable security and compliance concepts."
             user_prompt_1 = f"""
@@ -203,6 +204,60 @@ class ExtractService:
                         for rule in parsed["rules"] if "rule" in rule]
             else:
                 raise ValueError("❌ Unexpected JSON structure")
+
+        except Exception as e:
+            print("❌ Ollama rule extraction failed:", e)
+            return []
+
+    def create_terraform_template(self, text, framework="Custom"):
+        self.ws.send_progress_update(
+            "Creating tf template"
+        )
+        try:
+            # Step 1: Summarize chunks
+            system_prompt_1 = "Generate a terraform template, without additional explanations. add a variables block and map" \
+                "to the terraform body"
+            user_prompt_1 = f"""
+                From the following rules, generate the terraform template for the following services: VM, storage and databases
+                in azure.
+                
+# azure-blanket-iac/
+# ├── main.tf
+# ├── variables.tf
+# ├── outputs.tf
+# ├── modules/
+# │   ├── security-monitoring/
+# │   │   ├── main.tf
+# │   │   ├── variables.tf
+# │   │   └── outputs.tf
+# │   ├── data-encryption/
+# │   │   ├── main.tf
+# │   │   ├── variables.tf
+# │   │   └── outputs.tf
+# │   ├── access-management/
+# │   │   ├── main.tf
+# │   │   ├── variables.tf
+# │   │   └── outputs.tf
+# │   └── disaster-recovery/
+# │       ├── main.tf
+# │       ├── variables.tf
+# │       └── outputs.tf
+# └── README.md
+#
+    {text}
+    """
+            response = call_ollama(
+                system_prompt_1, user_prompt_1, model=self.model)
+
+            tf_filename = f"tf_{self.model}_template.tf"
+            tf_path = os.path.join(self.output_folder, tf_filename)
+            
+            with open(tf_path, "w", encoding="utf-8") as f:
+                f.write(response)
+
+            print(f"📥 Ollama tf response preview: {response}")
+            self.ws.send_progress_update(
+                f"📥 Terraform template saved to: {tf_path}", tf=response)
 
         except Exception as e:
             print("❌ Ollama rule extraction failed:", e)

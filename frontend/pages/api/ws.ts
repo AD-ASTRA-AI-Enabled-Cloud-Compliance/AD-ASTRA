@@ -15,8 +15,12 @@ const ioHandler = (req: NextApiRequest, res: SocketIOResponse) => {
     res.socket.server.io = io;
   }
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
+  if (!['POST', 'GET'].includes(req.method)) {
+    return res.status(405).json({ message: 'Method not allowed. Only POST and GET are supported.' });
+  }
+
+  if (req.method === 'GET') {
+    return res.status(200).json({ status: 'WebSocket endpoint is running' });
   }
 
   const { message, progress } = req.body;
