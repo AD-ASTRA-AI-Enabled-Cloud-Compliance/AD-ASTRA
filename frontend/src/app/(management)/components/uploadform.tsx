@@ -27,6 +27,7 @@ export default function UploadForm() {
 
     const formData = new FormData();
     formData.append('file', file);
+    
     const url = `${process.env.NEXT_PUBLIC_API_URL_DOC_PREPROCESS_PORT}/upload`;
     try {
       const response = await apiCallBuilder(url, "POST", null, formData);

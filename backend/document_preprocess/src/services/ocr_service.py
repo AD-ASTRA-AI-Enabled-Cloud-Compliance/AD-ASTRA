@@ -30,6 +30,7 @@ def extract_text_from_file(file: FileStorage) -> str:
     file.save(upload_path)
 
     send_progress_update(f"Processing file: {filename}")
+    print(f"Processing file: {filename}")
 
     ext = os.path.splitext(upload_path)[-1].lower()
     extracted_text = ""
@@ -48,6 +49,9 @@ def extract_text_from_file(file: FileStorage) -> str:
                     page_num,
                     total_pages
                 )
+
+                print(f"Processing PDF page {page_num}/{total_pages}")
+
                 pix = page.get_pixmap(dpi=300)  # High-res rendering
                 img = Image.open(BytesIO(pix.tobytes("png"))
                                  )  # Convert to PIL Image
