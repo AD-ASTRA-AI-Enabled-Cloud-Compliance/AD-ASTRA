@@ -27,13 +27,13 @@ const OCRProgress = () => {
                         {isConnected ? '🟢 Connected' : '🔴 Disconnected'}
                     </div>
                     <div className="mb-2">
-                        Current Progress: {progress}%
+                        Current Progress: {lastMessage.progress}%
                     </div>
-                    {progress > 0 && (
+                    {lastMessage.progress > 0 && (
                         <div className="w-full bg-gray-200 rounded-full h-2.5">
                             <div
                                 className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
-                                style={{ width: `${progress}%` }}
+                                style={{ width: `${lastMessage.progress}%` }}
                             />
                         </div>
                     )}

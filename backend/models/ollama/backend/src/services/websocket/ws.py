@@ -31,6 +31,13 @@ class WebsocketService:
         tf: any = None
     ):
         """Send structured progress update to Next.js API."""
+        if current_page is not None and total_pages is not None:
+            if current_page > 0 and total_pages > 0:
+                # Proceed with sending the progress update
+                progress = round((current_page / total_pages) * 100, 1)
+            else:
+                progress = None
+
         data = {
             "message": message,
             "progress": progress if progress is not None else 0,
@@ -42,7 +49,7 @@ class WebsocketService:
 
         try:
             response = requests.post(self.FRONTEND_WS_ENDPOINT, json=data)
-            # print(f"Sending progress update: {response}")
+            print(f"Msg: {message}")
         except Exception as e:
             print(f"Failed to send progress update: {str(e)}")
             print(f"Error type: {type(e).__name__}")

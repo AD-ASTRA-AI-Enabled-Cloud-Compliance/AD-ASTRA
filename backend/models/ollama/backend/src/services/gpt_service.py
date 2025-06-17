@@ -10,6 +10,7 @@ from ..services.websocket.ws import WebsocketService
 
 # 🔁 Renamed for clarity: This calls Ollama running Gemma 2B
 def call_ollama(system_prompt: str, user_prompt: str, temperature: float = 0.05, model: str = "gemma:2b") -> str:
+    ws = WebsocketService()
     prompt = f"{system_prompt.strip()}\n\n{user_prompt.strip()}"
     OLLAMA_API_URL = os.getenv("OLLAMA_API_URL")
     try:
@@ -20,6 +21,10 @@ def call_ollama(system_prompt: str, user_prompt: str, temperature: float = 0.05,
             "temperature": temperature
         })
         response.raise_for_status()
+        
+        ws.send_progress_update(
+            f"Using {model} model to generate response.",
+        )
         content = response.json().get("response", "").strip()
         if not content:
             raise ValueError("Ollama returned empty response.")
@@ -82,6 +87,9 @@ class OllamaEmbedder:
             return response.json()["embedding"]
 
         # Handle list of texts
+        self.ws.send_progress_update(
+            f"Using {self.model} model to generate embeddings.",
+        )
         embeddings = []
         for t in text:
             payload = {
