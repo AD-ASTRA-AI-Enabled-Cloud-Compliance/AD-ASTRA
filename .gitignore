@@ -1,2 +1,10 @@
 local/
 .env
+cloud-compliance-arena/.git
+cloud-compliance-arena/cloud-compliance-ui/node_modules
+cloud-compliance-arena/cloud-compliance-ui/node_modules
+
+cloud-compliance-arena/cloud-compliance-ui/.next
+
+cloud-compliance-arena/**/__pycache__/
+cloud-compliance-arena\cloud-compliance-delta-analysis\__pycache__
