@@ -1,3 +1,4 @@
+from uuid import uuid4
 from flask import Blueprint, jsonify, render_template, request
 from flask_cors import CORS
 from flask import Blueprint, request, jsonify, send_from_directory
@@ -69,5 +70,6 @@ def download_upload(filename):
 # POST /upload → upload and process PDF
 @main_routes.route("/upload", methods=["POST"])
 def upload():
+    sessionID = str(uuid4())
     
-    return ExtractService().process_document(request)
+    return ExtractService(sessionID).process_document(request)

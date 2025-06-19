@@ -16,7 +16,6 @@ const OCRProgress = () => {
             }
         }
     }, [lastMessage]);
-    console.log(lastMessage);
 
     return (
         <div>
@@ -27,9 +26,9 @@ const OCRProgress = () => {
                         {isConnected ? '🟢 Connected' : '🔴 Disconnected'}
                     </div>
                     <div className="mb-2">
-                        Current Progress: {lastMessage.progress}%
+                        Current Progress: {lastMessage?.progress && lastMessage.progress}%
                     </div>
-                    {lastMessage.progress > 0 && (
+                    {lastMessage?.progress > 0 && (
                         <div className="w-full bg-gray-200 rounded-full h-2.5">
                             <div
                                 className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"

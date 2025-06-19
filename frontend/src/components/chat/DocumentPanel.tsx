@@ -42,12 +42,14 @@ export default function DocumentPanel() {
     e.preventDefault();
     const file = e.target.file.files[0];
     const model = e.target.model;
+    const framework = e.target.framework;
     if (!file) return;
 
     const formData = new FormData();
     formData.append("file", file);
     formData.append("model", model.value);
-    alert(formData.get("model"));
+    formData.append("framework", framework.value);
+    alert(formData.get("framework"));
     setUploadMessage("Uploading...");
     setLoading(true);
     try {
@@ -82,6 +84,7 @@ export default function DocumentPanel() {
           <form onSubmit={handleUpload}>
             <ModelOptions modelsAvailable={models} />
             <Input type="file" name="file" accept=".pdf" />
+            <Input type="text" name="framework" />
             <Button
               {...loading ? { disabled: true } : {}}
               type="submit">

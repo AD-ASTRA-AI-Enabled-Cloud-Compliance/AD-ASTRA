@@ -18,6 +18,11 @@ import os
 
 qdrant = QdrantClient(host="localhost", port=6333)
 
+qdrant = QdrantClient(
+            host="localhost",
+            port=6333
+        )
+
 # Initialize collections
 qdrant_collection_chunks = "framework_chunks"
 qdrant_collection_rules = "framework_rules"
@@ -77,30 +82,6 @@ def store_document_chunks(text, doc_id):
             ))
     if points:
         qdrant.upsert(collection_name=qdrant_collection_chunks, points=points)
-
-
-def store_extracted_rules(rules, doc_id):
-    points = []
-    for i, rule in enumerate(rules):
-
-        rule_text = rule.get("rule")
-        if rule_text:
-            # Now returns single embedding
-            embedding = embedder.embed(rule_text)
-            if embedding:
-                points.append(PointStruct(
-                    id=str(uuid4()),
-                    vector=embedding,
-                    payload={
-                        "doc_id": doc_id,
-                        "rule": rule_text,
-                        "category": rule.get("category", ""),
-                        "framework": rule.get("framework", ""),
-                        "rule_id": f"{doc_id}_rule_{i}"
-                    }
-                ))
-    if points:
-        qdrant.upsert(collection_name="framework_rules", points=points)
 
 
 def query_similar_rules(query, doc_id, top_k=10):

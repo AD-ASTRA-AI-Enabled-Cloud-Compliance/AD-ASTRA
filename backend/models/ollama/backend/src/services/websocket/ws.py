@@ -24,7 +24,8 @@ class WebsocketService:
         }
     def send_progress_update(
         self,
-        message: str, 
+        session: str = None, 
+        message: str = None, 
         progress: float = None, 
         current_page: int = None, 
         total_pages: int = None,
@@ -39,6 +40,7 @@ class WebsocketService:
                 progress = None
 
         data = {
+            "session": session,
             "message": message,
             "progress": progress if progress is not None else 0,
             "currentPage": current_page if current_page is not None else 0,
