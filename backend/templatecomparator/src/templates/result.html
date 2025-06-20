@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head><title>Compliance Result</title></head>
+<body>
+  <h1>Compliance Gap Report</h1>
+
+  {% if gaps %}
+    <form method="post" action="/generate_patch">
+  {% for res in gaps %}
+    <input type="checkbox" name="selected_resources" value="{{ res.type }}::{{ res.name }}">
+    {{ res.type }} "{{ res.name }}"<br>
+  {% endfor %}
+  <button type="submit">⬇️ Generate & Download Merged Terraform</button>
+</form>
+
+  {% else %}
+    <p>✅ Your infrastructure matches the PCI baseline!</p>
+  {% endif %}
+
+  <br><a href="/">🔁 Compare Another</a>
+</body>
+</html>

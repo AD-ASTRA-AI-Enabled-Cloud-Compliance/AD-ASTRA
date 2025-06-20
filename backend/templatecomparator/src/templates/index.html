@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head><title>Terraform Compliance Checker</title></head>
+<body>
+  <h1>Upload Terraform Files for Compliance Check</h1>
+
+  <form method="POST" enctype="multipart/form-data">
+    <label>📄 PCI-Compliant Terraform File:</label><br>
+    <input type="file" name="pci_file" required><br><br>
+
+    <label>📄 Current Infrastructure Terraform File:</label><br>
+    <input type="file" name="actual_file" required><br><br>
+
+    <label>📎 (Optional) terraform.tfvars File:</label><br>
+    <input type="file" name="tfvars_file"><br><br>
+
+    <input type="submit" value="Compare and Continue">
+  </form>
+</body>
+</html>
