@@ -1,0 +1,82 @@
+/* src/components/Dashboard.css */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #e9ecef; /* Light grey background */
+    font-family: Arial, sans-serif;
+    color: #333;
+  }
+  
+  .dashboard-header {
+    background-color: #007bff;
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dashboard-header h1 {
+    margin-bottom: 10px;
+    font-size: 2.5em;
+  }
+  
+  .dashboard-header p {
+    font-size: 1.1em;
+    opacity: 0.9;
+  }
+  
+  .dashboard-main {
+    flex-grow: 1; /* Allows main content to take up available space */
+    padding: 40px 20px;
+    max-width: 960px; /* Limit content width */
+    margin: 0 auto; /* Center the content */
+    width: 100%;
+  }
+  
+  .assessment-section, .recent-reports-section {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .assessment-section h2, .recent-reports-section h2 {
+    color: #007bff;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+  }
+  
+  .assessment-section p {
+    margin-bottom: 25px;
+    font-size: 1.05em;
+    line-height: 1.6;
+  }
+  
+  .start-assessment-button {
+    background-color: #28a745; /* Green button */
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .start-assessment-button:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+  }
+  
+  .dashboard-footer {
+    background-color: #343a40;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 0.9em;
+    margin-top: auto; /* Pushes footer to the bottom */
+  }

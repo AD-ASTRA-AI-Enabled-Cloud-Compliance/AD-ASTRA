@@ -1,0 +1,193 @@
+/* src/components/ReportPage.css */
+
+.report-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+.report-container h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 2em;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+}
+
+.assessment-summary {
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.assessment-summary h3 {
+    color: #34495e;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+.assessment-summary p {
+    margin: 8px 0;
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+.assessment-summary strong {
+    color: #555;
+}
+
+/* --- NEW: Report Actions (Download Buttons) --- */
+.report-actions {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.download-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-left: 10px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.download-button:hover {
+    background-color: #0056b3;
+}
+
+.download-button.json {
+    background-color: #28a745; /* Green for JSON */
+}
+
+.download-button.json:hover {
+    background-color: #218838;
+}
+
+.download-button.text {
+    background-color: #17a2b8; /* Cyan for Text */
+}
+
+.download-button.text:hover {
+    background-color: #138496;
+}
+
+/* --- NEW: Table Styles --- */
+.report-table-container {
+    overflow-x: auto; /* Enables horizontal scrolling for small screens */
+    margin-bottom: 30px;
+}
+
+.compliance-table {
+    width: 100%;
+    border-collapse: collapse; /* Removes space between borders */
+    margin-top: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.compliance-table th,
+.compliance-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    word-wrap: break-word; /* Prevents long words from breaking layout */
+}
+
+.compliance-table th {
+    background-color: #e9ecef;
+    color: #495057;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+.compliance-table tbody tr:nth-child(even) {
+    background-color: #fdfdfd; /* Lighter background for even rows */
+}
+
+.compliance-table tbody tr:hover {
+    background-color: #f1f1f1; /* Highlight row on hover */
+}
+
+/* Status specific styling */
+.status-compliant {
+    color: #28a745; /* Green */
+    font-weight: bold;
+}
+
+.status-non-compliant {
+    color: #dc3545; /* Red */
+    font-weight: bold;
+}
+
+.status-not-applicable {
+    color: #6c757d; /* Grey */
+    font-weight: bold;
+}
+
+.rule-list {
+    margin: 0;
+    padding-left: 20px;
+    list-style-type: disc; /* Use disc for bullet points */
+}
+
+.rule-list li {
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+/* Back button */
+.back-button {
+    display: block;
+    width: 200px;
+    padding: 12px 20px;
+    margin: 30px auto 0;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    text-align: center;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.back-button:hover {
+    background-color: #5a6268;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .report-container {
+        margin: 20px auto;
+        padding: 15px;
+    }
+
+    .compliance-table th,
+    .compliance-table td {
+        padding: 8px 10px;
+        font-size: 0.85em;
+    }
+
+    .report-actions {
+        text-align: center;
+    }
+
+    .download-button {
+        display: block;
+        width: 90%;
+        margin: 10px auto;
+    }
+}
