@@ -15,27 +15,29 @@ export default function DocumentPanel() {
   const [models, setModels] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // const docsResponse = await fetch("http://localhost:3001/documents");
-        // const docs = await docsResponse.json();
-        // setDocOptions(docs);
-
         const modelsResponse = await fetch("http://localhost:11434/api/tags");
         const modelsAvailable = await modelsResponse.json();
-        const modelNames = await getModelNames(modelsAvailable);
+  
+        // Sort by model name before mapping
+        const sortedModels = modelsAvailable.models.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+  
+        const modelNames = sortedModels.map(model => model.name);
+  
         setModels(modelNames);
         console.log(modelNames);
       } catch (error) {
         console.error(error);
       }
     };
-
+  
     fetchData();
   }, []);
-
+  
 
 
   const handleUpload = async (e: any) => {

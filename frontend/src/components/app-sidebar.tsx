@@ -52,22 +52,22 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Frameworks",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "History",
+          title: "New Document",
+          url: "/process_documentation",
+        },
+        {
+          title: "Explore",
           url: "#",
         },
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
+          title: "Chat",
+          url: "/chat",
         },
       ],
     },
