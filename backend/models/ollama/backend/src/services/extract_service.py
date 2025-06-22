@@ -317,7 +317,12 @@ class ExtractService:
         splitter = RecursiveCharacterTextSplitter(
             chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap)
         chunks = splitter.split_text(text)
-        print(f"📄 Splitting into {len(chunks)} chunks")
+        # print(f"📄 Splitting into {len(chunks)} chunks")
+
+        self.ws.send_progress_update(
+            session=self.session,
+            message=f"📄 Splitting into {len(chunks)} chunks"
+        )
 
         points = []
         totalChunks = len(chunks)
@@ -355,7 +360,7 @@ class ExtractService:
         if points:
             # qdrant.upsert(
             #     collection_name=qdrant_collection_chunks, points=points)
-            
+
             BATCH_SIZE = 200  # Adjust depending on size of each point
             for batch in chunked(points, BATCH_SIZE):
                 qdrant.upsert(

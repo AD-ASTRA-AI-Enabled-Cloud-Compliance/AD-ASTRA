@@ -2,6 +2,8 @@ from uuid import uuid4
 from flask import Blueprint, jsonify, render_template, request
 from flask_cors import CORS
 from flask import Blueprint, request, jsonify, send_from_directory
+
+from ..services.rules_service import RulesService
 from ..services.websocket.ws import WebsocketService
 from src.services.extract_service import ExtractService
 import os
@@ -71,5 +73,13 @@ def download_upload(filename):
 @main_routes.route("/upload", methods=["POST"])
 def upload():
     sessionID = str(uuid4())
+    print(f"Session ID from route: {sessionID}")
     
     return ExtractService(sessionID).process_document(request)
+
+
+# Returns framweork rules generated from the uploaded PDF and stored in the vector store
+@main_routes.route("/explore/rules", methods=["GET"])
+def exploreRules():
+    sessionID = str(uuid4())
+    return RulesService(sessionID=sessionID).list_rules()

@@ -17,7 +17,7 @@ const OCRProgress = ({ onlyProgress }: ProgressBarProps) => {
 
     useEffect(() => {
         if (lastMessage) {
-            console.log('[OCRProgress] New message received:', lastMessage);
+            // console.log('[OCRProgress] New message received:', lastMessage);
             setMessages(prev => [...prev, lastMessage]);
             if (lastMessage.progress) {
                 setProgress(lastMessage.message ? lastMessage.message : lastMessage.progress);
@@ -50,6 +50,9 @@ const OCRProgress = ({ onlyProgress }: ProgressBarProps) => {
                                 {messages.map((msg, idx) => (
                                     <li key={idx} className="text-sm">
                                         {msg.message} {msg.progress ? `(${msg.progress}%)` : ''}
+                                        <div>
+                                        {JSON.stringify(msg, null, 2)}
+                                        </div>
                                     </li>
                                 ))}
                             </ol>
@@ -71,7 +74,7 @@ const OCRProgress = ({ onlyProgress }: ProgressBarProps) => {
 export default OCRProgress;
 
 export const ProgressBar = ({ messages }: { messages: { progress: number, message: string } }) => {
-    console.log(messages)
+    // console.log(messages)
     return (
         messages?.progress > 0 && (
             <Tooltip>

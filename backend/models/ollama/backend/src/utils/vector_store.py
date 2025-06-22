@@ -26,6 +26,7 @@ qdrant = QdrantClient(
 # Initialize collections
 qdrant_collection_chunks = "framework_chunks"
 qdrant_collection_rules = "framework_rules"
+qdrant_collection_processing_logs = "processing_logs"
 
 embedder = OllamaEmbedder()
 
@@ -44,6 +45,7 @@ def ensure_collection_exists(collection_name, size=2048):
 
 ensure_collection_exists("framework_chunks")
 ensure_collection_exists("framework_rules")
+ensure_collection_exists("qdrant_collection_processing_logs")
 
 
 def store_document_chunks(text, doc_id):

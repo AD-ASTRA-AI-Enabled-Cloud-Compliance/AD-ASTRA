@@ -63,7 +63,7 @@ const data = {
         },
         {
           title: "Explore",
-          url: "#",
+          url: "/explore_rules",
         },
         {
           title: "Chat",

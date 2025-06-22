@@ -22,6 +22,7 @@ class WebsocketService:
             "nextjs_api_url": self.NEXTJS_API_URL,
             "FRONTEND_WS_ENDPOINT": self.FRONTEND_WS_ENDPOINT
         }
+    
     def send_progress_update(
         self,
         session: str = None, 
@@ -40,8 +41,10 @@ class WebsocketService:
                 progress = None
 
         data = {
-            "session": session,
+            "session": str(session),
             "message": message,
+            "message2": str(session),
+            "message3": message,
             "progress": progress if progress is not None else 0,
             "currentPage": current_page if current_page is not None else 0,
             "totalPages": total_pages if total_pages is not None else 0,
@@ -51,7 +54,8 @@ class WebsocketService:
 
         try:
             response = requests.post(self.FRONTEND_WS_ENDPOINT, json=data)
-            print(f"Msg: {message}")
+            print(f"Session: {data['session']} Msg: {data['message']}")
+            print(data)
         except Exception as e:
             print(f"Failed to send progress update: {str(e)}")
             print(f"Error type: {type(e).__name__}")
