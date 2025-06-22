@@ -10,7 +10,9 @@ import tempfile
 from werkzeug.utils import secure_filename
 from flask import request
 
-from more_itertools import chunked  # pip install more-itertools
+from more_itertools import chunked
+
+from ..utils.functions import remove_special_chars  # pip install more-itertools
 from ..utils.vector_store import ensure_collection_exists
 
 from ..services.websocket.ws import WebsocketService
@@ -105,7 +107,7 @@ class ExtractService:
         self.framework = request.form.get("framework")
         self.file = request.files.get("file")
 
-        filename = secure_filename(self.file.filename)
+        filename = f"{remove_special_chars(self.model)}_{secure_filename(self.file.filename)}"
         filepath = os.path.join(self.upload_folder, filename)
         doc_id = os.path.splitext(filename)[0]
         json_path = os.path.join(self.output_folder, f"{doc_id}.json")
@@ -176,7 +178,7 @@ class ExtractService:
         print("✅ Processing completed.")
         self.ws.send_progress_update(
             session=self.session,
-            message="✅ Processing completed."
+            message="✅ Processing completed, rules_saved."
         )
         return {"message": "✅ Uploaded and processed", "rules_saved": f"{doc_id}.json"}
 
@@ -184,7 +186,7 @@ class ExtractService:
         try:
             self.ws.send_progress_update(
                 session=self.session,
-                message=f"Using model: {self.model}")
+                message=f"Extracting rules from text sing model: {self.model}")
             # Step 1: Summarize chunks
             system_prompt_1 = "You are a document summarization assistant. Summarize key actionable security and compliance concepts."
             user_prompt_1 = f"""
@@ -195,7 +197,7 @@ class ExtractService:
             summary = call_ollama(
                 system_prompt_1, user_prompt_1, model=self.model)
 
-            with open(f"debug_summary_{framework}.txt", "w", encoding="utf-8") as f:
+            with open(f"debug_summary_{framework}_{remove_special_chars(self.model)}.txt", "w", encoding="utf-8") as f:
                 f.write(summary)
 
             # Step 2: Extract rules from the summary
@@ -291,7 +293,7 @@ class ExtractService:
                 {text}
                 """
             response = call_ollama(
-                system_prompt_1, user_prompt_1, model="codellama:7b")
+                system_prompt_1, user_prompt_1, model="codeup")
 
             tf_filename = f"tf_template.txt"
             tf_path = os.path.join(self.output_folder, tf_filename)
