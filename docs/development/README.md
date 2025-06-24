@@ -1,12 +1,8 @@
 ### Development lifecycle
----
-#### Contents
-1. [Development lifecycle](/docs/development/README.md)
-1. [Python recommendations summary](/docs/documentation/recommendatios.md)
-1. [Code comments](/docs/development/documentation/comments.md)
-1. [PR instructions](/docs/development/svc/pr_instructions.md)
----
-
+##### Contents
+1. General Workflow
+1. Development Instructions
+1. Cheatsheet
 ##### General Workflow
 
 ```
