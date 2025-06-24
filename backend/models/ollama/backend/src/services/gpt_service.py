@@ -1,28 +1,50 @@
 # gpt_service.py (Ollama + HF Embeddings)
 
-from flask import json
+from typing import List
+from flask import json, request
 import requests
 from transformers import AutoTokenizer, AutoModel
 import torch
 import os
 
+from ..utils.functions import clearMemory
+
 from ..services.websocket.ws import WebsocketService
 
 # 🔁 Renamed for clarity: This calls Ollama running Gemma 2B
-def call_ollama(system_prompt: str, user_prompt: str, temperature: float = 0.05, model: str = "gemma:2b") -> str:
+
+
+def call_ollama(system_prompt: str, user_prompt: str, model: str, temperature: float = 0.05) -> str:
+    ws = WebsocketService()
     prompt = f"{system_prompt.strip()}\n\n{user_prompt.strip()}"
     OLLAMA_API_URL = os.getenv("OLLAMA_API_URL")
+
+    ws.send_progress_update(
+        message=f"Call made to Ollama API model {model}.",
+    )
     try:
-        response = requests.post(f"{OLLAMA_API_URL}/api/generate", json={
+        url = f"{OLLAMA_API_URL}/api/generate"
+        payload = {
             "model": model,
             "prompt": prompt,
             "stream": False,
-            "temperature": temperature
-        })
+            "temperature": temperature,
+
+            "keep_alive": 0
+        }
+        response = requests.post(url, json=payload)
         response.raise_for_status()
+
+        # ws.send_progress_update(
+        #     message=f"Using {model} model to generate response.",
+        # )
         content = response.json().get("response", "").strip()
         if not content:
             raise ValueError("Ollama returned empty response.")
+        
+        #Uloads model from memory to save resources
+        clearMemory(model,url)
+
         return content
     except Exception as e:
         print(f"❌ Ollama API call error: {e}")
@@ -51,8 +73,6 @@ def call_ollama(system_prompt: str, user_prompt: str, temperature: float = 0.05,
 #         print(f"❌ Embedding error: {e}")
 #         return None
 
-import requests
-from typing import List
 
 class OllamaEmbedder:
     def __init__(self, host: str = "http://localhost:11434", model: str = "gemma:2b") -> None:
@@ -70,6 +90,10 @@ class OllamaEmbedder:
     def embed(self, text: str | List[str]) -> List[float] | List[List[float]]:
         """Generate embeddings for text or list of texts"""
         url = f"{self.host}/api/embeddings"
+
+        # self.ws.send_progress_update(
+        #     f"Using {self.model} model to generate embeddings.",
+        # )
 
         # Handle single text
         if isinstance(text, str):
@@ -91,6 +115,10 @@ class OllamaEmbedder:
             response = self.session.post(url, json=payload)
             response.raise_for_status()
             embeddings.append(response.json()["embedding"])
+        
+        #Uloads model from memory to save resources
+        clearMemory(self.model,url)
+
         return embeddings
 
     def chunk_text(self, text: str, chunk_size: int = 500, overlap: int = 50) -> List[str]:
@@ -101,3 +129,4 @@ class OllamaEmbedder:
             chunk = words[i:i + chunk_size]
             chunks.append(" ".join(chunk))
         return chunks
+

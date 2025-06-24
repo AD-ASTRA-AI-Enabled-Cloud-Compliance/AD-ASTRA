@@ -52,22 +52,26 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Frameworks",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Dashboard",
+          url: "/dashboard",
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "New Document",
+          url: "/process_documentation",
         },
         {
-          title: "Settings",
-          url: "#",
+          title: "Explore Rules",
+          url: "/explore_rules",
+        },
+        {
+          title: "Chat",
+          url: "/chat",
         },
       ],
     },
@@ -77,15 +81,7 @@ const data = {
       icon: Bot,
       items: [
         {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
+          title: "System Prompts",
           url: "#",
         },
       ],

@@ -12,7 +12,11 @@ interface ProgressMessage {
     data?: ProgressData;
     timestamp?: string;
     status?: string;
+    progress: number;
+    total_pages: number;
+    current_page: number;
 }
+
 
 export default function ProgressDisplay() {
     const [messages, setMessages] = useState<ProgressMessage[]>([]);
