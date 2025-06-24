@@ -32,22 +32,6 @@ export default function ChatWindow() {
           <h2 style={{ fontSize: "1.25rem", marginBottom: "1rem", fontWeight: "bold" }}>
             💬 Chat with Compliance Agent
           </h2>
-    <Card className="w-full h-full flex flex-col">
-      <CardContent>
-
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            padding: "1rem",
-            borderLeft: "1px solid #ccc",
-            backgroundColor: "#f9fafb",
-          }}
-        >
-          <h2 style={{ fontSize: "1.25rem", marginBottom: "1rem", fontWeight: "bold" }}>
-            💬 Chat with Compliance Agent
-          </h2>
 
           <div
             style={{
@@ -90,7 +74,7 @@ export default function ChatWindow() {
           </div>
 
           <div style={{ display: "flex", gap: "0.5rem" }}>
-            <ModelOptions modelsAvailable={models}/>
+            <ModelOptions modelsAvailable={models} />
             <Input
               type="text"
               value={input}
