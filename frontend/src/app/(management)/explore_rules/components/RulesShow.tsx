@@ -1,12 +1,12 @@
 
 import React from 'react'
-import { AgileDevType } from './lib'
-import AgileDevForm from './AgileDevForm'
+import { RuleRow } from './lib'
+import AgileDevForm from './RulesForm'
 import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger } from "@/components/ui/menubar"
 import { EllipsisVertical } from 'lucide-react'
 
-const AgileDev = ({ data }: { data: AgileDevType }) => {
+const AgileDev = ({ data }: { data: RuleRow }) => {
     return (
         <Card>
             <CardContent>
@@ -53,11 +53,11 @@ const AgileDev = ({ data }: { data: AgileDevType }) => {
                 {/* <div>uuid: {data.uuid}</div>
                 <div>dev_token: {data.dev_token}</div>
                 <div>unique_token: {data.unique_token}</div> */}
-                <div>feature_name: {data.feature_name}</div>
+                {/* <div>feature_name: {data.feature_name}</div>
                 <div>obs: {data.obs}</div>
                 <div>taggi: {data.taggi}</div>
                 <div>duedate: {data.duedate}</div>
-                <div>archive: {data.archive}</div>
+                <div>archive: {data.archive}</div> */}
                 {/* <div>cloned_steps: {data.cloned_steps}</div> */}
                 {/* <div>company_token: {data.company_token}</div>
                 <div>company_usrID: {data.company_usrID}</div> */}

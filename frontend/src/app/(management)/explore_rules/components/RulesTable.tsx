@@ -16,6 +16,8 @@ import { Button } from '@/components/ui/button'
 import { X } from 'lucide-react'
 import Loader from '@/components/ui/loader'
 import { useRulesDataContext } from './DataContext_Rules'
+import D3Force from '@/components/ui/d3force'
+import { useRulesData } from '@/hooks/useRulesData'
 
 
 
@@ -26,15 +28,15 @@ import { useRulesDataContext } from './DataContext_Rules'
 
 export function RulesTable() {
 
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+    // const [loading, setLoading] = useState(true);
+    // const [error, setError] = useState(false);
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = useState({})
-    const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 20, })
+    const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 2000, })
 
-    const { dataRules, setDataRules, setSelctedRules, selectedRules } = useRulesDataContext();
+    const { setDataRules, setSelctedRules, selectedRules } = useRulesDataContext();
     //DEV: Import the context from the related parent if applicable
 
     const handleRowClick = (selected_child: string) => {
@@ -61,44 +63,46 @@ export function RulesTable() {
     //     };
 
     //     fetchData();
+    // // }, []);
+    // const fetchDataAsync = async () => {
+    //     try {
+    //         setLoading(true);
+    //         setError(false);
+
+    //         //DEV: Replace the uuid parameter with the value of the state if applicable
+    //             const response = await fetch("http://localhost:3001/explore/rules");
+    //         if (response) {
+
+    //             const res = await response.json()
+    //             // if (!res.ok) throw new Error("Bad response");
+
+    //             const points: RulePoint[] = res.points;
+    //             console.log(points)
+    //             // setDataRules(points);
+
+    //             // Flatten RulePoint to RuleRow
+    //             const tableData: RuleRow[] = points.map(point => ({
+    //             id: point.id, // top-level id
+    //             ...point.payload, // spread payload fields
+    //             }));
+
+    //             setDataRules(tableData); // assumes your table expects RuleRow[]
+
+    //         }
+    //     } catch {
+    //         console.error("Failed to fetch");
+    //         setError(true);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+
+    // useEffect(() => {
+    //     fetchDataAsync();
     // }, []);
-    const fetchDataAsync = async () => {
-        try {
-            setLoading(true);
-            setError(false);
 
-            //DEV: Replace the uuid parameter with the value of the state if applicable
-                const response = await fetch("http://localhost:3001/explore/rules");
-            if (response) {
-
-                const res = await response.json()
-                // if (!res.ok) throw new Error("Bad response");
-                
-                const points: RulePoint[] = res.points;
-                console.log(points)
-                // setDataRules(points);
-
-                // Flatten RulePoint to RuleRow
-                const tableData: RuleRow[] = points.map(point => ({
-                id: point.id, // top-level id
-                ...point.payload, // spread payload fields
-                }));
-
-                setDataRules(tableData); // assumes your table expects RuleRow[]
-
-            }
-        } catch {
-            console.error("Failed to fetch");
-            setError(true);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-
-    useEffect(() => {
-        fetchDataAsync();
-    }, []);
+    const { dataRules, loading, error, refetch } = useRulesData();
 
     const table = useReactTable<RuleRow>({
         data: dataRules,
@@ -135,7 +139,7 @@ export function RulesTable() {
             </div>
         )
     }
-    if (dataRules == null || dataRules.length === 0) {
+    if (loading == false && dataRules == null && dataRules.length === 0) {
         return (
             <div className='flex flex-col items-center justify-center h-screen'>
                 <h1 className='text-xl font-bold'>No Data available</h1>
@@ -145,6 +149,7 @@ export function RulesTable() {
     }
     return (
         <div className='flex flex-row gap-4 p-4'>
+            {/* <D3Force /> */}
             <div>
                 {selectedRules == null ? null :
                     <div>
@@ -208,12 +213,8 @@ export function RulesTable() {
                                             ))}
                                         </TableRow>
                                     ))
-                                ) : (
-                                    <TableRow>
-                                        <TableCell colSpan={columnsRules.length} className='h-24 text-center' >
-                                            <Loader />
-                                        </TableCell>
-                                    </TableRow>
+                                ) : (<>
+                                </>
                                 )}
                             </TableBody>
                         </Table>

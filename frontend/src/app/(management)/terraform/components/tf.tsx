@@ -51,38 +51,22 @@ import { ModelOptions } from '@/components/chat/ModelOptions'
 import { getModelNames } from '@/utils/llama_models'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Badge } from '@/components/ui/badge'
+import { useModels } from '@/hooks/useDocSetup';
 
 export const GeneratedForm = () => {
 
     const [step, setStep] = useState(0)
 
-    const [models, setModels] = useState<string[]>([]);
+    // const [models, setModels] = useState<string[]>([]);
+    
+    const { models, loading, error } = useModels();
 
     const [docId, setDocId] = useState("");
     const [uploadMessage, setUploadMessage] = useState("");
     const [docOptions, setDocOptions] = useState<string[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    // const [loading, setLoading] = useState<boolean>(false);
     const totalSteps = 2
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // const docsResponse = await fetch("http://localhost:3001/documents");
-                // const docs = await docsResponse.json();
-                // setDocOptions(docs);
-
-                const modelsResponse = await fetch("http://localhost:11434/api/tags");
-                const modelsAvailable = await modelsResponse.json();
-                const modelNames = await getModelNames(modelsAvailable);
-                setModels(modelNames);
-                console.log(modelNames);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        fetchData();
-    }, []);
 
     const form = useForm<FormData>()
 
@@ -93,7 +77,7 @@ export const GeneratedForm = () => {
         getValues
     } = form
 
-    const frameworks = ['GDPR', 'PCI', 'HIPAA', 'NIST']
+    const frameworks = ['GDPR', 'PCI', 'HIPAA', 'NIST', 'ISO-127001']
     const providers = ['aws', 'azure', 'gcp']
 
     const onSubmit = async (formData: any) => {

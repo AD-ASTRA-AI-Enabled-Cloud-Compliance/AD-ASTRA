@@ -58,11 +58,15 @@ const data = {
       isActive: true,
       items: [
         {
+          title: "Dashboard",
+          url: "/dashboard",
+        },
+        {
           title: "New Document",
           url: "/process_documentation",
         },
         {
-          title: "Explore",
+          title: "Explore Rules",
           url: "/explore_rules",
         },
         {
@@ -77,15 +81,7 @@ const data = {
       icon: Bot,
       items: [
         {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
+          title: "System Prompts",
           url: "#",
         },
       ],
