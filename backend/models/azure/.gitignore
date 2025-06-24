@@ -1,9 +1,0 @@
- HEAD
-.env
-__pycache__/
-*.pyc
-__pycache__/
-
-local/
-.env
- dev
