@@ -7,6 +7,12 @@ import { Card, CardContent, CardTitle } from "../ui/card";
 import { getModelNames } from "@/utils/llama_models";
 import { ModelOptions } from "./ModelOptions";
 import OCRProgress from "../OCRProgress";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardTitle } from "../ui/card";
+import { getModelNames } from "@/utils/llama_models";
+import { ModelOptions } from "./ModelOptions";
+import OCRProgress from "../OCRProgress";
 
 export default function DocumentPanel() {
   const [docId, setDocId] = useState("");
