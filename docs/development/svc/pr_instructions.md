@@ -1,16 +1,21 @@
 
-## Development Cheat sheet
+## SVC management
 ### Pre-push
 Before pushing changes pull the dev branch, **merge your code locally and resolve any conflicts**
   ```bash
-  # Step into your branch
-git checkout [your branch]
-# Pull latest from remote dev
+
+# Switch to your feature branch
+git checkout [your-branch]
+
+# Fetch latest remote data
 git fetch origin
-# Pull latest from remote dev
-git fetch origin
-# Merge your development with dev (locally)
-git merge origin/dev
+
+# Rebase your work on top of latest dev
+git rebase origin/dev
+
+# Resolve conflicts if needed
+git add .
+git rebase --continue
   ```
 ### Push
 After resolving conflicts, you can now push your changes to **your assigned branch**
@@ -22,7 +27,20 @@ git push origin [your branch]
 ### Post-Push
  
  #### PR
+```
+Local:
+branch (your branch)
+  ↓
+git push
+  ↓
+origin/mine 
+      ↓
+Pull Request [your branch → dev] (not main)
+
+```
+
 - Got to URL and create a Pull Request
+  - PR from **[YOUR branch]** to **[dev branch]**
 - Make sure the PR contains the following:
     - **Title:** *Self explanatory*
         - Example: "Added new dependecy X and updated X"
@@ -35,6 +53,15 @@ git push origin [your branch]
     - **Repeat the push workflow**
 - If no changes, reviewers will merge the code to the parent branch [dev]
 
+#### PR description template
+you can copy this for quick reference
+```
+TL;DR: 
+
+Description:
+```
+
+### Workflow Summary
 ```
 (dev = developer, Rev = reviewer)
 
