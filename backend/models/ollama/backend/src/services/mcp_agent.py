@@ -91,12 +91,10 @@ Be specific and factual in your response."""
 
     user_prompt = f"""Question: {query}
 
-Context:
-{context_text}
 
 Please provide a direct answer to the question. If using specific sources, mention them."""
 
-    gpt_response = call_ollama(system_prompt, user_prompt)
+    gpt_response = call_ollama(system_prompt, user_prompt, 'gemma:2b')
     
     # Remove the general knowledge tag as it's now implied
     steps.append(f"💡 **Answer**:\n{gpt_response.strip()}")

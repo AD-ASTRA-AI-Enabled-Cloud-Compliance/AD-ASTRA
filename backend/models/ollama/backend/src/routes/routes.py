@@ -3,6 +3,8 @@ from flask import Blueprint, jsonify, render_template, request
 from flask_cors import CORS
 from flask import Blueprint, request, jsonify, send_from_directory
 
+from ..services.chat_service import handle_chat_query
+
 from ..services.rules_service import RulesService
 from ..services.websocket.ws import WebsocketService
 from src.services.extract_service import ExtractService
@@ -83,3 +85,16 @@ def upload():
 def exploreRules():
     sessionID = str(uuid4())
     return RulesService(sessionID=sessionID).list_rules()
+
+
+
+@main_routes.route("/react_chat", methods=["POST"])
+def react_chat():
+    data = request.get_json()
+    query = data.get("query", "")
+    
+    if not query:
+        return jsonify({"error": "No query provided"}), 400
+
+    result = handle_chat_query(query)
+    return jsonify(result)

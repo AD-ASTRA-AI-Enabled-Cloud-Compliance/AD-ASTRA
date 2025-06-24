@@ -441,6 +441,7 @@ class ExtractService:
         ]
         return sorted(combined, key=lambda x: -x["score"])[:top_k]
 
+
     def get_available_doc_ids():
         # Qdrant has no built-in list for unique doc_ids, so simulate by scanning all payloads
         hits = qdrant.scroll(

@@ -1,5 +1,9 @@
 import datetime
 
+from flask import request
+
+from ..services.websocket.ws import WebsocketService
+
 def timestamped_filename() -> str:
     """
     Generate a timestamped filename based on the current date and time.
@@ -29,4 +33,17 @@ def remove_special_chars(text: str) -> str:
     noChars = timestamped_filename() + "_"+''.join(char for char in text if char not in chars_to_remove)
     
     return noChars
+
+    
+def clearMemory(model,url):
+    ws = WebsocketService()
+    payloadUload = {
+        "model": model,
+        "keep_alive": 0
+    }
+    # request.post(url, json=payloadUload)
+    # ws.send_progress_update(
+    #     f"######## Unloaded {model} model from memory.",
+    # )
+    return 
 

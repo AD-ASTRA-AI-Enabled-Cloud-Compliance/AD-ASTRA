@@ -70,8 +70,6 @@ class RulesService:
                 with_vectors=False,
                 limit= 2000
             )
-            print(f"Scroll result: {type(scroll_result)}")
-            print(f"Scroll result: {scroll_result}")
             # return json.dumps(scroll_result.result.points)
             
             records, next_offset = scroll_result
