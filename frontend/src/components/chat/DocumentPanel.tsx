@@ -7,6 +7,12 @@ import { Card, CardContent, CardTitle } from "../ui/card";
 import { getModelNames } from "@/utils/llama_models";
 import { ModelOptions } from "./ModelOptions";
 import OCRProgress from "../OCRProgress";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardTitle } from "../ui/card";
+import { getModelNames } from "@/utils/llama_models";
+import { ModelOptions } from "./ModelOptions";
+import OCRProgress from "../OCRProgress";
 
 export default function DocumentPanel() {
   const [docId, setDocId] = useState("");
@@ -15,40 +21,45 @@ export default function DocumentPanel() {
   const [models, setModels] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // const docsResponse = await fetch("http://localhost:3001/documents");
-        // const docs = await docsResponse.json();
-        // setDocOptions(docs);
-
         const modelsResponse = await fetch("http://localhost:11434/api/tags");
         const modelsAvailable = await modelsResponse.json();
-        const modelNames = await getModelNames(modelsAvailable);
+  
+        // Sort by model name before mapping
+        const sortedModels = modelsAvailable.models.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+  
+        const modelNames = sortedModels.map(model => model.name);
+  
         setModels(modelNames);
         console.log(modelNames);
       } catch (error) {
         console.error(error);
       }
     };
-
+  
     fetchData();
   }, []);
-
+  
 
 
   const handleUpload = async (e: any) => {
     e.preventDefault();
     const file = e.target.file.files[0];
     const model = e.target.model;
+    const framework = e.target.framework;
     if (!file) return;
 
     const formData = new FormData();
     formData.append("file", file);
     formData.append("model", model.value);
-    alert(formData.get("model"));
+    formData.append("framework", framework.value);
+    alert(formData.get("framework"));
     setUploadMessage("Uploading...");
+    setLoading(true);
     setLoading(true);
     try {
       const res = await fetch("http://localhost:3001/upload", {
@@ -65,7 +76,9 @@ export default function DocumentPanel() {
         setUploadMessage("Upload failed");
       }
       setLoading(false);
+      setLoading(false);
     } catch (err) {
+      setLoading(false);
       setLoading(false);
       console.error(err);
       setUploadMessage("❌ Error uploading file");
@@ -82,6 +95,7 @@ export default function DocumentPanel() {
           <form onSubmit={handleUpload}>
             <ModelOptions modelsAvailable={models} />
             <Input type="file" name="file" accept=".pdf" />
+            <Input type="text" name="framework" />
             <Button
               {...loading ? { disabled: true } : {}}
               type="submit">

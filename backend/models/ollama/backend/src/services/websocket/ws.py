@@ -22,17 +22,29 @@ class WebsocketService:
             "nextjs_api_url": self.NEXTJS_API_URL,
             "FRONTEND_WS_ENDPOINT": self.FRONTEND_WS_ENDPOINT
         }
+    
     def send_progress_update(
         self,
-        message: str, 
+        session: str = None, 
+        message: str = None, 
         progress: float = None, 
         current_page: int = None, 
         total_pages: int = None,
         tf: any = None
     ):
         """Send structured progress update to Next.js API."""
+        if current_page is not None and total_pages is not None:
+            if current_page > 0 and total_pages > 0:
+                # Proceed with sending the progress update
+                progress = round((current_page / total_pages) * 100, 1)
+            else:
+                progress = None
+
         data = {
+            "session": str(session),
             "message": message,
+            "message2": str(session),
+            "message3": message,
             "progress": progress if progress is not None else 0,
             "currentPage": current_page if current_page is not None else 0,
             "totalPages": total_pages if total_pages is not None else 0,
@@ -42,7 +54,6 @@ class WebsocketService:
 
         try:
             response = requests.post(self.FRONTEND_WS_ENDPOINT, json=data)
-            # print(f"Sending progress update: {response}")
         except Exception as e:
             print(f"Failed to send progress update: {str(e)}")
             print(f"Error type: {type(e).__name__}")
