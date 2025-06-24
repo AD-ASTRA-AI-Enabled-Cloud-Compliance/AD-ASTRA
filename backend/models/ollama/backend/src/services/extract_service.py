@@ -148,9 +148,6 @@ class ExtractService:
         max_token_limit = 6000
         combined = []
         current_token_count = 0
-        max_token_limit = 6000
-        combined = []
-        current_token_count = 0
 
         for chunk in chunks_only:
             chunk_text = chunk["content"]
@@ -160,16 +157,6 @@ class ExtractService:
                 current_token_count += token_estimate
             else:
                 break
-        for chunk in chunks_only:
-            chunk_text = chunk["content"]
-            token_estimate = int(len(chunk_text.split()) * 1.3)
-            if current_token_count + token_estimate <= max_token_limit:
-                combined.append(chunk_text)
-                current_token_count += token_estimate
-            else:
-                break
-
-        combined_text = "\n".join(combined)
         combined_text = "\n".join(combined)
 
         rules = self.extract_compliance_rules_from_text(
@@ -198,20 +185,17 @@ class ExtractService:
         try:
             self.ws.send_progress_update(
                 session=self.session,
-                message=f"Extracting rules from text sing model: {self.model}")
+                message=f"Extracting rules from text using model: {self.model}"
+            )
+
             # Step 1: Summarize chunks
             system_prompt_1 = "You are a document summarization assistant. Summarize key actionable security and compliance concepts."
             user_prompt_1 = f"""
-    Summarize the following document into bullet points highlighting rules, requirements, or obligations:
+            Summarize the following document into bullet points highlighting rules, requirements, or obligations:
 
-    {text}
-    """
-            summary = call_ollama(
-                system_prompt_1, user_prompt_1, model=self.model)
-    {text}
-    """
-            summary = call_ollama(
-                system_prompt_1, user_prompt_1, model=self.model)
+            {text}
+            """
+            summary = call_ollama(system_prompt_1, user_prompt_1, model=self.model)
 
             with open(f"debug_summary_{framework}_{remove_special_chars(self.model)}.txt", "w", encoding="utf-8") as f:
                 f.write(summary)
@@ -219,49 +203,30 @@ class ExtractService:
             # Step 2: Extract rules from the summary
             system_prompt_2 = "You are a cybersecurity compliance rule extraction AI."
             user_prompt_2 = f"""
-    You are a cybersecurity compliance rule extraction AI.
-            # Step 2: Extract rules from the summary
-            system_prompt_2 = "You are a cybersecurity compliance rule extraction AI."
-            user_prompt_2 = f"""
-    You are a cybersecurity compliance rule extraction AI.
+            You are a cybersecurity compliance rule extraction AI.
 
-    Your job is to extract clear, cloud-agnostic security compliance rules from the summary of a security document. These rules should be specific, actionable best practices.
-    Your job is to extract clear, cloud-agnostic security compliance rules from the summary of a security document. These rules should be specific, actionable best practices.
+            Your job is to extract clear, cloud-agnostic security compliance rules from the summary of a security document. These rules should be specific, actionable best practices.
 
-    Here are a few examples:
-    Here are a few examples:
+            Here are a few examples:
 
-    [
-    {{
-        "rule": "Encrypt all sensitive data at rest and in transit.",
-        "category": "Data Protection",
-        "framework": "{framework}"
-    }},
-    {{
-        "rule": "Limit access to patient records using role-based permissions.",
-        "category": "Identity and Access Management",
-        "framework": "{framework}"
-    }}
-    ]
-    [
-    {{
-        "rule": "Encrypt all sensitive data at rest and in transit.",
-        "category": "Data Protection",
-        "framework": "{framework}"
-    }},
-    {{
-        "rule": "Limit access to patient records using role-based permissions.",
-        "category": "Identity and Access Management",
-        "framework": "{framework}"
-    }}
-    ]
+            [
+            {{
+                "rule": "Encrypt all sensitive data at rest and in transit.",
+                "category": "Data Protection",
+                "framework": "{framework}"
+            }},
+            {{
+                "rule": "Limit access to patient records using role-based permissions.",
+                "category": "Identity and Access Management",
+                "framework": "{framework}"
+            }}
+            ]
 
-    Now extract more rules from the following summary and return them as a valid JSON array (no explanations or formatting):
+            Now extract more rules from the following summary and return them as a valid JSON array (no explanations or formatting):
 
-    {summary}
-    """
-            response = call_ollama(
-                system_prompt_2, user_prompt_2, model=self.model)
+            {summary}
+            """
+            response = call_ollama(system_prompt_2, user_prompt_2, model=self.model)
 
             with open(f"debug_ollama_output_{framework}.txt", "w", encoding="utf-8") as f:
                 f.write(response)
@@ -276,11 +241,15 @@ class ExtractService:
             parsed = json.loads(json_blob)
 
             if isinstance(parsed, list):
-                return [dict(rule=rule.get("rule", ""), category=rule.get("category", ""), framework=framework)
-                        for rule in parsed if "rule" in rule]
+                return [
+                    dict(rule=rule.get("rule", ""), category=rule.get("category", ""), framework=framework)
+                    for rule in parsed if "rule" in rule
+                ]
             elif isinstance(parsed, dict) and "rules" in parsed:
-                return [dict(rule=rule.get("rule", ""), category=rule.get("category", ""), framework=framework)
-                        for rule in parsed["rules"] if "rule" in rule]
+                return [
+                    dict(rule=rule.get("rule", ""), category=rule.get("category", ""), framework=framework)
+                    for rule in parsed["rules"] if "rule" in rule
+                ]
             else:
                 raise ValueError("❌ Unexpected JSON structure")
 
