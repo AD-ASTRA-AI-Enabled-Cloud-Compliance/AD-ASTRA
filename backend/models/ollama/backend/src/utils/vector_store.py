@@ -12,6 +12,8 @@ from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, Fi
 from uuid import uuid4
 from src.services.websocket.ws import WebsocketService
 from src.services.gpt_service import OllamaEmbedder
+from src.services.websocket.ws import WebsocketService
+from src.services.gpt_service import OllamaEmbedder
 from qdrant_client.http.exceptions import UnexpectedResponse
 from qdrant_client.models import VectorParams, Distance
 import os
@@ -92,7 +94,7 @@ def query_similar_rules(query, doc_id, top_k=10):
         return []
 
     results = qdrant.search(
-        collection_name=qdrant_collection_rules,
+        collection_name=qdrant_collection_rules, 
         query_vector=embedding,
         limit=top_k,
         query_filter=Filter(

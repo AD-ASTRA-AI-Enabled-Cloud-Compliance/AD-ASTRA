@@ -7,6 +7,12 @@ import { Card, CardContent, CardTitle } from "../ui/card";
 import { getModelNames } from "@/utils/llama_models";
 import { ModelOptions } from "./ModelOptions";
 import OCRProgress from "../OCRProgress";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardTitle } from "../ui/card";
+import { getModelNames } from "@/utils/llama_models";
+import { ModelOptions } from "./ModelOptions";
+import OCRProgress from "../OCRProgress";
 
 export default function DocumentPanel() {
   const [docId, setDocId] = useState("");
@@ -54,6 +60,7 @@ export default function DocumentPanel() {
     alert(formData.get("framework"));
     setUploadMessage("Uploading...");
     setLoading(true);
+    setLoading(true);
     try {
       const res = await fetch("http://localhost:3001/upload", {
         method: "POST",
@@ -69,7 +76,9 @@ export default function DocumentPanel() {
         setUploadMessage("Upload failed");
       }
       setLoading(false);
+      setLoading(false);
     } catch (err) {
+      setLoading(false);
       setLoading(false);
       console.error(err);
       setUploadMessage("❌ Error uploading file");

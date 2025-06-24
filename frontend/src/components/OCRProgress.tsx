@@ -59,9 +59,6 @@ const OCRProgress = ({ onlyProgress }: ProgressBarProps) => {
                                 {messages.map((msg, idx) => (
                                     <li key={idx} className="text-sm">
                                         {msg.message} {msg.progress ? `(${msg.progress}%)` : ''}
-                                        <div>
-                                            {JSON.stringify(msg, null, 2)}
-                                        </div>
                                     </li>
                                 ))}
                             </ol>

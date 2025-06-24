@@ -54,8 +54,6 @@ class WebsocketService:
 
         try:
             response = requests.post(self.FRONTEND_WS_ENDPOINT, json=data)
-            print(f"Session: {data['session']} Msg: {data['message']}")
-            print(data)
         except Exception as e:
             print(f"Failed to send progress update: {str(e)}")
             print(f"Error type: {type(e).__name__}")
