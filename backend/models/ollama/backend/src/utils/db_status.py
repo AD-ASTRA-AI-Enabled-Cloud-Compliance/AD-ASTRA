@@ -22,25 +22,33 @@
 #         print(f"❌ MongoDB connection failed: {e}")
 
 # ✅ Qdrant version
+import os
 from qdrant_client import QdrantClient
+
 
 def log_mongo_status():  # Keeping function name for compatibility
 #def log_qdrant_status():
     try:
-        client = QdrantClient(host="localhost", port=6333)
+        client = QdrantClient(
+            host="localhost",
+            port=6333
+        )
         collections = client.get_collections().collections
         col_names = [col.name for col in collections]
 
         if "framework_chunks" in col_names:
-            chunks_count = client.count(collection_name="framework_chunks", exact=True).count
+            chunks_count = client.count(
+                collection_name="framework_chunks", exact=True).count
         else:
             chunks_count = 0
 
         if "framework_rules" in col_names:
-            rules_count = client.count(collection_name="framework_rules", exact=True).count
+            rules_count = client.count(
+                collection_name="framework_rules", exact=True).count
         else:
             rules_count = 0
 
-        print(f"✅ Qdrant connected: {chunks_count} chunks, {rules_count} rules")
+        print(
+            f"✅ Qdrant connected: {chunks_count} chunks, {rules_count} rules")
     except Exception as e:
         print(f"❌ Qdrant connection failed: {e}")

@@ -7,7 +7,7 @@ from src.utils.vector_store import get_available_doc_ids
 import difflib
 
 # Static framework detection list
-FRAMEWORK_KEYWORDS = ["PCI", "HIPAA", "NIST", "GDPR"]
+FRAMEWORK_KEYWORDS = ["PCI", "HIPAA", "NIST", "GDPR", "ISO-27001"]
 
 def is_framework_query(query: str):
     return next((fw for fw in FRAMEWORK_KEYWORDS if fw.lower() in query.lower()), None)
