@@ -1,0 +1,120 @@
+{
+  "aws": {
+    "CloudTrail": {
+      "is_multi_region_trail": "true",
+      "enable_log_file_validation": "true",
+      "include_global_service_events": "true",
+      "s3_bucket_name": "string"
+    },
+    "IAM": {
+      "require_mfa": "true",
+      "password_policy": {
+        "minimum_password_length": "14",
+        "require_uppercase_characters": "true",
+        "require_lowercase_characters": "true",
+        "require_numbers": "true",
+        "require_symbols": "true"
+      }
+    },
+    "KMS": {
+      "enable_key_rotation": "true",
+      "key_usage": "ENCRYPT_DECRYPT"
+    },
+    "S3": {
+      "bucket_encryption": "aws_kms",
+      "block_public_access": "true",
+      "versioning": "enabled"
+    },
+    "CloudWatch": {
+      "log_retention_days": "30",
+      "enable_metric_filtering": "true"
+    },
+    "SecurityHub": {
+      "enable_securityhub": "true",
+      "auto_enable_standards": "true"
+    },
+    "SNS": {
+      "topic_name": "string",
+      "delivery_policy": "default",
+      "enable_encryption": "true"
+    },
+    "Config": {
+      "enable_config": "true",
+      "delivery_channel_name": "default"
+    },
+    "GuardDuty": {
+      "enable_guardduty": "true",
+      "finding_publishing_frequency": "SIX_HOURS"
+    }
+  },
+  "azure": {
+    "KeyVault": {
+      "enabled_for_disk_encryption": "true",
+      "enable_soft_delete": "true",
+      "soft_delete_retention_days": "90",
+      "purge_protection_enabled": "true"
+    },
+    "StorageAccount": {
+      "enable_https_traffic_only": "true",
+      "min_tls_version": "TLS1_2",
+      "is_hns_enabled": "true",
+      "allow_blob_public_access": "false"
+    },
+    "NSG": {
+      "restrict_inbound": "true",
+      "restrict_outbound": "true"
+    },
+    "AzureMonitor": {
+      "log_analytics_workspace": "enabled",
+      "retention_in_days": "30"
+    },
+    "RoleAssignment": {
+      "role_definition_name": "Contributor",
+      "principal_id": "string"
+    },
+    "SecurityCenter": {
+      "email_security_contact": "security@example.com",
+      "alert_notifications": "on",
+      "pricing_tier": "standard"
+    },
+    "PolicyAssignment": {
+      "policy_definition_id": "string",
+      "scope": "string"
+    },
+    "Backup": {
+      "vault_name": "string",
+      "policy_name": "string"
+    }
+  },
+  "gcp": {
+    "IAM": {
+      "require_mfa": "true",
+      "org_policy_enforcement": "true"
+    },
+    "KMS": {
+      "rotation_period": "30d",
+      "purpose": "ENCRYPT_DECRYPT"
+    },
+    "CloudStorage": {
+      "uniform_bucket_level_access": "true",
+      "encryption": "customer-managed",
+      "versioning": "enabled"
+    },
+    "Logging": {
+      "log_sink": "enabled",
+      "log_retention_days": "30"
+    },
+    "SecurityCommandCenter": {
+      "enable_security_center": "true",
+      "notification_config": "enabled"
+    },
+    "VPC": {
+      "enable_flow_logs": "true",
+      "private_google_access": "true"
+    },
+    "CloudSQL": {
+      "backup_enabled": "true",
+      "require_ssl": "true"
+    }
+  }
+}

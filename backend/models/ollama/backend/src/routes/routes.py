@@ -2,6 +2,7 @@ from uuid import uuid4
 from flask import Blueprint, jsonify, render_template, request
 from flask_cors import CORS
 from flask import Blueprint, request, jsonify, send_from_directory
+from src.services.context_generator import CloudContextGenerator
 
 from ..services.chat_service import handle_chat_query
 
@@ -122,3 +123,30 @@ def react_chat():
 
     result = handle_chat_query(query)
     return jsonify(result)
+
+
+# Code Added for Pipeline 3. 
+# This is a route for generating cloud context based on selected frameworks and providers.
+# This route will be called from the frontend when the user selects frameworks and providers for context generation
+# It will use the CloudContextGenerator service to generate the context and return a success message.
+# Updated By Harsimran Kaur 
+
+@main_routes.route("/generate_context", methods=["POST"])
+def generate_context():
+    try:
+        data = request.get_json()
+        selected_frameworks = [f.strip().upper() for f in data.get("frameworks", [])]
+        selected_providers = [p.strip().lower() for p in data.get("providers", [])]
+
+        print("✅ Backend: /generate_context called")
+        print("📂 Frameworks selected:", selected_frameworks)
+        print("📦 Providers selected:", selected_providers)
+
+        context_gen = CloudContextGenerator()
+        context_gen.generate_context(selected_frameworks, selected_providers)
+
+        return jsonify({"status": "success", "message": "Cloud context generated."}), 200
+
+    except Exception as e:
+        print(f"❌ Error in context generation: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500

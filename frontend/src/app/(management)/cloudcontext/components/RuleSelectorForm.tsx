@@ -1,3 +1,9 @@
+/* Updated by Harsimran Kaur
+This is for pipeline 3
+This file is used to select cloud provider and security framework and trigger generation of json rules for cloud context management.
+*/
+
+
 'use client'
 import React, { useState } from 'react'
 import styles from './RuleSelectorForm.module.css'
@@ -22,7 +28,7 @@ export default function RuleSelectorForm() {
   }
 
   const handleSubmit = async () => {
-    const res = await fetch('http://127.0.0.1:3001/generate_terraform', {
+    const res = await fetch('http://127.0.0.1:3001/generate_context', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -96,7 +102,7 @@ export default function RuleSelectorForm() {
 
       {/* Submit Button */}
       <button className={styles.button} onClick={handleSubmit}>
-        Generate Terraform Baselines
+        Generate Cloud-Specific Rules
       </button>
 
       {/* Download links */}

@@ -6,8 +6,8 @@ from src.utils.templates import TerraformTemplateWriter
 class TerraformGenerator:
     def __init__(self):
         self.input_folder = "src/input_files"
-        self.output_folder = "src/terraform_output"
-        self.user_output_folder = "src/user_outputs"
+        self.output_folder = "src/output_files/terraform_output"
+        self.user_output_folder = "src/output_files/combined_terraform_outputs"
         self.llm_mapper = LLMMapper()
         self.template_writer = TerraformTemplateWriter()
 
