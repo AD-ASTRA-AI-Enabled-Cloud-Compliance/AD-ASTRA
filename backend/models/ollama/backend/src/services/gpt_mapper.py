@@ -16,9 +16,9 @@ class GPTMapper:
         self.model = "gpt-4"  # ✅ Using OpenAI GPT-4
         openai.api_key = os.getenv("OPENAI_API_KEY")
 
-        # 🔒 Commented Ollama/Gemma logic
-        # self.model = "gemma:2b"
-        # self.ollama_url = "http://localhost:11434/api/generate"
+#         # 🔒 Commented Ollama/Gemma logic
+#         # self.model = "gemma:2b"
+#         # self.ollama_url = "http://localhost:11434/api/generate"
 
         # ✅ Tokenizer for estimating prompt size
         self.tokenizer = tiktoken.encoding_for_model(self.model)
@@ -64,24 +64,24 @@ class GPTMapper:
             print(f"❌ OpenAI call failed: {e}")
             return None
 
-    # 🔒 Commented Ollama call
-    # def call_ollama(self, system_prompt, user_prompt):
-    #     prompt = f"{system_prompt.strip()}\n\n{user_prompt.strip()}"
-    #     try:
-    #         response = requests.post(self.ollama_url, json={
-    #             "model": self.model,
-    #             "prompt": prompt,
-    #             "stream": False,
-    #             "temperature": 0.2
-    #         })
-    #         response.raise_for_status()
-    #         result = response.json().get("response", "")
-    #         if not result:
-    #             print("⚠️ Empty response from Ollama")
-    #         return result
-    #     except Exception as e:
-    #         print(f"❌ Ollama call failed: {e}")
-    #         return None
+#     # 🔒 Commented Ollama call
+#     # def call_ollama(self, system_prompt, user_prompt):
+#     #     prompt = f"{system_prompt.strip()}\n\n{user_prompt.strip()}"
+#     #     try:
+#     #         response = requests.post(self.ollama_url, json={
+#     #             "model": self.model,
+#     #             "prompt": prompt,
+#     #             "stream": False,
+#     #             "temperature": 0.2
+#     #         })
+#     #         response.raise_for_status()
+#     #         result = response.json().get("response", "")
+#     #         if not result:
+#     #             print("⚠️ Empty response from Ollama")
+#     #         return result
+#     #     except Exception as e:
+#     #         print(f"❌ Ollama call failed: {e}")
+#     #         return None
 
     def is_valid_for_provider(self, provider, response_text):
         if provider == "aws" and any(x in response_text for x in ["azurerm_", "google_"]):
@@ -93,43 +93,4 @@ class GPTMapper:
         return True
 
 
-# Code to use LLM to generate terraform files from cloud_context files.
 
-
-#     def process_framework_with_llm(self, rules, framework, providers):
-#         for rule_data in rules:
-#             rule = rule_data.get("rule")
-#             for provider in providers:
-#                 system_prompt = f"""
-# You are a cloud security compliance expert.
-# You MUST generate only valid Terraform code blocks specific to {provider.upper()}.
-# Each rule below is related to the {framework} framework.
-#
-# ⚠️ DO NOT use services from other cloud providers.
-# Only use services and resource types available in {provider.upper()}.
-# Only output Terraform resources that enhance:
-# - Encryption
-# - Identity and Access Management (IAM)
-# - Logging & Monitoring
-# - Compliance policies
-#
-# ❌ Do NOT output any unrelated services like networking, compute, or storage provisioning.
-# ✅ Only modify existing security configurations.
-#
-# Respond ONLY in valid Terraform HCL.
-# """
-#
-#                 user_prompt = f"Framework: {framework}\nRule: {rule}"
-#
-#                 print(f"🔁 Processing rule: {rule[:60]}... for {provider.upper()}") 
-#                 response = self.call_openai(system_prompt, user_prompt)
-#
-#                 if response and self.is_valid_for_provider(provider, response):
-#                     self.template_writer.write_terraform_module(
-#                         provider,
-#                         framework,
-#                         rule,
-#                         response
-#                     )
-#                 else:
-#                     print(f"⚠️ Skipping rule due to invalid or mismatched response for provider={provider}")

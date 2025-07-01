@@ -73,6 +73,14 @@ const data = {
           title: "Chat",
           url: "/chat",
         },
+        {
+          title: "Generate Context",
+          url: "/generate_context",
+        },
+        {
+          title: "Generate Terraform",
+          url: "/generate_terraform",
+        }
       ],
     },
     {

@@ -1,0 +1,282 @@
+{
+  "provider": "azure",
+  "resources": {
+    "azuread_service_principal": {
+      "resource_type": "azuread_service_principal",
+      "creation_strategy": "reference_only",
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
+      "settings": {
+        "application_id": "${var.service_principal_application_id}"
+      }
+    },
+    "azurerm_role_definition": {
+      "resource_type": "azurerm_role_definition",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
+      "settings": {
+        "name": "${var.role_definition_name}",
+        "scope": "${var.role_definition_scope}",
+        "permissions": "${var.role_definition_permissions_json}",
+        "assignable_scopes": "${var.role_definition_assignable_scopes_json}"
+      }
+    },
+    "azurerm_role_assignment": {
+      "resource_type": "azurerm_role_assignment",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
+      "settings": {
+        "role_definition_name": "${var.role_definition_name}",
+        "principal_id": "${var.principal_id}"
+      }
+    },
+    "azurerm_policy_definition": {
+      "resource_type": "azurerm_policy_definition",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
+      "settings": {
+        "policy_type": "Custom",
+        "mode": "All",
+        "display_name": "${var.policy_display_name}",
+        "description": "${var.policy_description}",
+        "policy_rule": "${var.policy_rule_json}"
+      }
+    },
+    "aazurerm_resource_policy_assignment": {
+      "resource_type": "azurerm_resource_policy_assignment",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
+      "settings": {
+        "enforcement_mode": "Default",
+        "scope": "${var.policy_scope}"
+      }
+    },
+    "azurerm_key_vault": {
+      "resource_type": "azurerm_key_vault",
+      "creation_strategy": "check_if_exists_then_create",
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
+      "settings": {
+        "name": "${var.key_vault_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "enabled_for_disk_encryption": true,
+        "enable_rbac_authorization": true,
+        "soft_delete_retention_days": 90,
+        "purge_protection_enabled": true,
+        "sku_name": "${var.key_vault_sku_name}"
+      }
+    },
+    "azurerm_storage_account": {
+      "resource_type": "azurerm_storage_account",
+      "creation_strategy": "check_if_exists_then_create",
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
+      "settings": {
+        "name": "${var.storage_account_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "enable_https_traffic_only": true,
+        "min_tls_version": "TLS1_2",
+        "allow_blob_public_access": false,
+        "account_kind": "${var.storage_account_kind}"
+      }
+    },
+    "azurerm_network_security_group": {
+      "resource_type": "azurerm_network_security_group",
+      "creation_strategy": "check_if_exists_then_create",
+      "compliance_tags": ["pci", "hipaa", "nist"],
+      "settings": {
+        "name": "${var.network_security_group_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "security_rules": "${var.network_security_rules}",
+        "flow_logs": "${var.flow_logs_setting}"
+      }
+    },
+    "azurerm_firewall": {
+      "resource_type": "azurerm_firewall",
+      "creation_strategy": "check_if_exists_then_create",
+      "compliance_tags": ["pci", "nist"],
+      "settings": {
+        "name": "${var.firewall_name}",
+        "resource_group_name": "${var.resource_group_name}"
+      }
+    },
+    "azurerm_virtual_network_gateway": {
+      "resource_type": "azurerm_virtual_network_gateway",
+      "creation_strategy": "check_if_exists_then_create",
+      "compliance_tags": ["pci", "nist"],
+      "settings": {
+        "name": "${var.vnet_gateway_name}",
+        "location": "${var.vnet_gateway_location}",
+        "resource_group_name": "${var.resource_group_name}",
+        "type": "Vpn",
+        "vpn_type": "RouteBased",
+        "sku": "${var.vnet_gateway_sku}",
+        "enable_bgp": false,
+        "active_active": false
+      }
+    },
+    "azurerm_application_gateway": {
+      "resource_type": "azurerm_application_gateway",
+      "creation_strategy": "check_if_exists_then_create",
+      "compliance_tags": ["pci"],
+      "settings": {
+        "name": "${var.app_gateway_name}",
+        "resource_group_name": "${var.resource_group_name}"
+      }
+    },
+    "azurerm_private_endpoint": {
+      "resource_type": "azurerm_private_endpoint",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["pci", "nist"],
+      "settings": {
+        "name": "${var.private_endpoint_name}",
+        "location": "${var.location}",
+        "resource_group_name": "${var.resource_group_name}",
+        "subnet_id": "${var.private_endpoint_subnet_id}",
+        "private_service_connection": "${var.private_service_connection_config}"
+      }
+    },
+    "azurerm_recovery_services_vault": {
+      "resource_type": "azurerm_recovery_services_vault",
+      "creation_strategy": "check_if_exists_then_create",
+      "compliance_tags": ["hipaa"],
+      "settings": {
+        "name": "${var.recovery_vault_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "soft_delete_enabled": true,
+        "sku": "${var.recovery_vault_sku}"
+      }
+    },
+    "azurerm_backup_policy_vm": {
+      "resource_type": "azurerm_backup_policy_vm",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["hipaa"],
+      "settings": {
+        "name": "${var.vm_backup_policy_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "recovery_vault_name": "${var.recovery_vault_name}",
+        "policy": "${var.vm_backup_policy_json}"
+      }
+    },
+    "azurerm_monitor_diagnostic_setting": {
+      "resource_type": "azurerm_monitor_diagnostic_setting",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
+      "settings": {
+        "log_analytics_workspace_id": "${var.log_analytics_workspace_id}",
+        "logs": "${var.monitor_logs_setting}",
+        "metrics": "${var.monitor_metrics_setting}"
+      }
+    },
+    "azurerm_monitor_action_group": {
+      "resource_type": "azurerm_monitor_action_group",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["pci", "nist"],
+      "settings": {
+        "name": "${var.monitor_action_group_name}",
+        "short_name": "${var.monitor_action_group_short_name}",
+        "email_receiver": "${var.monitor_action_group_email_receiver}"
+      }
+    },
+    "azurerm_monitor_metric_alert": {
+      "resource_type": "azurerm_monitor_metric_alert",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["pci", "nist"],
+      "settings": {
+        "name": "${var.metric_alert_name}",
+        "description": "${var.metric_alert_description}",
+        "severity": "${var.metric_alert_severity}",
+        "enabled": true,
+        "criteria": "${var.metric_alert_criteria_json}",
+        "action": "${var.metric_alert_action_group_ids}"
+      }
+    },
+    "azurerm_monitor_activity_log_alert": {
+      "resource_type": "azurerm_monitor_activity_log_alert",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["pci", "nist"],
+      "settings": {
+        "name": "${var.activity_log_alert_name}",
+        "scope": "${var.activity_log_alert_scope}",
+        "condition": "${var.activity_log_alert_condition}",
+        "action": "${var.activity_log_alert_action_group_ids}"
+      }
+    },
+    "azurerm_security_center_contact": {
+      "resource_type": "azurerm_security_center_contact",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["pci", "nist"],
+      "settings": {
+        "email": "${var.security_contact_email}",
+        "phone": "${var.security_contact_phone}",
+        "alert_notifications": true
+      }
+    },
+    "azurerm_security_center_subscription_pricing": {
+      "resource_type": "azurerm_security_center_subscription_pricing",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["pci", "nist"],
+      "settings": {
+        "tier": "${var.security_center_tier}",
+        "resource_type": "${var.security_center_resource_type}"
+      }
+    },
+    "azurerm_app_service": {
+      "resource_type": "azurerm_app_service",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["pci"],
+      "settings": {
+        "https_only": true,
+        "client_cert_enabled": true,
+        "min_tls_version": "${var.app_service_min_tls_version}"
+      }
+    },
+    "azurerm_mssql_server": {
+      "resource_type": "azurerm_mssql_server",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["pci"],
+      "settings": {
+        "minimal_tls_version": "${var.mssql_min_tls_version}",
+        "public_network_access_enabled": false,
+        "azuread_administrator": {
+          "login_username": "${var.mssql_admin_username}"
+        }
+      }
+    },
+    "azurerm_kubernetes_cluster": {
+      "resource_type": "azurerm_kubernetes_cluster",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["pci"],
+      "settings": {
+        "enable_rbac": true,
+        "azure_policy_enabled": true
+      }
+    },
+    "azurerm_active_directory_domain_service": {
+      "resource_type": "azurerm_active_directory_domain_service",
+      "creation_strategy": "check_if_exists_then_create",
+      "compliance_tags": ["pci"],
+      "settings": {
+        "name": "${var.ad_domain_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "sku": "${var.ad_domain_service_sku}",
+        "enable_secure_ldap": true,
+        "sync_azure_ad_users": true,
+        "ldaps_settings": {
+          "external_access": "${var.ldaps_external_access}",
+          "pfx_certificate": "${var.ldaps_pfx_certificate_path}",
+          "pfx_certificate_password": "${var.ldaps_pfx_certificate_password}"
+        }
+      }
+    },
+    "azurerm_log_analytics_workspace": {
+      "resource_type": "azurerm_log_analytics_workspace",
+      "creation_strategy": "check_if_exists_then_create",
+      "compliance_tags": ["pci", "nist"],
+      "settings": {
+        "name": "${var.log_analytics_workspace_name}",
+        "location": "${var.log_analytics_workspace_location}",
+        "resource_group_name": "${var.resource_group_name}",
+        "sku": "${var.log_analytics_workspace_sku}",
+        "retention_in_days": "${var.log_analytics_retention_days}"
+      }
+    }
+  }
+}
