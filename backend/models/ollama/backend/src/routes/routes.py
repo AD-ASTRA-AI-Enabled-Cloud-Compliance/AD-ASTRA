@@ -11,7 +11,7 @@ from ..services.websocket.ws import WebsocketService
 from src.services.extract_service import ExtractService
 import os
 
-from src.services.terraform_generator import TerraformGenerator
+#from src.services.terraform_generator import TerraformGenerator
 
 
 main_routes = Blueprint('main_routes', __name__)
@@ -83,12 +83,22 @@ def upload():
     
     return ExtractService(sessionID).process_document(request)
 
+
+# ------------------------------------------------------------------------
+# Updated by Harsimran Kaur
+# This code is part of pipeline 3.
+# POST /generate_terraform
+# This endpoint receives selected frameworks and providers from the frontend,
+# generates a unified cloud security context and corresponding Terraform files
+# using the CloudContextGenerator service, and returns a success or error response.
+# Used for automating cloud compliance and infrastructure-as-code generation.
+# ------------------------------------------------------------------------
 @main_routes.route("/generate_terraform", methods=["POST"])
 def generate_terraform():
+    print("🔔 /generate_terraform endpoint called")  # Add this line
     try:
         data = request.get_json()
 
-        # Normalize framework and provider names
         selected_frameworks = [f.strip().upper() for f in data.get("frameworks", [])]
         selected_providers = [p.strip().lower() for p in data.get("providers", [])]
 
@@ -96,11 +106,14 @@ def generate_terraform():
         print("📂 Frameworks selected:", selected_frameworks)
         print("📦 Providers selected:", selected_providers)
 
-        generator = TerraformGenerator()
-        result = generator.generate_modules(selected_frameworks, selected_providers)
+        # ✅ Generate cloud context + Terraform all in one step
+        context_gen = CloudContextGenerator()
+        context_gen.generate_context(selected_frameworks, selected_providers)
 
-        return jsonify({"status": "success", "output_path": result}), 200
+        return jsonify({"status": "success"}), 200
+
     except Exception as e:
+        print(f"❌ Error in generation flow: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
     
 
@@ -131,22 +144,22 @@ def react_chat():
 # It will use the CloudContextGenerator service to generate the context and return a success message.
 # Updated By Harsimran Kaur 
 
-@main_routes.route("/generate_context", methods=["POST"])
-def generate_context():
-    try:
-        data = request.get_json()
-        selected_frameworks = [f.strip().upper() for f in data.get("frameworks", [])]
-        selected_providers = [p.strip().lower() for p in data.get("providers", [])]
+# @main_routes.route("/generate_context", methods=["POST"])
+# def generate_context():
+#     try:
+#         data = request.get_json()
+#         selected_frameworks = [f.strip().upper() for f in data.get("frameworks", [])]
+#         selected_providers = [p.strip().lower() for p in data.get("providers", [])]
 
-        print("✅ Backend: /generate_context called")
-        print("📂 Frameworks selected:", selected_frameworks)
-        print("📦 Providers selected:", selected_providers)
+#         print("✅ Backend: /generate_context called")
+#         print("📂 Frameworks selected:", selected_frameworks)
+#         print("📦 Providers selected:", selected_providers)
 
-        context_gen = CloudContextGenerator()
-        context_gen.generate_context(selected_frameworks, selected_providers)
+#         context_gen = CloudContextGenerator()
+#         context_gen.generate_context(selected_frameworks, selected_providers)
 
-        return jsonify({"status": "success", "message": "Cloud context generated."}), 200
+#         return jsonify({"status": "success", "message": "Cloud context generated."}), 200
 
-    except Exception as e:
-        print(f"❌ Error in context generation: {e}")
-        return jsonify({"status": "error", "message": str(e)}), 500
+#     except Exception as e:
+#         print(f"❌ Error in context generation: {e}")
+#         return jsonify({"status": "error", "message": str(e)}), 500

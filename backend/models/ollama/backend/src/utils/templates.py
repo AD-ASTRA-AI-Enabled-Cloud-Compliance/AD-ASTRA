@@ -1,26 +1,64 @@
-import os
+# --------------------------------------------------------------------------------------------------------------------
+# Updated by Harsimran Kaur
+# This file is part of pipeline 3.
+# This file defines the TerraformTemplateWriter class, which provides utilities to render Terraform resource blocks
+# from Python dictionaries. It supports nested dictionaries, lists, and various value types, enabling dynamic
+# generation of Terraform configuration code for compliance automation workflows.
+# --------------------------------------------------------------------------------------------------------------------
+
+
+import json
+
 
 class TerraformTemplateWriter:
-    def write_terraform_module(self, provider, framework, rule, llm_response):
-        folder = f"src/terraform_output/{provider.lower()}"
-        os.makedirs(folder, exist_ok=True)
-        filename = os.path.join(folder, f"{framework.lower()}_{provider.lower()}.tf")
-        with open(filename, "a") as f:
-            f.write(f"// Rule: {rule}\n")
-            f.write(llm_response + "\n\n")
+    @staticmethod
+    def render_tf_resource(resource_type, resource_name, settings, framework):
+        """
+        Render a Terraform resource block.
+        """
+        tf_lines = [f"# ====== {framework} Compliance Resource ======"]
+        tf_lines.append(f'resource "{resource_type}" "{resource_name}" {{')
 
-    def merge_user_selected_modules(self, frameworks, providers, output_folder, user_output_folder):
-        os.makedirs(user_output_folder, exist_ok=True)
-        main_tf = os.path.join(user_output_folder, "main.tf")
-        with open(main_tf, "w") as main_file:
-            for provider in providers:
-                for framework in frameworks:
-                    tf_path = os.path.join(output_folder, provider.lower(), f"{framework.lower()}_{provider.lower()}.tf")
-                    if os.path.exists(tf_path):
-                        with open(tf_path) as tf:
-                            main_file.write(tf.read())
+        def render_value(key, val, indent=2):
+            spaces = " " * indent
+            if isinstance(val, dict):
+                # Nested dict as block
+                lines = [f"{spaces}{key} {{"]
+                for k, v in val.items():
+                    lines.append(render_value(k, v, indent + 2))
+                lines.append(f"{spaces}}}")
+                return "\n".join(lines)
+            elif isinstance(val, list):
+                if all(isinstance(i, dict) for i in val):
+                    # Multiple nested blocks
+                    blocks = []
+                    for item in val:
+                        block_lines = [f"{spaces}{key} {{"]
+                        for k, v in item.items():
+                            block_lines.append(render_value(k, v, indent + 2))
+                        block_lines.append(f"{spaces}}}")
+                        blocks.append("\n".join(block_lines))
+                    return "\n".join(blocks)
+                else:
+                    # Simple list
+                    items = ", ".join(json.dumps(i) for i in val)
+                    return f"{spaces}{key} = [{items}]"
+            elif isinstance(val, bool):
+                return f"{spaces}{key} = {'true' if val else 'false'}"
+            elif isinstance(val, (int, float)):
+                return f"{spaces}{key} = {val}"
+            elif isinstance(val, str):
+                if val.startswith("${") and val.endswith("}"):
+                    varname = val[2:-1]
+                    if "json" in varname.lower():
+                        return f"{spaces}{key} = jsondecode({varname})"
+                    return f"{spaces}{key} = {varname}"
+                return f'{spaces}{key} = "{val}"'
+            else:
+                return f'{spaces}{key} = "{str(val)}"'
 
-        with open(os.path.join(user_output_folder, "variables.tf"), "w") as v:
-            v.write('variable "project_id" { type = string }\n')
-        with open(os.path.join(user_output_folder, "terraform.tfvars"), "w") as t:
-            t.write('project_id = "example-project"\n')
+        for k, v in settings.items():
+            tf_lines.append(render_value(k, v))
+
+        tf_lines.append("}\n")
+        return "\n".join(tf_lines)

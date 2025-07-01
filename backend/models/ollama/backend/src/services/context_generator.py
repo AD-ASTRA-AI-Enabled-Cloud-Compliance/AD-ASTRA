@@ -1,192 +1,268 @@
+# -------------------------------------------------------------------------------------------------
 # Updated by Harsimran Kaur
-# This code is for pipeline 3. 
-# This file generates cloud security context JSON files by mapping compliance rules to Terraform-compatible resources and settings for selected cloud providers and frameworks using an LLM.
+# This file is part of Pipeline 3.
+# This module provides the CloudContextGenerator class, which:
+# - Generates unified cloud security context JSONs for selected frameworks and providers.
+# - Validates the generated context against compliance rules using an LLM (via LLMMapper).
+# - Produces compliance validation reports highlighting technical coverage and recommendations.
+# - Generates Terraform baseline files from the validated context for each provider.
+# The workflow supports deduplication, technical validation, and infrastructure-as-code output for
+# --------------------------------------------------------------------------------------------------
 
 import os
 import json
 import re
-from .gpt_mapper import GPTMapper
 from datetime import datetime
-import difflib
-# from src.services.json_to_baseline_tf import BaselineTerraformGenerator
-
+from src.services.json_to_baseline_tf import BaselineTerraformGenerator
+from src.services.llm_mapper import LLMMapper
 
 class CloudContextGenerator:
     def __init__(self):
-        self.input_folder = "src/input_files/"
+        self.input_folder = "src/input_files/generic_json_rules"
         self.output_folder = "src/output_files/cloudcontext"
         self.context_dir = "src/input_files/cloud_reference_context"
         os.makedirs(self.output_folder, exist_ok=True)
-        self.llm = GPTMapper()
-
-    def extract_json_from_response(self, response):
-        # Remove code fences
-        response = re.sub(r"^```json|^```|```$", "", response.strip(), flags=re.MULTILINE)
-        # Try to extract the first valid JSON object or array
-        json_match = re.search(r"(\{.*\}|\[.*\])", response, flags=re.DOTALL)
-        if json_match:
-            return json_match.group(0).strip()
-        return ""
-
-    def split_thoughts_and_json(self, response):
-        idx = response.find('{')
-        if idx != -1:
-            thoughts = response[:idx].strip()
-            json_part = response[idx:].strip()
-        else:
-            thoughts = response.strip()
-            json_part = ""
-        return thoughts, json_part
-
-    def load_provider_context(self, provider):
-        context_path = os.path.join(self.context_dir, f"{provider.lower()}_context.json")
-        try:
-            with open(context_path, "r") as f:
-                return json.load(f).get("resources", {})
-        except Exception as e:
-            print(f"Failed to load provider context for {provider}: {e}")
-            return {}
+        self.llm = LLMMapper()
 
     def generate_context(self, selected_frameworks, selected_providers):
-        for filename in os.listdir(self.input_folder):
-            if not filename.endswith(".json"):
+        """
+        Generate a single merged context JSON, deduplicating resources.
+        """
+        for provider in selected_providers:
+            baseline_path = os.path.join(self.context_dir, f"{provider.lower()}_context.json")
+            if not os.path.exists(baseline_path):
+                print(f"❌ Baseline file not found: {baseline_path}")
                 continue
 
-            full_path = os.path.join(self.input_folder, filename) 
-            with open(full_path) as f:
+            with open(baseline_path, "r") as f:
+                baseline = json.load(f)
+
+            baseline_resources = baseline.get("resources", {})
+            selected_fw_lower = [fw.lower() for fw in selected_frameworks]
+
+            selected_resources = {}
+            resource_sources = {}
+            selected_services = []
+
+            for res_name, res_data in baseline_resources.items():
+                tags = [t.lower() for t in res_data.get("compliance_tags", [])]
+                if any(tag in selected_fw_lower for tag in tags):
+                    if res_name not in selected_resources:
+                        selected_resources[res_name] = res_data.get("settings", {})
+                        resource_sources[res_name] = set(tags)
+                        selected_services.append(res_name)
+                    else:
+                        resource_sources[res_name].update(tags)
+
+            if not selected_services:
+                print(f"⚠️ No resources matched frameworks {selected_frameworks} for {provider}.")
+                continue
+
+            context = [{
+                "rule": f"Baseline inclusion for {', '.join(selected_frameworks)}",
+                "provider": provider.lower(),
+                "services": selected_services,
+                "settings": selected_resources,
+                "resource_sources": {
+                    k: list(v) for k, v in resource_sources.items()
+                }
+            }]
+
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+            outfile = os.path.join(
+                self.output_folder,
+                f"cloud_context_{'_'.join(f.lower() for f in selected_frameworks)}_{provider.lower()}_{timestamp}.json"
+            )
+            with open(outfile, "w") as out:
+                json.dump(context, out, indent=2)
+            print(f"✅ Saved context to {outfile}")
+
+            # Validate coverage
+            validation_results = self.validate_against_rules(selected_frameworks, provider, outfile)
+
+            # Save compliance report
+            self.save_rule_validation_report(selected_frameworks, provider, validation_results)
+
+            # Generate Terraform
+            base_dir = os.path.abspath(
+                os.path.join(os.path.dirname(__file__), "..", "output_files", "terraform_files")
+            )
+            tf_output_dir = os.path.join(
+                base_dir,
+                provider,
+                "_".join(f.lower() for f in selected_frameworks),
+                timestamp
+            )
+            os.makedirs(tf_output_dir, exist_ok=True)
+
+            tf_output_path = os.path.join(
+                tf_output_dir,
+                f"terraform_{'_'.join(f.lower() for f in selected_frameworks)}_{provider.lower()}_{timestamp}.tf"
+            )
+
+            tf_generator = BaselineTerraformGenerator()
+            print(f"🚀 Generating Terraform for unified baseline...")
+            tf_generator.generate_baseline_from_provider_json(
+                json_path=outfile,
+                tf_output_path=tf_output_path
+            )
+            print(f"✅ Terraform generated: {tf_output_path}")
+
+    def validate_against_rules(self, selected_frameworks, provider, context_path):
+        """
+        Generate LLM ReAct commentary focusing on actionability, coverage, and further improvements.
+        Returns a list of validation results.
+        """
+        print("\n🔍 Validating technical coverage of selected baseline services...\n")
+
+        with open(context_path, "r") as f:
+            context = json.load(f)
+
+        context_entry = context[0]
+        selected_services = context_entry["services"]
+        selected_settings = context_entry["settings"]
+
+        settings_json = json.dumps(selected_settings, indent=2)
+
+        rule_files = []
+        for fw in selected_frameworks:
+            for filename in os.listdir(self.input_folder):
+                if fw.lower() in filename.lower() and filename.endswith(".json"):
+                    rule_files.append(os.path.join(self.input_folder, filename))
+
+        all_rules = []
+        for path in rule_files:
+            with open(path) as f:
                 rules = json.load(f)
+                all_rules.extend(rules)
 
-            raw_framework = filename.split(".")[0]
-            framework = raw_framework.split("-")[0].strip().upper()
+        validation_results = []
 
-            if framework not in selected_frameworks:
-                print(f"⏭️ Skipping {framework} (not selected)")
+        for rule_obj in all_rules:
+            rule_text = rule_obj.get("rule", "").strip()
+            if not rule_text:
                 continue
 
-            print(f"📦 Processing context for framework: {framework}")
+            prompt = f"""
+You are a cloud compliance expert specializing in {provider.upper()}.
 
-            for provider in selected_providers:
-                flat_context = []
-                provider_context = self.load_provider_context(provider)
+Below is a compliance rule:
 
-                for rule_obj in rules:
-                    rule = rule_obj.get("rule")
-                    if not rule:
-                        continue
+\"{rule_text}\"
 
-                    prompt = f"""
-You are a cloud security expert.
+These {provider.upper()} services have been selected for the compliance baseline:
 
-For the following compliance rule, use RE-ACT (Reasoning and Acting) to decide:
-- If the rule is NOT actionable in cloud infrastructure (e.g., if it is only about training, documentation, or manual process), respond with ONLY this string: "SKIP".
-- If the rule IS actionable, output ONLY valid JSON in this format:
+{', '.join(selected_services)}
 
-{{
-  "rule": "...",
-  "provider": "{provider.lower()}",
-  "services": ["<terraform_resource_type1>", ...]
-}}
+Here are the detailed configuration settings of the selected services:
 
-RE-ACT: First, explain your reasoning as "thoughts" about which cloud services best enforce compliance in {provider.upper()} and why. Then, output ONLY the JSON as shown above.
+{settings_json}
 
-Rule: "{rule}"
+First, determine whether this rule can be technically implemented or enforced using these services and configurations.
+If yes, output "Actionable: Yes".
+If no, output "Actionable: No".
+
+Then, evaluate whether the selected configurations reasonably enforce the rule from a technical perspective.
+If at least some relevant services and settings are present that implement significant aspects of the rule, output "Coverage: Satisfied."
+If there are no relevant configurations or only trivial coverage, output "Coverage: Not Satisfied."
+
+**Also output whether additional configurations or services would further improve coverage to be fully comprehensive.**
+If improvements are needed, output "FurtherRecommendations: Yes."
+If the coverage is already complete, output "FurtherRecommendations: No."
+
+**Important:** Do NOT consider organizational policies, legal processes, employee training, documentation requirements, or non-technical factors—focus strictly on the technical capabilities and configurations shown.
+
+Finally, output a short explanation.
+
+Use this exact format:
+
+Actionable: Yes or No
+
+Coverage: Satisfied or Not Satisfied
+
+FurtherRecommendations: Yes or No
+
+Explanation: <your explanation here>
 """
 
-                    response = self.llm.call_openai("Cloud Security Compliance Assistant", prompt)
+            thoughts = self.llm.call_openai(
+                system_prompt="You are a helpful compliance assistant.",
+                user_prompt=prompt
+            )
 
-                    if response.strip().upper() == "SKIP":
-                        print(f"⏭️ Skipping non-actionable rule: {rule}")
-                        continue
+            actionable_match = re.search(r"Actionable:\s*(Yes|No)", thoughts, re.IGNORECASE)
+            coverage_match = re.search(r"Coverage:\s*(Satisfied|Not Satisfied)", thoughts, re.IGNORECASE)
+            further_match = re.search(r"FurtherRecommendations:\s*(Yes|No)", thoughts, re.IGNORECASE)
+            explanation_match = re.search(r"Explanation:\s*(.*)", thoughts, re.IGNORECASE | re.DOTALL)
 
-                    thoughts, cleaned_json = self.split_thoughts_and_json(response)
-                    cleaned_json = self.extract_json_from_response(cleaned_json)
+            actionable = actionable_match.group(1).strip() if actionable_match else "Unknown"
+            coverage = coverage_match.group(1).strip() if coverage_match else "Unknown"
+            further_recommendations = further_match.group(1).strip() if further_match else "Unknown"
+            explanation = explanation_match.group(1).strip() if explanation_match else "No explanation returned."
 
-                    if thoughts:
-                        print(f"🧠 RE-ACT thoughts for rule: {rule[:50]}...:\n{thoughts}\n")
+            # Enforce consistency: if not actionable, override coverage and recommendations
+            if actionable == "No":
+                coverage = "Not Satisfied"
+                further_recommendations = "No"
 
-                    try:
-                        json_response = json.loads(cleaned_json)
-                        services = json_response.get("services", [])
-                        settings = {}
-                        valid_services = []
-                        context_keys = list(provider_context.keys())
-                        for service in services:
-                            # Try exact match first
-                            if service in provider_context:
-                                settings[service] = provider_context[service].get("settings", {})
-                                valid_services.append(service)
-                            else:
-                                # Fuzzy match
-                                best_match = self.get_best_service_match(service, context_keys)
-                                if best_match:
-                                    print(f"🔎 Fuzzy matched '{service}' to '{best_match}'")
-                                    settings[best_match] = provider_context[best_match].get("settings", {})
-                                    valid_services.append(best_match)
-                                else:
-                                    print(f"⚠️ Service '{service}' not found in provider context for {provider}")
-                        json_response["services"] = valid_services
-                        json_response["settings"] = settings
-                        flat_context.append(json_response)
-                    except Exception as e:
-                        print(f"⚠️ Invalid JSON from LLM for rule: {rule[:50]}... → {e}")
+            print(f"🧠 ReAct validation for rule: '{rule_text[:60]}...'\n")
+            print(f"✅ Actionable: {actionable}")
+            print(f"✅ Coverage: {coverage}")
+            print(f"✅ Further Recommendations: {further_recommendations}")
+            print(f"📝 Explanation: {explanation}\n")
 
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                outfile = os.path.join(
-                    self.output_folder,
-                    f"cloud_context_{framework.lower()}_{provider.lower()}_{timestamp}.json"
+            validation_results.append({
+                "rule": rule_text,
+                "actionable": actionable,
+                "coverage": coverage,
+                "further_recommendations": further_recommendations,
+                "explanation": explanation
+            })
+
+        return validation_results
+
+    def save_rule_validation_report(self, selected_frameworks, provider, validation_results):
+        """
+        Save rules needing recommendations or not satisfied to a JSON report.
+        """
+        report_dir = "src/output_files/rule_validation_reports"
+        os.makedirs(report_dir, exist_ok=True)
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        outfile = os.path.join(
+            report_dir,
+            f"rule_validation_report_{'_'.join(f.lower() for f in selected_frameworks)}_{provider.lower()}_{timestamp}.json"
+        )
+
+        report_data = {
+            "report_metadata": {
+                "provider": provider,
+                "frameworks": selected_frameworks,
+                "generated_at": timestamp
+            },
+            "rules_needing_recommendations": []
+        }
+
+        for r in validation_results:
+            if (
+                r["actionable"] == "Yes" and (
+                    r["coverage"] == "Not Satisfied" or
+                    r["further_recommendations"] == "Yes"
                 )
-                with open(outfile, "w") as out:
-                    json.dump(flat_context, out, indent=2)
-                print(f"✅ Saved context to {outfile}")
+            ):
+                report_data["rules_needing_recommendations"].append({
+                    "rule": r["rule"],
+                    "coverage": r["coverage"],
+                    "further_recommendations": r["further_recommendations"],
+                    "reason": r["explanation"],
+                    "recommendations": {
+                        "note": f"Review this rule manually to determine which {provider.capitalize()} services and configurations are needed to further improve coverage.",
+                        "terraform_snippets": []
+                    }
+                })
 
+        with open(outfile, "w") as f:
+            json.dump(report_data, f, indent=2)
 
-                # added to call terraform generation
-
-
-                # 🚀 Automatically generate Terraform for this JSON
-
-                # filename = os.path.basename(outfile)
-                # parts = filename.replace(".json", "").split("_")
-                # framework_part = parts[2]
-                # provider_part = parts[3]
-                # timestamp_part = parts[4]
-
-                # tf_output_dir = os.path.join("backend", "src", "output_files", "terraform_files", provider_part)
-                # os.makedirs(tf_output_dir, exist_ok=True)
-
-                # tf_output_path = os.path.join(
-                #     tf_output_dir,
-                #     f"terraform_{framework_part}_{provider_part}_{timestamp_part}.tf"
-                # )
-
-                # tf_generator = BaselineTerraformGenerator()
-                # print(f"🚀 Generating Terraform for {outfile}...")
-                # tf_generator.generate_baseline_from_provider_json(
-                #     json_path=outfile,
-                #     tf_output_path=tf_output_path
-                # )
-                # print(f"✅ Terraform generated: {tf_output_path}")
-
-
-                for json_response in flat_context:
-                    for service in json_response.get("services", []):
-                        if not json_response.get("settings", {}).get(service):
-                            print(f"⚠️ Warning: No settings for {service} in rule: {json_response['rule']}")
-
-    def get_best_service_match(self, service, context_keys, cutoff=0.85):
-        """
-        Returns the closest matching service name from context_keys for the given service,
-        but only if the match is strong enough and the core resource type is very similar.
-        """
-        matches = difflib.get_close_matches(service, context_keys, n=1, cutoff=cutoff)
-        if matches:
-            # Extra check: compare the suffix after 'aws_'
-            def get_suffix(name):
-                return name.split("aws_", 1)[-1] if name.startswith("aws_") else name
-            service_suffix = get_suffix(service)
-            match_suffix = get_suffix(matches[0])
-            # Only match if the suffixes are very similar (e.g., >0.9 similarity)
-            if difflib.SequenceMatcher(None, service_suffix, match_suffix).ratio() > 0.9:
-                return matches[0]
-        return None
-    
+        print(f"✅ Compliance report saved: {outfile}")
