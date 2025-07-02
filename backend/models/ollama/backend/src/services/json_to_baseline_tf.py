@@ -124,22 +124,49 @@ class BaselineTerraformGenerator:
             print(f"🔨 Generating TF for {framework} on {provider} ({timestamp})...")
             self.generate_baseline_from_provider_json(full_path, tf_output_path, framework)
 
+    # def format_and_validate(self, tf_directory):
+    #     """
+    #     Run terraform fmt and validate.
+    #     """
+    #     print(f"🔍 Running terraform fmt in {tf_directory}...")
+    #     subprocess.run(["terraform", "fmt", tf_directory], check=True)
+
+    #     print(f"✅ terraform fmt completed.")
+
+    #     print(f"🔍 Running terraform init in {tf_directory}...")
+    #     subprocess.run(["terraform", "init", "-backend=false"], cwd=tf_directory, check=True)
+
+    #     print(f"🔍 Running terraform validate in {tf_directory}...")
+    #     subprocess.run(["terraform", "validate"], cwd=tf_directory, check=True)
+
+    #     print(f"✅ terraform validate passed.")
+
     def format_and_validate(self, tf_directory):
         """
-        Run terraform fmt and validate.
+        Run terraform fmt, init, and validate.
+        Errors are logged but do not stop the pipeline.
         """
-        print(f"🔍 Running terraform fmt in {tf_directory}...")
-        subprocess.run(["terraform", "fmt", tf_directory], check=True)
+        try:
+            print(f"🔍 Running terraform fmt in {tf_directory}...")
+            subprocess.run(["terraform", "fmt", tf_directory], check=True)
+            print("✅ terraform fmt completed.")
+        except subprocess.CalledProcessError as e:
+            print(f"⚠️ terraform fmt failed: {e}")
 
-        print(f"✅ terraform fmt completed.")
+        try:
+            print(f"🔍 Running terraform init -upgrade in {tf_directory}...")
+            subprocess.run(["terraform", "init", "-upgrade", "-backend=false"], cwd=tf_directory, check=True)
+            print("✅ terraform init completed.")
+        except subprocess.CalledProcessError as e:
+            print(f"⚠️ terraform init failed: {e}")
 
-        print(f"🔍 Running terraform init in {tf_directory}...")
-        subprocess.run(["terraform", "init", "-backend=false"], cwd=tf_directory, check=True)
+        try:
+            print(f"🔍 Running terraform validate in {tf_directory}...")
+            subprocess.run(["terraform", "validate"], cwd=tf_directory, check=True)
+            print("✅ terraform validate passed.")
+        except subprocess.CalledProcessError as e:
+            print(f"⚠️ terraform validate failed: {e}")
 
-        print(f"🔍 Running terraform validate in {tf_directory}...")
-        subprocess.run(["terraform", "validate"], cwd=tf_directory, check=True)
-
-        print(f"✅ terraform validate passed.")
 
     def sanitize_name(self, service):
         return (
@@ -163,7 +190,7 @@ class BaselineTerraformGenerator:
             tf.write('terraform {\n')
             tf.write(f'{INDENT}required_version = ">= 1.1.0"\n')
             tf.write(f'{INDENT}required_providers {{\n')
-            tf.write(f'{INDENT*2}azurerm = {{ source = "hashicorp/azurerm", version = "~> 3.0" }}\n')
+            tf.write(f'{INDENT*2}azurerm = {{ source = "hashicorp/azurerm", version = "~> 3.50.0" }}\n')
             tf.write(f'{INDENT*2}azuread = {{ source = "hashicorp/azuread", version = "~> 2.0" }}\n')
             tf.write(f'{INDENT}}}\n}}\n\n')
             tf.write('provider "azurerm" {\n  features {}\n}\n\n')

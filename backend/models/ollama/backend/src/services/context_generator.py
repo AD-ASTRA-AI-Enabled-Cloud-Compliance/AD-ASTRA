@@ -9,6 +9,10 @@
 # The workflow supports deduplication, technical validation, and infrastructure-as-code output for
 # --------------------------------------------------------------------------------------------------
 
+# Updated by Harsimran Kaur
+# This code generates a unified Terraform baseline per provider + frameworks,
+# deduplicates resources, merges compliance tags, and writes each run into a timestamped folder.
+
 import os
 import json
 import re
@@ -186,7 +190,7 @@ FurtherRecommendations: Yes or No
 Explanation: <your explanation here>
 """
 
-            thoughts = self.llm.call_openai(
+            thoughts = self.llm.call_ollama(
                 system_prompt="You are a helpful compliance assistant.",
                 user_prompt=prompt
             )
@@ -258,7 +262,6 @@ Explanation: <your explanation here>
                     "reason": r["explanation"],
                     "recommendations": {
                         "note": f"Review this rule manually to determine which {provider.capitalize()} services and configurations are needed to further improve coverage.",
-                        "terraform_snippets": []
                     }
                 })
 

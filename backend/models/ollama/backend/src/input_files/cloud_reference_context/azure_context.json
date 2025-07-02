@@ -88,7 +88,7 @@
         "account_tier": "Standard",
         "account_replication_type": "LRS",
         "min_tls_version": "TLS1_2",
-        "https_traffic_only_enabled": true
+        "shared_access_key_enabled": false
       }
     },
     "azurerm_network_security_group": {
@@ -101,14 +101,14 @@
         "location": "${var.location}",
         "security_rule": [
           {
-            "name": "default-allow",
+            "name": "AllowSSHRestricted",
             "priority": 100,
             "direction": "Inbound",
             "access": "Allow",
-            "protocol": "*",
+            "protocol": "Tcp",
             "source_port_range": "*",
-            "destination_port_range": "*",
-            "source_address_prefix": "*",
+            "destination_port_range": "22",
+            "source_address_prefix": "${var.allowed_admin_ip}",
             "destination_address_prefix": "*"
           }
         ]
@@ -179,6 +179,38 @@
             "count": 7
           }
         ]
+      }
+    },
+    "azurerm_backup_protected_vm": {
+      "resource_type": "azurerm_backup_protected_vm",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["hipaa"],
+      "settings": {
+        "resource_group_name": "${var.resource_group_name}",
+        "recovery_vault_name": "${var.recovery_vault_name}",
+        "source_vm_id": "${var.vm_id}",
+        "backup_policy_id": "${var.vm_backup_policy_id}"
+      }
+    },
+    "azurerm_virtual_machine_extension_antimalware": {
+      "resource_type": "azurerm_virtual_machine_extension",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["pci", "hipaa", "nist"],
+      "settings": {
+        "name": "IaaSAntimalware",
+        "virtual_machine_id": "${var.vm_id}",
+        "publisher": "Microsoft.Azure.Security",
+        "type": "IaaSAntimalware",
+        "type_handler_version": "1.5",
+        "settings": {
+          "AntimalwareEnabled": true,
+          "RealtimeProtectionEnabled": true,
+          "ScheduledScanSettings": {
+            "isEnabled": true,
+            "day": 1,
+            "time": 120
+          }
+        }
       }
     },
     "azurerm_monitor_diagnostic_setting": {
@@ -268,6 +300,88 @@
         "location": "${var.location}",
         "sku": "${var.log_analytics_workspace_sku}",
         "retention_in_days": "${var.log_analytics_retention_days}"
+      }
+    },
+    "azurerm_mssql_server": {
+      "resource_type": "azurerm_mssql_server",
+      "creation_strategy": "check_if_exists_then_create",
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
+      "settings": {
+        "name": "${var.mssql_server_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "location": "${var.location}",
+        "version": "12.0",
+        "administrator_login": "${var.mssql_admin_login}",
+        "administrator_login_password": "${var.mssql_admin_password}",
+        "minimum_tls_version": "1.2",
+        "public_network_access_enabled": false
+      }
+    },
+    "azurerm_mssql_database": {
+      "resource_type": "azurerm_mssql_database",
+      "creation_strategy": "check_if_exists_then_create",
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
+      "settings": {
+        "name": "${var.mssql_database_name}",
+        "server_id": "${azurerm_mssql_server.mssql_server.id}",
+        "sku_name": "${var.mssql_sku_name}",
+        "transparent_data_encryption_enabled": true
+      }
+    },
+    "azurerm_mssql_server_security_alert_policy": {
+      "resource_type": "azurerm_mssql_server_security_alert_policy",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["pci", "hipaa", "nist"],
+      "settings": {
+        "resource_group_name": "${var.resource_group_name}",
+        "server_name": "${var.mssql_server_name}",
+        "state": "Enabled",
+        "email_account_admins": true,
+        "email_addresses": ["${var.security_contact_email}"],
+        "retention_days": 30,
+        "storage_endpoint": "${var.alert_storage_endpoint}",
+        "storage_account_access_key": "${var.alert_storage_access_key}"
+      }
+    },
+    "azurerm_mssql_firewall_rule": {
+      "resource_type": "azurerm_mssql_firewall_rule",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["pci", "hipaa", "nist"],
+      "settings": {
+        "name": "AllowAzureServices",
+        "resource_group_name": "${var.resource_group_name}",
+        "server_name": "${var.mssql_server_name}",
+        "start_ip_address": "0.0.0.0",
+        "end_ip_address": "0.0.0.0"
+      }
+    },
+    "azurerm_postgresql_server": {
+      "resource_type": "azurerm_postgresql_server",
+      "creation_strategy": "check_if_exists_then_create",
+      "compliance_tags": ["pci", "hipaa", "nist"],
+      "settings": {
+        "name": "${var.pgsql_server_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "location": "${var.location}",
+        "sku_name": "${var.pgsql_sku_name}",
+        "storage_mb": 5120,
+        "administrator_login": "${var.pgsql_admin_login}",
+        "administrator_login_password": "${var.pgsql_admin_password}",
+        "version": "11",
+        "ssl_enforcement_enabled": true,
+        "public_network_access_enabled": false
+      }
+    },
+    "azurerm_postgresql_firewall_rule": {
+      "resource_type": "azurerm_postgresql_firewall_rule",
+      "creation_strategy": "always_create",
+      "compliance_tags": ["pci", "hipaa", "nist"],
+      "settings": {
+        "name": "AllowSpecificIP",
+        "resource_group_name": "${var.resource_group_name}",
+        "server_name": "${var.pgsql_server_name}",
+        "start_ip_address": "${var.allowed_admin_ip}",
+        "end_ip_address": "${var.allowed_admin_ip}"
       }
     }
   }

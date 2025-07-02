@@ -9,7 +9,6 @@
 
 import json
 
-
 class TerraformTemplateWriter:
     @staticmethod
     def render_tf_resource(resource_type, resource_name, settings, framework):
@@ -22,12 +21,20 @@ class TerraformTemplateWriter:
         def render_value(key, val, indent=2):
             spaces = " " * indent
             if isinstance(val, dict):
-                # Nested dict as block
-                lines = [f"{spaces}{key} {{"]
-                for k, v in val.items():
-                    lines.append(render_value(k, v, indent + 2))
-                lines.append(f"{spaces}}}")
-                return "\n".join(lines)
+                if key == "labels":
+                    # Special case: labels must be an argument map
+                    label_items = ", ".join(
+                        f'{json.dumps(k)} = {json.dumps(v)}'
+                        for k, v in val.items()
+                    )
+                    return f'{spaces}{key} = {{{label_items}}}'
+                else:
+                    # Nested dict as block
+                    lines = [f"{spaces}{key} {{"]
+                    for k, v in val.items():
+                        lines.append(render_value(k, v, indent + 2))
+                    lines.append(f"{spaces}}}")
+                    return "\n".join(lines)
             elif isinstance(val, list):
                 if all(isinstance(i, dict) for i in val):
                     # Multiple nested blocks
@@ -53,12 +60,18 @@ class TerraformTemplateWriter:
                     if "json" in varname.lower():
                         return f"{spaces}{key} = jsondecode({varname})"
                     return f"{spaces}{key} = {varname}"
+                # Escape inner double quotes for all providers
+                val = val.replace('"', '\\"')
                 return f'{spaces}{key} = "{val}"'
             else:
                 return f'{spaces}{key} = "{str(val)}"'
 
         for k, v in settings.items():
-            tf_lines.append(render_value(k, v))
+            if k == "settings":
+                # Ensure settings is rendered as nested block
+                tf_lines.append(render_value("settings", v))
+            else:
+                tf_lines.append(render_value(k, v))
 
         tf_lines.append("}\n")
         return "\n".join(tf_lines)
