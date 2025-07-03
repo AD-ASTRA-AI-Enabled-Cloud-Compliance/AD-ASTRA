@@ -1,0 +1,271 @@
+# -------------------------------------------------------------------------------------------------
+# Updated by Harsimran Kaur
+# This file is part of Pipeline 3.
+# This module provides the CloudContextGenerator class, which:
+# - Generates unified cloud security context JSONs for selected frameworks and providers.
+# - Validates the generated context against compliance rules using an LLM (via LLMMapper).
+# - Produces compliance validation reports highlighting technical coverage and recommendations.
+# - Generates Terraform baseline files from the validated context for each provider.
+# The workflow supports deduplication, technical validation, and infrastructure-as-code output for
+# --------------------------------------------------------------------------------------------------
+
+# Updated by Harsimran Kaur
+# This code generates a unified Terraform baseline per provider + frameworks,
+# deduplicates resources, merges compliance tags, and writes each run into a timestamped folder.
+
+import os
+import json
+import re
+from datetime import datetime
+from src.services.json_to_baseline_tf import BaselineTerraformGenerator
+from src.services.llm_mapper import LLMMapper
+
+class CloudContextGenerator:
+    def __init__(self):
+        self.input_folder = "src/input_files/generic_json_rules"
+        self.output_folder = "src/output_files/cloudcontext"
+        self.context_dir = "src/input_files/cloud_reference_context"
+        os.makedirs(self.output_folder, exist_ok=True)
+        self.llm = LLMMapper()
+
+    def generate_context(self, selected_frameworks, selected_providers):
+        """
+        Generate a single merged context JSON, deduplicating resources.
+        """
+        for provider in selected_providers:
+            baseline_path = os.path.join(self.context_dir, f"{provider.lower()}_context.json")
+            if not os.path.exists(baseline_path):
+                print(f"❌ Baseline file not found: {baseline_path}")
+                continue
+
+            with open(baseline_path, "r") as f:
+                baseline = json.load(f)
+
+            baseline_resources = baseline.get("resources", {})
+            selected_fw_lower = [fw.lower() for fw in selected_frameworks]
+
+            selected_resources = {}
+            resource_sources = {}
+            selected_services = []
+
+            for res_name, res_data in baseline_resources.items():
+                tags = [t.lower() for t in res_data.get("compliance_tags", [])]
+                if any(tag in selected_fw_lower for tag in tags):
+                    if res_name not in selected_resources:
+                        selected_resources[res_name] = res_data.get("settings", {})
+                        resource_sources[res_name] = set(tags)
+                        selected_services.append(res_name)
+                    else:
+                        resource_sources[res_name].update(tags)
+
+            if not selected_services:
+                print(f"⚠️ No resources matched frameworks {selected_frameworks} for {provider}.")
+                continue
+
+            context = [{
+                "rule": f"Baseline inclusion for {', '.join(selected_frameworks)}",
+                "provider": provider.lower(),
+                "services": selected_services,
+                "settings": selected_resources,
+                "resource_sources": {
+                    k: list(v) for k, v in resource_sources.items()
+                }
+            }]
+
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+            outfile = os.path.join(
+                self.output_folder,
+                f"cloud_context_{'_'.join(f.lower() for f in selected_frameworks)}_{provider.lower()}_{timestamp}.json"
+            )
+            with open(outfile, "w") as out:
+                json.dump(context, out, indent=2)
+            print(f"✅ Saved context to {outfile}")
+
+            # Validate coverage
+            validation_results = self.validate_against_rules(selected_frameworks, provider, outfile)
+
+            # Save compliance report
+            self.save_rule_validation_report(selected_frameworks, provider, validation_results)
+
+            # Generate Terraform
+            base_dir = os.path.abspath(
+                os.path.join(os.path.dirname(__file__), "..", "output_files", "terraform_files")
+            )
+            tf_output_dir = os.path.join(
+                base_dir,
+                provider,
+                "_".join(f.lower() for f in selected_frameworks),
+                timestamp
+            )
+            os.makedirs(tf_output_dir, exist_ok=True)
+
+            tf_output_path = os.path.join(
+                tf_output_dir,
+                f"terraform_{'_'.join(f.lower() for f in selected_frameworks)}_{provider.lower()}_{timestamp}.tf"
+            )
+
+            tf_generator = BaselineTerraformGenerator()
+            print(f"🚀 Generating Terraform for unified baseline...")
+            tf_generator.generate_baseline_from_provider_json(
+                json_path=outfile,
+                tf_output_path=tf_output_path
+            )
+            print(f"✅ Terraform generated: {tf_output_path}")
+
+    def validate_against_rules(self, selected_frameworks, provider, context_path):
+        """
+        Generate LLM ReAct commentary focusing on actionability, coverage, and further improvements.
+        Returns a list of validation results.
+        """
+        print("\n🔍 Validating technical coverage of selected baseline services...\n")
+
+        with open(context_path, "r") as f:
+            context = json.load(f)
+
+        context_entry = context[0]
+        selected_services = context_entry["services"]
+        selected_settings = context_entry["settings"]
+
+        settings_json = json.dumps(selected_settings, indent=2)
+
+        rule_files = []
+        for fw in selected_frameworks:
+            for filename in os.listdir(self.input_folder):
+                if fw.lower() in filename.lower() and filename.endswith(".json"):
+                    rule_files.append(os.path.join(self.input_folder, filename))
+
+        all_rules = []
+        for path in rule_files:
+            with open(path) as f:
+                rules = json.load(f)
+                all_rules.extend(rules)
+
+        validation_results = []
+
+        for rule_obj in all_rules:
+            rule_text = rule_obj.get("rule", "").strip()
+            if not rule_text:
+                continue
+
+            prompt = f"""
+You are a cloud compliance expert specializing in {provider.upper()}.
+
+Below is a compliance rule:
+
+\"{rule_text}\"
+
+These {provider.upper()} services have been selected for the compliance baseline:
+
+{', '.join(selected_services)}
+
+Here are the detailed configuration settings of the selected services:
+
+{settings_json}
+
+First, determine whether this rule can be technically implemented or enforced using these services and configurations.
+If yes, output "Actionable: Yes".
+If no, output "Actionable: No".
+
+Then, evaluate whether the selected configurations reasonably enforce the rule from a technical perspective.
+If at least some relevant services and settings are present that implement significant aspects of the rule, output "Coverage: Satisfied."
+If there are no relevant configurations or only trivial coverage, output "Coverage: Not Satisfied."
+
+**Also output whether additional configurations or services would further improve coverage to be fully comprehensive.**
+If improvements are needed, output "FurtherRecommendations: Yes."
+If the coverage is already complete, output "FurtherRecommendations: No."
+
+**Important:** Do NOT consider organizational policies, legal processes, employee training, documentation requirements, or non-technical factors—focus strictly on the technical capabilities and configurations shown.
+
+Finally, output a short explanation.
+
+Use this exact format:
+
+Actionable: Yes or No
+
+Coverage: Satisfied or Not Satisfied
+
+FurtherRecommendations: Yes or No
+
+Explanation: <your explanation here>
+"""
+
+            thoughts = self.llm.call_ollama(
+                system_prompt="You are a helpful compliance assistant.",
+                user_prompt=prompt
+            )
+
+            actionable_match = re.search(r"Actionable:\s*(Yes|No)", thoughts, re.IGNORECASE)
+            coverage_match = re.search(r"Coverage:\s*(Satisfied|Not Satisfied)", thoughts, re.IGNORECASE)
+            further_match = re.search(r"FurtherRecommendations:\s*(Yes|No)", thoughts, re.IGNORECASE)
+            explanation_match = re.search(r"Explanation:\s*(.*)", thoughts, re.IGNORECASE | re.DOTALL)
+
+            actionable = actionable_match.group(1).strip() if actionable_match else "Unknown"
+            coverage = coverage_match.group(1).strip() if coverage_match else "Unknown"
+            further_recommendations = further_match.group(1).strip() if further_match else "Unknown"
+            explanation = explanation_match.group(1).strip() if explanation_match else "No explanation returned."
+
+            # Enforce consistency: if not actionable, override coverage and recommendations
+            if actionable == "No":
+                coverage = "Not Satisfied"
+                further_recommendations = "No"
+
+            print(f"🧠 ReAct validation for rule: '{rule_text[:60]}...'\n")
+            print(f"✅ Actionable: {actionable}")
+            print(f"✅ Coverage: {coverage}")
+            print(f"✅ Further Recommendations: {further_recommendations}")
+            print(f"📝 Explanation: {explanation}\n")
+
+            validation_results.append({
+                "rule": rule_text,
+                "actionable": actionable,
+                "coverage": coverage,
+                "further_recommendations": further_recommendations,
+                "explanation": explanation
+            })
+
+        return validation_results
+
+    def save_rule_validation_report(self, selected_frameworks, provider, validation_results):
+        """
+        Save rules needing recommendations or not satisfied to a JSON report.
+        """
+        report_dir = "src/output_files/rule_validation_reports"
+        os.makedirs(report_dir, exist_ok=True)
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        outfile = os.path.join(
+            report_dir,
+            f"rule_validation_report_{'_'.join(f.lower() for f in selected_frameworks)}_{provider.lower()}_{timestamp}.json"
+        )
+
+        report_data = {
+            "report_metadata": {
+                "provider": provider,
+                "frameworks": selected_frameworks,
+                "generated_at": timestamp
+            },
+            "rules_needing_recommendations": []
+        }
+
+        for r in validation_results:
+            if (
+                r["actionable"] == "Yes" and (
+                    r["coverage"] == "Not Satisfied" or
+                    r["further_recommendations"] == "Yes"
+                )
+            ):
+                report_data["rules_needing_recommendations"].append({
+                    "rule": r["rule"],
+                    "coverage": r["coverage"],
+                    "further_recommendations": r["further_recommendations"],
+                    "reason": r["explanation"],
+                    "recommendations": {
+                        "note": f"Review this rule manually to determine which {provider.capitalize()} services and configurations are needed to further improve coverage.",
+                    }
+                })
+
+        with open(outfile, "w") as f:
+            json.dump(report_data, f, indent=2)
+
+        print(f"✅ Compliance report saved: {outfile}")

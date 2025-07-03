@@ -73,6 +73,15 @@ const data = {
           title: "Chat",
           url: "/chat",
         },
+        // ------------------------------------------------------------------------------------------------------------------------
+        // Added by Harsimran Kaur
+        // This code is part of pipeline 3.
+        // This adds a "Generate Terraform" navigation item to the sidebar for accessing the Terraform generation workflow UI.
+        {
+          title: "Generate Terraform",
+          url: "/terraform",
+        }
+        // ------------------------------------------------------------------------------------------------------------------------
       ],
     },
     {
