@@ -10,6 +10,7 @@ import json
 import os
 import subprocess
 from datetime import datetime
+from io import StringIO
 
 from src.utils.templates import TerraformTemplateWriter
 
@@ -20,12 +21,14 @@ class BaselineTerraformGenerator:
     def __init__(self):
         pass
 
-    def generate_baseline_from_provider_json(self, json_path, tf_output_path, framework=None):
+    def generate_baseline_from_provider_json(self, json_data, tf_output_path=None, framework=None):
+
         """
         Generate Terraform from a JSON file structured as a list of rules.
         """
-        with open(json_path, encoding="utf-8") as f:
-            data = json.load(f)
+        # with open(json_path, encoding="utf-8") as f:
+        #     data = json.load(f)
+        data = json_data
 
         if not isinstance(data, list):
             raise Exception("Expected JSON to be a list of rule objects")
@@ -55,33 +58,46 @@ class BaselineTerraformGenerator:
                     "name": unique_name
                 })
 
-        with open(tf_output_path, "w", encoding="utf-8") as tf:
-            self.write_provider_block(tf, provider, framework or "baseline")
-
+        if tf_output_path:
+            with open(tf_output_path, "w", encoding="utf-8") as tf:
+                self.write_provider_block(tf, provider, framework or "baseline")
+                for res in resources:
+                    resource_type = res["resource_type"]
+                    settings = res.get("settings", {})
+                    res_name = res.get("name", resource_type)
+                    tf.write(f"# Resource: {resource_type}\n")
+                    resource_name = self.sanitize_name(res_name)
+                    tf_block = TerraformTemplateWriter.render_tf_resource(
+                        resource_type,
+                        resource_name,
+                        settings,
+                        framework
+                    )
+                    tf.write(tf_block)
+            # Write variables.tf as before...
+            var_file = os.path.join(os.path.dirname(tf_output_path), "variables.tf")
+            with open(var_file, "w", encoding="utf-8") as vf:
+                for var_name in sorted(all_variable_names):
+                    vf.write(f'variable "{var_name}" {{}}\n')
+            self.format_and_validate(os.path.dirname(tf_output_path))
+            return tf_output_path
+        else:
+            tf_buffer = StringIO()
+            self.write_provider_block(tf_buffer, provider, framework or "baseline")
             for res in resources:
                 resource_type = res["resource_type"]
                 settings = res.get("settings", {})
                 res_name = res.get("name", resource_type)
-
-                tf.write(f"# Resource: {resource_type}\n")
+                tf_buffer.write(f"# Resource: {resource_type}\n")
                 resource_name = self.sanitize_name(res_name)
-
                 tf_block = TerraformTemplateWriter.render_tf_resource(
                     resource_type,
                     resource_name,
                     settings,
                     framework
                 )
-                tf.write(tf_block)
-
-        # Write variables.tf
-        var_file = os.path.join(os.path.dirname(tf_output_path), "variables.tf")
-        with open(var_file, "w", encoding="utf-8") as vf:
-            for var_name in sorted(all_variable_names):
-                vf.write(f'variable "{var_name}" {{}}\n')
-
-        # Format & validate
-        self.format_and_validate(os.path.dirname(tf_output_path))
+                tf_buffer.write(tf_block)
+            return tf_buffer.getvalue()
 
     def collect_variable_names(self, settings, variable_names):
         """
