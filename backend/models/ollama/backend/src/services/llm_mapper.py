@@ -6,6 +6,7 @@
 # - Implements a method to call Ollama with system and user prompts.
 # - Validates if the generated response matches the intended cloud provider (AWS, Azure, or GCP) by checking for provider-specific resource prefixes.
 # ------------------------------------------------------------------------------------------------------------------------------------------------------
+
 import os
 import requests
 # import tiktoken
@@ -16,12 +17,12 @@ dotenv.load_dotenv()
 
 class LLMMapper:
     def __init__(self):
-        self.model = "gpt-4"  # ✅ Using OpenAI GPT-4
-        openai.api_key = os.getenv("OPENAI_API_KEY")
+        #self.model = "gpt-4"  # ✅ Using OpenAI GPT-4
+        #openai.api_key = os.getenv("OPENAI_API_KEY")
 
         # 🔒 Ollama/Gemma logic
-        self.model = "gemma:2b"
-        self.ollama_url = "http://localhost:11434/api/generate"
+        self.model = os.getenv("MODEL_NAME", "gemma:2b")
+        self.ollama_url = os.getenv("OLLAMA_API", "http://localhost:11434") + "/api/generate"
 
         # ✅ Tokenizer for estimating prompt size
         # self.tokenizer = tiktoken.encoding_for_model(self.model)  # ❌ Old code (commented)
@@ -96,5 +97,3 @@ class LLMMapper:
         if provider == "gcp" and any(x in response_text for x in ["aws_", "azurerm_"]):
             return False
         return True
-
-

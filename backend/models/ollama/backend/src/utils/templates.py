@@ -9,6 +9,7 @@
 
 import json
 
+
 class TerraformTemplateWriter:
     @staticmethod
     def render_tf_resource(resource_type, resource_name, settings, framework):
