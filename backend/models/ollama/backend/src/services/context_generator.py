@@ -20,7 +20,6 @@ from qdrant_client import QdrantClient
 
 class CloudContextGenerator:
     def __init__(self):
-
         mongo_uri = os.getenv("MONGO_URI")
         qdrant_host = os.getenv("QDRANT_HOST")
         qdrant_port = int(os.getenv("QDRANT_PORT", "6333"))
@@ -28,7 +27,6 @@ class CloudContextGenerator:
         self.qdrant = QdrantClient(host=qdrant_host, port=qdrant_port)
         self.llm = LLMMapper()
 
-        # MongoDB connection
         self.mongo_client = MongoClient(mongo_uri)
         self.mongo_db = self.mongo_client["Skylock"]
         self.mongo_collection = self.mongo_db["Cloud_JSON_Baselines"]
@@ -50,9 +48,8 @@ class CloudContextGenerator:
         return all_rules
 
     def generate_context(self, selected_frameworks, selected_providers):
-        for provider in selected_providers:  
-
-            # --- MONGO LOADING ---
+        print(f"⚡ generate_context() CALLED with {selected_frameworks} / {selected_providers}")
+        for provider in selected_providers:
             baseline = self.mongo_collection.find_one({"provider": provider.lower()})
             if not baseline:
                 print(f"❌ No baseline found in MongoDB for provider: {provider}")
@@ -84,15 +81,21 @@ class CloudContextGenerator:
                 "provider": provider.lower(),
                 "services": selected_services,
                 "settings": selected_resources,
-                "resource_sources": {
-                    k: list(v) for k, v in resource_sources.items()
-                }
+                "resource_sources": {k: list(v) for k, v in resource_sources.items()}
             }]
 
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-            
-            # --- SAVE TO MONGO ---
+            # --- OLD file output commented ---
+            # outfile = os.path.join(
+            #     self.output_folder,
+            #     f"cloud_context_{'_'.join(f.lower() for f in selected_frameworks)}_{provider.lower()}_{timestamp}.json"
+            # )
+            # with open(outfile, "w") as out:
+            #     json.dump(context, out, indent=2)
+            # print(f"✅ Saved context to {outfile}")
+
+            # --- Save context JSON to MongoDB ---
             mongo_doc = {
                 "frameworks": selected_frameworks,
                 "provider": provider.lower(),
@@ -103,28 +106,67 @@ class CloudContextGenerator:
             print(f"✅ Context inserted into MongoDB: Skylock.Cloud_Context_JSON")
             print("✅ Inserted with _id:", result.inserted_id)
 
-            # Sanity check
             inserted_doc = self.mongo_client["Skylock"]["Cloud_Context_JSON"].find_one({"_id": result.inserted_id})
             print("🔍 Inserted document:")
             print(json.dumps(inserted_doc, indent=2, default=str))
 
-            # Validate coverage
+            # --- Validate coverage ---
             validation_results = self.validate_against_rules(selected_frameworks, provider, context)
 
-            # Save compliance report
             self.save_rule_validation_report(selected_frameworks, provider, validation_results)
 
+            # --- OLD TF file output commented ---
+            # base_dir = os.path.abspath(
+            #     os.path.join(os.path.dirname(__file__), "..", "output_files", "terraform_files")
+            # )
+            # tf_output_dir = os.path.join(
+            #     base_dir,
+            #     provider,
+            #     "_".join(f.lower() for f in selected_frameworks),
+            #     timestamp
+            # )
+            # os.makedirs(tf_output_dir, exist_ok=True)
+            # tf_output_path = os.path.join(
+            #     tf_output_dir,
+            #     f"terraform_{'_'.join(f.lower() for f in selected_frameworks)}_{provider.lower()}_{timestamp}.tf"
+            # )
 
-            # --- GENERATE TERRAFORM AND SAVE TO MONGO ---
+            # --- NEW: Still using disk output folder ---
+            base_dir = os.path.abspath(
+                os.path.join(os.path.dirname(__file__), "..", "output_files", "terraform_files")
+            )
+            tf_output_dir = os.path.join(
+                base_dir,
+                provider,
+                "_".join(f.lower() for f in selected_frameworks),
+                timestamp
+            )
+            os.makedirs(tf_output_dir, exist_ok=True)
+
+            tf_output_path = os.path.join(
+                tf_output_dir,
+                f"terraform_{'_'.join(f.lower() for f in selected_frameworks)}_{provider.lower()}_{timestamp}.tf"
+            )
+
+            # --- Generate Terraform
             tf_generator = BaselineTerraformGenerator()
             print(f"🚀 Generating Terraform for unified baseline...")
-
-            terraform_content = tf_generator.generate_baseline_from_provider_json(
+            tf_result = tf_generator.generate_baseline_from_provider_json(
                 json_data=context,
-                tf_output_path=None,  # No local file output
+                tf_output_path=tf_output_path,
                 framework=selected_frameworks[0]
             )
-            print("✅ Terraform content generated in memory.")
+            print("✅ Terraform content generated.")
+
+            # --- Deduplication check before insert ---
+            existing = self.mongo_client["Skylock"]["Terraform_Files"].find_one({
+                "provider": provider.lower(),
+                "frameworks": selected_frameworks,
+                "timestamp": timestamp
+            })
+            if existing:
+                print("⚠️ Terraform file already exists for this combination—skipping insert.")
+                continue
 
             terraform_doc = {
                 "provider": provider.lower(),
@@ -136,12 +178,13 @@ class CloudContextGenerator:
                     "timestamp": timestamp
                 },
                 "terraform_filename": f"terraform_{'_'.join(f.lower() for f in selected_frameworks)}_{provider.lower()}_{timestamp}.tf",
-                "terraform_content": terraform_content
+                "terraform_content": tf_result["terraform"],
+                "variables_tf_content": tf_result["variables"],
+                "lockfile_content": tf_result["lockfile"]
             }
 
             result_tf = self.mongo_client["Skylock"]["Terraform_Files"].insert_one(terraform_doc)
             print(f"✅ Terraform file inserted into MongoDB: Skylock.Terraform_Files")
-            print("✅ Inserted with _id:", result_tf.inserted_id)
 
     def validate_against_rules(self, selected_frameworks, provider, context):
         print("\n🔍 Validating technical coverage of selected baseline services...\n")
@@ -149,7 +192,6 @@ class CloudContextGenerator:
         context_entry = context[0]
         selected_services = context_entry["services"]
         selected_settings = context_entry["settings"]
-
         settings_json = json.dumps(selected_settings, indent=2)
 
         all_rules = self.get_rules_from_qdrant(selected_frameworks)
@@ -241,7 +283,6 @@ Explanation: <your explanation here>
 
     def save_rule_validation_report(self, selected_frameworks, provider, validation_results):
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        
         report_data = {
             "report_metadata": {
                 "provider": provider,

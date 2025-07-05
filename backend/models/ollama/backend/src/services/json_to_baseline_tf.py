@@ -16,18 +16,11 @@ from src.utils.templates import TerraformTemplateWriter
 
 INDENT = "  "
 
-
 class BaselineTerraformGenerator:
     def __init__(self):
         pass
 
     def generate_baseline_from_provider_json(self, json_data, tf_output_path=None, framework=None):
-
-        """
-        Generate Terraform from a JSON file structured as a list of rules.
-        """
-        # with open(json_path, encoding="utf-8") as f:
-        #     data = json.load(f)
         data = json_data
 
         if not isinstance(data, list):
@@ -41,11 +34,8 @@ class BaselineTerraformGenerator:
         for entry in data:
             settings_dict = entry.get("settings", {})
             for resource_type, resource_settings in settings_dict.items():
-                
-                # Collect variable names
                 self.collect_variable_names(resource_settings, all_variable_names)
 
-                # Ensure unique resource names
                 base_name = self.sanitize_name(resource_type)
                 count = resource_counts.get(base_name, 0) + 1
                 resource_counts[base_name] = count
@@ -74,13 +64,38 @@ class BaselineTerraformGenerator:
                         framework
                     )
                     tf.write(tf_block)
-            # Write variables.tf as before...
+
             var_file = os.path.join(os.path.dirname(tf_output_path), "variables.tf")
             with open(var_file, "w", encoding="utf-8") as vf:
                 for var_name in sorted(all_variable_names):
                     vf.write(f'variable "{var_name}" {{}}\n')
+
+            # Run format and validate
             self.format_and_validate(os.path.dirname(tf_output_path))
-            return tf_output_path
+
+            # Read .terraform.lock.hcl
+            lockfile_path = os.path.join(os.path.dirname(tf_output_path), ".terraform.lock.hcl")
+            if os.path.exists(lockfile_path):
+                with open(lockfile_path, "r", encoding="utf-8") as lf:
+                    lockfile_content = lf.read()
+            else:
+                lockfile_content = ""
+
+            # Read formatted terraform file
+            with open(tf_output_path, "r", encoding="utf-8") as tf:
+                terraform_content = tf.read()
+
+            # Read variables.tf
+            with open(var_file, "r", encoding="utf-8") as vf:
+                variables_content = vf.read()
+
+            # Return all artifacts (NO plan)
+            return {
+                "terraform": terraform_content,
+                "variables": variables_content,
+                "lockfile": lockfile_content
+            }
+
         else:
             tf_buffer = StringIO()
             self.write_provider_block(tf_buffer, provider, framework or "baseline")
@@ -97,12 +112,14 @@ class BaselineTerraformGenerator:
                     framework
                 )
                 tf_buffer.write(tf_block)
-            return tf_buffer.getvalue()
+
+            return {
+                "terraform": tf_buffer.getvalue(),
+                "variables": "",
+                "lockfile": ""
+            }
 
     def collect_variable_names(self, settings, variable_names):
-        """
-        Recursively collect variable names referenced in settings dict.
-        """
         if isinstance(settings, dict):
             for v in settings.values():
                 self.collect_variable_names(v, variable_names)
@@ -114,54 +131,7 @@ class BaselineTerraformGenerator:
                 var_name = settings[6:-1]
                 variable_names.add(var_name)
 
-    def generate_tf_from_context_folder(self, context_folder, output_folder):
-        """
-        Process all JSON files in the context folder and generate TF files with predictable naming.
-        """
-        for filename in os.listdir(context_folder):
-            if not filename.startswith("cloud_context_") or not filename.endswith(".json"):
-                continue
-
-            full_path = os.path.join(context_folder, filename)
-
-            parts = filename.replace(".json", "").split("_")
-            if len(parts) >= 5:
-                framework, provider, timestamp = parts[-3:]
-            else:
-                print(f"⚠️ Unexpected filename format: {filename}")
-                continue
-
-            provider_dir = os.path.join(output_folder, provider.lower())
-            os.makedirs(provider_dir, exist_ok=True)
-
-            tf_filename = f"terraform_{framework}_{provider}_{timestamp}.tf"
-            tf_output_path = os.path.join(provider_dir, tf_filename)
-
-            print(f"🔨 Generating TF for {framework} on {provider} ({timestamp})...")
-            self.generate_baseline_from_provider_json(full_path, tf_output_path, framework)
-
-    # def format_and_validate(self, tf_directory):
-    #     """
-    #     Run terraform fmt and validate.
-    #     """
-    #     print(f"🔍 Running terraform fmt in {tf_directory}...")
-    #     subprocess.run(["terraform", "fmt", tf_directory], check=True)
-
-    #     print(f"✅ terraform fmt completed.")
-
-    #     print(f"🔍 Running terraform init in {tf_directory}...")
-    #     subprocess.run(["terraform", "init", "-backend=false"], cwd=tf_directory, check=True)
-
-    #     print(f"🔍 Running terraform validate in {tf_directory}...")
-    #     subprocess.run(["terraform", "validate"], cwd=tf_directory, check=True)
-
-    #     print(f"✅ terraform validate passed.")
-
     def format_and_validate(self, tf_directory):
-        """
-        Run terraform fmt, init, and validate.
-        Errors are logged but do not stop the pipeline.
-        """
         try:
             print(f"🔍 Running terraform fmt in {tf_directory}...")
             subprocess.run(["terraform", "fmt", tf_directory], check=True)
@@ -182,7 +152,6 @@ class BaselineTerraformGenerator:
             print("✅ terraform validate passed.")
         except subprocess.CalledProcessError as e:
             print(f"⚠️ terraform validate failed: {e}")
-
 
     def sanitize_name(self, service):
         return (
