@@ -1,15 +1,16 @@
-variable "elb_arn" {
-  description = "ARN of the Load Balancer"
-  type        = string
+provider "azurerm" {
+  features {}
 }
 
-variable "ssl_policy" {
-  description = "SSL policy name for HTTPS listener"
-  type        = string
-  default     = "ELBSecurityPolicy-2016-08"
+resource "azurerm_resource_group" "example" {
+  name     = var.resource_group_name
+  location = var.location
 }
 
-variable "certificate_arn" {
-  description = "ARN of the SSL/TLS certificate"
-  type        = string
+resource "azurerm_storage_account" "example" {
+  name                     = var.storage_account_name
+  resource_group_name      = azurerm_resource_group.example.name
+  location                 = azurerm_resource_group.example.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
 }

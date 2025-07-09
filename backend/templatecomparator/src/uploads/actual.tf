@@ -1,13 +1,16 @@
-provider "aws" {
-  region = "us-east-1"
+provider "azurerm" {
+  features {}
 }
 
-resource "aws_instance" "web" {
-  ami           = "ami-0c55b159cbfafe1f0"
-  instance_type = "t2.small"
+resource "azurerm_resource_group" "example" {
+  name     = var.resource_group_name
+  location = var.location
+}
 
-  tags = {
-    Name = "WebServerV2"
-    Env  = "Production"
-  }
+resource "azurerm_storage_account" "example" {
+  name                     = var.storage_account_name
+  resource_group_name      = azurerm_resource_group.example.name
+  location                 = azurerm_resource_group.example.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
 }

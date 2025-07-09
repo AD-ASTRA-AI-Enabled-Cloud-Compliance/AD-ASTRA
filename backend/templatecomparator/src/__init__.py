@@ -18,3 +18,5 @@ app.env = config.ENV
 
 # Register the routes
 app.register_blueprint(main_routes)
+
+
