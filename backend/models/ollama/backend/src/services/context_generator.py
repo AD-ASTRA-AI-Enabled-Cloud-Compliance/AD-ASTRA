@@ -49,13 +49,32 @@ class CloudContextGenerator:
 
     def generate_context(self, selected_frameworks, selected_providers):
         print(f"⚡ generate_context() CALLED with {selected_frameworks} / {selected_providers}")
+        
         for provider in selected_providers:
             baseline = self.mongo_collection.find_one({"provider": provider.lower()})
             if not baseline:
                 print(f"❌ No baseline found in MongoDB for provider: {provider}")
-                continue
+                # Try loading from local reference file as fallback
+                reference_path = os.path.join(
+                    os.path.dirname(__file__), 
+                    "..", 
+                    "input_files",
+                    "cloud_reference_context",
+                    f"{provider.lower()}_context.json"
+                )
+                try:
+                    with open(reference_path, 'r') as f:
+                        baseline = json.load(f)
+                    print(f"✅ Loaded baseline from reference file: {reference_path}")
+                except FileNotFoundError:
+                    print(f"❌ No reference baseline found at: {reference_path}")
+                    continue
+                except json.JSONDecodeError:
+                    print(f"❌ Invalid JSON in reference file: {reference_path}")
+                    continue
 
             baseline_resources = baseline.get("resources", {})
+
             selected_fw_lower = [fw.lower() for fw in selected_frameworks]
 
             selected_resources = {}

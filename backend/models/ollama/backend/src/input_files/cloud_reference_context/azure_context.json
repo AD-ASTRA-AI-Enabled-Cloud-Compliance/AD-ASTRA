@@ -19,10 +19,10 @@
         "description": "Custom role definition for compliance.",
         "permissions": [
           {
-            "actions": ["*"],
-            "not_actions": [],
-            "data_actions": [],
-            "not_data_actions": []
+            "actions": "${var.role_definition_actions}",
+            "not_actions": "${var.role_definition_not_actions}",
+            "data_actions": "${var.role_definition_data_actions}",
+            "not_data_actions": "${var.role_definition_not_data_actions}"
           }
         ],
         "assignable_scopes": ["${var.role_definition_scope}"]
