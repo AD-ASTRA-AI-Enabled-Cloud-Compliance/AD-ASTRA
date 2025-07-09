@@ -1,16 +1,16 @@
+provider "azurerm" {
+  features {}
+}
 
-# Networking
-vpc_cidr         = "10.0.0.0/16"
-subnet_cidr      = "10.0.1.0/24"
+resource "azurerm_resource_group" "example" {
+  name     = var.resource_group_name
+  location = var.location
+}
 
-# TLS & Security
-ssl_policy       = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
-certificate_arn  = "arn:aws:acm:us-east-1:123456789012:certificate/abcde-12345"
-elb_arn          = "arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/app/my-load-balancer"
-
-# Logging
-audit_s3_bucket  = "my-audit-logs-bucket"
-
-# Tags or metadata
-project_name     = "pci-project"
-environment      = "production"
+resource "azurerm_storage_account" "example" {
+  name                     = var.storage_account_name
+  resource_group_name      = azurerm_resource_group.example.name
+  location                 = azurerm_resource_group.example.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}

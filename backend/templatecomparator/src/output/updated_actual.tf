@@ -1,29 +1,75 @@
-provider "aws" {
-  region = "us-east-1"
+provider "azurerm" {
+  features {}
 }
 
-resource "aws_instance" "web" {
-  ami           = "ami-0c55b159cbfafe1f0"
-  instance_type = "t2.small"
+resource "azurerm_resource_group" "example" {
+  name     = var.resource_group_name
+  location = var.location
+}
 
-  tags = {
-    Name = "WebServerV2"
-    Env  = "Production"
-  }
+resource "azurerm_storage_account" "example" {
+  name                     = var.storage_account_name
+  resource_group_name      = azurerm_resource_group.example.name
+  location                 = azurerm_resource_group.example.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
 }
 
 # --- Patch from PCI Compliance ---
-resource "aws_lb_listener" "elb_tls" {
-  load_balancer_arn = '${var.elb_arn}'
-  port = 443
-  protocol = 'HTTPS'
-  ssl_policy = '${var.ssl_policy}'
-  certificate_arn = '${var.certificate_arn}'
-  default_action = [{'type': 'fixed-response', 'fixed_response': [{'content_type': 'text/plain', 'message_body': 'PCI HTTPS', 'status_code': '200'}]}]
+
+resource "azurerm_key_vault" "pci_kv" {
+  name = "kv-pci-${var.env}"
+  location = azurerm_resource_group.example.location
+  resource_group_name = ${var.rg_name}
+  sku_name = "premium"
+  purge_protection_enabled = true
+  soft_delete_retention_days = 90
+  enabled_for_disk_encryption = true
+  network_acls = [{
+  default_action = "Deny"
+  bypass = "AzureServices"
+}]
 }
 
-resource "aws_iam_policy" "least_privilege" {
-  name = 'LeastPrivilege'
-  policy = '${jsonencode({"Version": "2012-10-17", "Statement": [{"Effect": "Allow", "Action": ["s3:GetObject"], "Resource": "*"}]})}'
+resource "azurerm_disk_encryption_set" "pci_des" {
+  name = "des-pci-${var.env}"
+  resource_group_name = ${var.rg_name}
+  location = azurerm_resource_group.example.location
+  key_vault_key_id = ${azurerm_key_vault_key.pci_key.id}
+  identity = [{
+  type = "SystemAssigned"
+}]
 }
 
+resource "azurerm_storage_account" "pci_storage" {
+  name = "stpci${var.env}"
+  resource_group_name = ${var.rg_name}
+  location = azurerm_resource_group.example.location
+  account_tier = "Standard"
+  account_replication_type = "GRS"
+  enable_https_traffic_only = true
+  min_tls_version = "TLS1_2"
+  blob_properties = [{
+  delete_retention_policy = [{
+  days = 365
+}]
+}]
+}
+
+resource "azuread_conditional_access_policy" "mfa_policy" {
+  display_name = "PCI-MFA-Requirement"
+  state = "enabled"
+  conditions = [{
+  client_app_types = ["all"]
+  applications = [{
+  included_applications = ["All"]
+}]
+  users = [{
+  included_users = ["All"]
+}]
+}]
+  grant_controls = [{
+  operator = "OR"
+  built_in_controls = ["mfa"]
+}]
+}
