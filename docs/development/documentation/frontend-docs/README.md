@@ -259,7 +259,7 @@ In case of OCR issues:
 ✅ To identify if container throttling is occurring during heavy OCR processing.
 
 
-🧩 5.3 Debugging Live Progress Reporting 🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩
+🧩 5.3 Debugging Live Progress Reporting 🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩
 
 If progress bars do not update:
 
