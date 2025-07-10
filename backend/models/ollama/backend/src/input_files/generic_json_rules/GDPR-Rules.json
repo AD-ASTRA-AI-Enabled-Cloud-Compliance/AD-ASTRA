@@ -1,0 +1,42 @@
+[
+  {
+    "rule": "Implement strong encryption mechanisms for all sensitive data at rest and in transit.",
+    "category": "Data Protection",
+    "framework": "GDPR-Rules"
+  },
+  {
+    "rule": "Implement robust access controls and restrict access to sensitive data to only authorized personnel.",
+    "category": "Identity and Access Management",
+    "framework": "GDPR-Rules"
+  },
+  {
+    "rule": "Develop and implement a comprehensive data breach response plan to effectively identify and respond to security incidents.",
+    "category": "Security",
+    "framework": "GDPR-Rules"
+  },
+  {
+    "rule": "Implement robust logging and monitoring systems to track and detect suspicious activity.",
+    "category": "Security",
+    "framework": "GDPR-Rules"
+  },
+  {
+    "rule": "Conduct regular security assessments and penetration testing exercises to identify and mitigate potential vulnerabilities.",
+    "category": "Security",
+    "framework": "GDPR-Rules"
+  },
+  {
+    "rule": "Develop and implement a data retention policy that specifies how long personal data will be retained and how it will be disposed of securely.",
+    "category": "Data Protection",
+    "framework": "GDPR-Rules"
+  },
+  {
+    "rule": "Implement a comprehensive privacy policy that outlines the organization's data handling practices and rights of data subjects.",
+    "category": "Data Protection",
+    "framework": "GDPR-Rules"
+  },
+  {
+    "rule": "Ensure compliance with all applicable data protection laws and regulations in the Union and abroad.",
+    "category": "Compliance",
+    "framework": "GDPR-Rules"
+  }
+]

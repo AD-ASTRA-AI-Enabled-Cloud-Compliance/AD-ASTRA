@@ -26,7 +26,7 @@ def create_app():
 
 if __name__ == "__main__":
     app = create_app()
-    app.run(debug=True, port=3001)
+    app.run(debug=True, port=3001, use_reloader=False)
 
 # 🔒 OLD Alternate startup block (commented)
 # from src import config, app
