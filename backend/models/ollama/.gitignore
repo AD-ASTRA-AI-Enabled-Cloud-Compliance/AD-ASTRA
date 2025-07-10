@@ -74,6 +74,9 @@ Desktop.ini
 # Ignore log and output folders if dynamically generated
 uploads/
 cloud_outputs/
+user_outputs/
+terraform_output/
+output_files/
 logs/
 
 storage/

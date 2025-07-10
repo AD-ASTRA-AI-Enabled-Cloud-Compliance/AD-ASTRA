@@ -17,6 +17,17 @@ from ..controllers.BusinessLogicController import BusinessLogicController
 
 # from ..services.rules_service import RulesService
 # from ..services.extract_service import ExtractService
+from src.services.context_generator import CloudContextGenerator
+
+from ..services.chat_service import handle_chat_query
+
+from ..services.rules_service import RulesService
+from ..services.websocket.ServiceWebsocket import WebsocketService
+from src.services.extract_service import ExtractService
+import os
+
+#from src.services.terraform_generator import TerraformGenerator
+
 
 main_routes = Blueprint('main_routes', __name__)
 
@@ -102,6 +113,40 @@ def upload():
     # return ExtractService(sessionID).process_document(request)
 
 
+# ------------------------------------------------------------------------
+# Updated by Harsimran Kaur
+# This code is part of pipeline 3.
+# POST /generate_terraform
+# This endpoint receives selected frameworks and providers from the frontend,
+# generates a unified cloud security context and corresponding Terraform files
+# using the CloudContextGenerator service, and returns a success or error response.
+# Used for automating cloud compliance and infrastructure-as-code generation.
+# ------------------------------------------------------------------------
+@main_routes.route("/generate_terraform", methods=["POST"])
+def generate_terraform():
+    print("🔔 /generate_terraform endpoint called")  # Add this line
+    try:
+        data = request.get_json()
+
+        selected_frameworks = [f.strip().upper() for f in data.get("frameworks", [])]
+        selected_providers = [p.strip().lower() for p in data.get("providers", [])]
+
+        print("✅ Backend: /generate_terraform called")
+        print("📂 Frameworks selected:", selected_frameworks)
+        print("📦 Providers selected:", selected_providers)
+
+        # ✅ Generate cloud context + Terraform all in one step
+        context_gen = CloudContextGenerator()
+        context_gen.generate_context(selected_frameworks, selected_providers)
+
+        return jsonify({"status": "success"}), 200
+
+    except Exception as e:
+        print(f"❌ Error in generation flow: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+    
+
+# javier changes
 # Returns framweork rules generated from the uploaded PDF and stored in the vector store
 @main_routes.route("/explore/rules", methods=[ "GET"])
 # ONLY GET
@@ -136,3 +181,4 @@ def react_chat():
     # OllamaMemory()
     result = []
     return jsonify(result)
+
