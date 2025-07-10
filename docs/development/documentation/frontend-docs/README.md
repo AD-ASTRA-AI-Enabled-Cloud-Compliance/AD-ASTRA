@@ -93,3 +93,69 @@ This diagram illustrates how our OCR pipeline is physically deployed across fron
 🌿 3 Installation and Setup
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+⚙️ 3.1 Prerequisites ⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️
+
+Before installing the Real-Time OCR & Progress Reporting Pipeline, ensure the following are available:
+
+✅ Docker & Docker Compose --- Already Installed
+✅ Node.js 19+ for frontend build and hot reload  --- --- Already Installed
+✅ Backend API endpoint (OCR processing endpoint) reachable within your environment
+✅ WebSocket port (/api/socketio) open in firewall (default: 3000)
+✅ Recommended: Local GPU acceleration if using advanced OCR models 
+
+🐳 3.1.1 Docker & Docker Compose Setup   🐳🐳🐳🐳🐳🐳🐳🐳🐳🐳 
+
+1️⃣ Verify Docker Installation:
+                    docker --version
+                    docker-compose --version
+
+2️⃣ Clone your repository:
+                    git clone https://github.com/your-org/adastra.git
+                    cd adastra-cloud-compliance
+
+
+🛠️ 3.2 Step-by-Step Installation Guide  🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️
+
+🐳 3.2.1 Building Docker Images  🐳🐳🐳🐳🐳🐳🐳🐳🐳🐳🐳🐳
+
+In the root directory:
+                    docker-compose build frontend
+This will:
+                    ✅ Install Node dependencies
+                    ✅ Run next build inside the container
+                    ✅ Prepare for serving via next start in standalone mode
+
+🌿 3.2.2 Launching the Real-Time OCR Pipeline 🌿🌿🌿🌿🌿🌿🌿🌿🌿🌿🌿
+
+Start the pipeline with:
+
+                    docker-compose up -d frontend
+
+Validate with:
+
+                    docker logs -f adastra-frontend
+
+You should see:
+
+                    Ready on http://localhost:3000
+
+✅ The WebSocket and frontend are now live and ready for OCR file uploads.
+
+⚡3.3 Deployment Best Practices  ⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡
+
+🔒 Security:
+                Use HTTPS and WSS in production.
+                Ensure WebSocket connections are authenticated via tokens or session cookies.
+
+🚦 Scalability:
+                Use a reverse proxy (Nginx, Traefik) to handle WebSocket upgrades.
+                Deploy OCR services separately in microservices if scaling demand.
+
+📈 Performance:
+                Enable caching of partial OCR results for large PDFs.
+                Use GPU-based OCR for high-volume document ingestion.
+
+🛡️ Monitoring:
+                Integrate frontend with Prometheus/Grafana for container health.
+                Enable Next.js telemetry for frontend insights (optional).
+
