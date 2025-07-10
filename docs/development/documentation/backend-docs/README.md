@@ -495,9 +495,10 @@ curl -X POST http://localhost:11434/your-llm-endpoint -d '{"text":"Sample compli
 
 
 ❓ 6: Frequently Asked Questions (FAQs)
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This section consolidates common, technical, and compliance-related questions to support rapid onboarding, troubleshooting, and user confidence while using the Compliance Rule Ingestion Pipeline.
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 6.1 🌍 General FAQs 🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍
 
@@ -566,9 +567,9 @@ A: PCI DSS, HIPAA, GDPR, NIST CSF, and ISO 27001 documents can be ingested. Supp
 A: Yes, by maintaining an up-to-date vectorized database of compliance requirements, your teams can rapidly respond to audit queries and track control coverage.
 
 ❓ 7: Appendices
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The appendices provide detailed supporting information to complement the Compliance Rule Ingestion Pipeline, ensuring clarity, operational continuity, and advanced references for engineers and compliance specialists.
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 7.1 🗂️ Glossary of Terms 🗂️🗂️🗂️🗂️🗂️🗂️🗂️🗂️🗂️🗂️
