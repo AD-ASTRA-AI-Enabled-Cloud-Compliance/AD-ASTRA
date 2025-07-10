@@ -1,0 +1,27 @@
+[
+  {
+    "rule": "Implement multi-factor authentication for all user accounts.",
+    "category": "Identity and Access Management",
+    "framework": "NIST.CSWP.29"
+  },
+  {
+    "rule": "Perform security awareness training for all employees to raise awareness of cybersecurity threats.",
+    "category": "Identity and Access Management",
+    "framework": "NIST.CSWP.29"
+  },
+  {
+    "rule": "Implement incident response training for all employees to ensure they know how to respond to and recover from security incidents.",
+    "category": "Incident Response",
+    "framework": "NIST.CSWP.29"
+  },
+  {
+    "rule": "Maintain systems and networks patched and updated to address vulnerabilities.",
+    "category": "Security Monitoring and Incident Response",
+    "framework": "NIST.CSWP.29"
+  },
+  {
+    "rule": "Implement a comprehensive vulnerability scanning and risk assessment process.",
+    "category": "Security Monitoring and Incident Response",
+    "framework": "NIST.CSWP.29"
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "rule": "Ensure that all sensitive data is encrypted at rest and in transit.",
+    "category": "Data Protection",
+    "framework": "PCI-DSS-v4_0_1"
+  },
+  {
+    "rule": "Implement strong access controls to protect sensitive data.",
+    "category": "Identity and Access Management",
+    "framework": "PCI-DSS-v4_0_1"
+  },
+  {
+    "rule": "Establish a clear and documented incident reporting process.",
+    "category": "Incident Response",
+    "framework": "PCI-DSS-v4_0_1"
+  },
+  {
+    "rule": "Develop and implement a comprehensive risk management program.",
+    "category": "Risk Management",
+    "framework": "PCI-DSS-v4_0_1"
+  },
+  {
+    "rule": "Establish a security awareness and training program for employees.",
+    "category": "Security Awareness",
+    "framework": "PCI-DSS-v4_0_1"
+  },
+  {
+    "rule": "Implement a robust disaster recovery plan to ensure business continuity in the event of a security incident.",
+    "category": "Disaster Recovery",
+    "framework": "PCI-DSS-v4_0_1"
+  }
+]

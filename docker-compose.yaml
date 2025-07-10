@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    environment:
+      - QDRANT_ALLOW_CORS=true
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=adastra
+      - MYSQL_USER=adastra
+      - MYSQL_PASSWORD=adastrapass
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  document_preprocess:
+    build:
+      context: ./backend/document_preprocess
+      dockerfile: Dockerfile
+    working_dir: /app
+    depends_on:
+      - qdrant
+      - mysql
+    environment:
+      - FLASK_APP=app.py
+      - QDRANT_HOST=qdrant
+      - QDRANT_PORT=6333
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USER=adastra
+      - MYSQL_PASSWORD=adastrapass
+      - MYSQL_DATABASE=adastra
+    volumes:
+      - ./backend/document_preprocess:/app
+    ports:
+      - "3030:3030"
+
+  # mongodb:
+  #   image: mongo:latest
+  #   ports:
+  #     - "27017:27017"
+  #   environment:
+  #     - MONGO_INITDB_ROOT_USERNAME=adastra
+  #     - MONGO_INITDB_ROOT_PASSWORD=adastrapass
+  #     - MONGO_INITDB_DATABASE=adastra
+  #   volumes:
+  #     - mongodb_data:/data/db
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - document_preprocess
+      - qdrant
+      - mysql
+      # - mongodb
+      - ollama
+
+volumes:
+  qdrant_data:
+    driver: local
+  mysql_data:
+    driver: local
+  mongodb_data:
+    driver: local
+  ollama_data:
+    driver: local
