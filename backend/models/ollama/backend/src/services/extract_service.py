@@ -32,11 +32,11 @@ class ExtractService:
         self.session = sessionID
         self.ws = WebsocketService()
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
-        self.upload_folder = os.getenv("UPLOAD_FOLDER", os.path.join(self.base_dir, "../uploads"))
-        self.output_folder = os.getenv("OUTPUT_FOLDER", os.path.join(self.base_dir, "../cloud_outputs"))
+        self.upload_folder = os.getenv("UPLOAD_FOLDER", os.path.join(self.base_dir, "../input_files/uploads"))
+        self.output_folder = os.getenv("OUTPUT_FOLDER", os.path.join(self.base_dir, "../output_files/json_rules_output"))
         os.makedirs(self.upload_folder, exist_ok=True)
         os.makedirs(self.output_folder, exist_ok=True)
-        self.summary_folder = os.path.join(self.base_dir, "../../output_files/document_summaries")
+        self.summary_folder = os.path.join(self.base_dir, "../output_files/document_summaries")
         os.makedirs(self.summary_folder, exist_ok=True)
 
         # Set up Qdrant client
@@ -129,8 +129,8 @@ class ExtractService:
 """
             response = call_ollama(system_prompt, user_prompt, model=self.model)
 
-            with open(f"debug_ollama_output_{framework}.txt", "w", encoding="utf-8") as f:
-                f.write(response)
+            # with open(f"debug_ollama_output_{framework}.txt", "w", encoding="utf-8") as f:
+            #     f.write(response)
 
             print("📥 Ollama response preview:\n", response[:300])
 
