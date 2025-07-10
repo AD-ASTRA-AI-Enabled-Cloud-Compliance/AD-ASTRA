@@ -1,4 +1,4 @@
-🌟 1. Introduction
+🌟 Compliance Rule Ingestion Pipeline
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🪐 1.1 Overview and Purpose  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
@@ -18,6 +18,8 @@ This documentation is crafted for:
 ✅ Compliance Teams & Auditors: to understand ingestion outputs for validation.
 ✅ AI Engineers & Data Scientists: to adapt and improve the LLM-based extraction pipeline.
 ✅ Technical Product Managers: to align pipeline capabilities with product goals.
+
+📌 Scope: 📌📌📌📌📌📌📌📌📌📌
 
 The scope includes installation, architecture, APIs, user workflows, troubleshooting, and advanced extension, enabling seamless onboarding and mastery of the pipeline.
 
@@ -66,7 +68,7 @@ This diagram shows the architectural components and their interactions for your 
 
 ⚡ 2.4 Compliance Rule Ingestion Pipeline - Deployment Diagram  ⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡
 
-This diagram shows how your pipeline components are physically deployed and communicate, emphasizing technology, ports, and containerized structure for your compliance rule ingestion system.
+This diagram shows how our pipeline components are physically deployed and communicate, emphasizing technology, ports, and containerized structure for your compliance rule ingestion system.
 
 ![Compliance Rule Ingestion Pipeline Deployment Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/766436e9bcdba0f7c1dbdcd11f233eef68951c72/docs/development/documentation/backend-docs/diagrams/Compliance%20Rule%20Ingestion%20Pipeline%20-%20Deployment%20Diagram%20(Technolgy%20Focus).png)
 
