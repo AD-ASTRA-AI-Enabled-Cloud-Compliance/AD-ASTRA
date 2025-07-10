@@ -76,3 +76,7 @@ uploads/
 cloud_outputs/
 logs/
 
+storage/
+storage/
+terraform_output/
+user_outputs/

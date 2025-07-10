@@ -66,6 +66,10 @@ const data = {
           url: "/process_documentation",
         },
         {
+          title: "Explore Documents",
+          url: "/explore_documents",
+        },
+        {
           title: "Explore Rules",
           url: "/explore_rules",
         },

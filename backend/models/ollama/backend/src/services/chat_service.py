@@ -12,7 +12,7 @@ FRAMEWORK_KEYWORDS = ["PCI", "HIPAA", "NIST", "GDPR", "ISO-27001"]
 def is_framework_query(query: str):
     return next((fw for fw in FRAMEWORK_KEYWORDS if fw.lower() in query.lower()), None)
 
-def handle_chat_query(query: str):
+def handle_chat_query(model: str, query: str):
     matched_framework = is_framework_query(query)
 
     if matched_framework:
@@ -42,10 +42,10 @@ def handle_chat_query(query: str):
                 doc_id = available_ids[matched_index]
 
         # ❗️FIX: Don’t return here — let agent handle full fallback flow
-        response_obj = react_loop_with_mcp(query, doc_id=doc_id or "")
+        response_obj = react_loop_with_mcp(model, query, doc_id=doc_id or "")
     else:
         # General chat fallback
-        response_obj = react_loop_with_mcp(query)
+        response_obj = react_loop_with_mcp(model, query)
 
     return {
         "answer": response_obj.get("answer", "No response"),

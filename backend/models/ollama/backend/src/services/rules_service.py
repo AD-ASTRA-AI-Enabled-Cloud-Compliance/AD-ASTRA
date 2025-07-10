@@ -14,7 +14,7 @@ from more_itertools import chunked
 from ..utils.functions import remove_special_chars  # pip install more-itertools
 from ..utils.vector_store import ensure_collection_exists
 
-from ..services.websocket.ws import WebsocketService
+from .websocket.ServiceWebsocket import WebsocketService
 from .gpt_service import call_ollama
 # from src.utils.vector_store import store_document_chunks, store_extracted_rules
 from qdrant_client import QdrantClient
@@ -22,7 +22,7 @@ from qdrant_client import QdrantClient
 
 from qdrant_client import QdrantClient
 from uuid import uuid4
-from src.services.websocket.ws import WebsocketService
+from services.websocket.ServiceWebsocket import WebsocketService
 from src.services.gpt_service import OllamaEmbedder
 import os
 

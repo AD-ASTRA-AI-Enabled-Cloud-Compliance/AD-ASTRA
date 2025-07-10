@@ -2,13 +2,21 @@ from uuid import uuid4
 from flask import Blueprint, jsonify, render_template, request
 from flask_cors import CORS
 from flask import Blueprint, request, jsonify, send_from_directory
-
-from ..services.chat_service import handle_chat_query
-
-from ..services.rules_service import RulesService
-from ..services.websocket.ws import WebsocketService
-from src.services.extract_service import ExtractService
 import os
+
+
+from ..services.websocket.ServiceWebsocket import WebsocketService
+
+from ..controllers.GlobalController import GlobalRequestGenerate
+from ..controllers.RulesController import RulesController
+from ..controllers.BusinessLogicController import BusinessLogicController
+
+# from ..services.gpt_service import OllamaEmbedder, OllamaMemory
+
+# from ..services.chat_service import handle_chat_query
+
+# from ..services.rules_service import RulesService
+# from ..services.extract_service import ExtractService
 
 main_routes = Blueprint('main_routes', __name__)
 
@@ -38,7 +46,8 @@ def health_check():
 
 
 # GET /uploads → list uploaded PDF files + JSON info
-@main_routes.route("/uploads", methods=["GET"], endpoint="list_uploads")
+@main_routes.route("/uploads", endpoint="list_uploads", methods=["POST", "GET"])
+# ONLY GET
 def list_uploads():
     try:
         files = [
@@ -56,45 +65,74 @@ def list_uploads():
         return jsonify({"error": str(e)}), 500
 
 # GET /documents → list JSON rule documents
-@main_routes.route("/documents", methods=["GET"])
+
+
+@main_routes.route("/documents", methods=["POST", "GET"])
+# ONLY GET
 def documents():
     print(WebsocketService().info())
-    return jsonify(ExtractService.list_documents())
+    return
+    # return jsonify(ExtractService.list_documents())
 
 # GET /cloud_outputs/<filename> → download JSON rule file
+
+
 @main_routes.route("/cloud_outputs/<filename>")
 def download_output(filename):
     return send_from_directory(OUTPUT_FOLDER, filename, as_attachment=True)
 
 # GET /uploads/<filename> → download uploaded PDF
+
+
 @main_routes.route("/uploads/<filename>")
 def download_upload(filename):
     return send_from_directory(UPLOAD_FOLDER, filename, as_attachment=True)
 
 # POST /upload → upload and process PDF
-@main_routes.route("/upload", methods=["POST"])
+
+
+@main_routes.route("/upload",  methods=["POST", "GET"])
+# ONLY POST
 def upload():
-    sessionID = str(uuid4())
-    print(f"Session ID from route: {sessionID}")
-    
-    return ExtractService(sessionID).process_document(request)
+    session = GlobalRequestGenerate()
+    bl = BusinessLogicController(session)
+    bl.full_pipeline(request)
+    return session.sessionID
+
+    # return ExtractService(sessionID).process_document(request)
 
 
 # Returns framweork rules generated from the uploaded PDF and stored in the vector store
-@main_routes.route("/explore/rules", methods=["GET"])
+@main_routes.route("/explore/rules", methods=[ "GET"])
+# ONLY GET
 def exploreRules():
-    sessionID = str(uuid4())
-    return RulesService(sessionID=sessionID).list_rules()
+    session = GlobalRequestGenerate()
+    rules_controller = RulesController(session, request)
+    return rules_controller.handle()
 
 
+@main_routes.route("/memory_free", methods=["POST", "GET"])
+# ONLY POST
+def modelsCheck():
+    # models = OllamaEmbedder().list_models()
+    models = 'models'
 
-@main_routes.route("/react_chat", methods=["POST"])
+    return models
+
+
+@main_routes.route("/react_chat", methods=["POST", "GET"])
+# ONLY POST
 def react_chat():
     data = request.get_json()
     query = data.get("query", "")
-    
+    model = data.get("model", "")
+
     if not query:
         return jsonify({"error": "No query provided"}), 400
+    if not model:
+        return jsonify({"error": "No model provided"}), 400
 
-    result = handle_chat_query(query)
+    # result = handle_chat_query(model, query)
+    # OllamaMemory()
+    result = []
     return jsonify(result)
