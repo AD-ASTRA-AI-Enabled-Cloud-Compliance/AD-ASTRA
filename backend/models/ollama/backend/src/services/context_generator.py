@@ -9,39 +9,72 @@
 # The workflow supports deduplication, technical validation, and infrastructure-as-code output for
 # --------------------------------------------------------------------------------------------------
 
-# Updated by Harsimran Kaur
-# This code generates a unified Terraform baseline per provider + frameworks,
-# deduplicates resources, merges compliance tags, and writes each run into a timestamped folder.
-
 import os
 import json
 import re
 from datetime import datetime
+from pymongo import MongoClient
 from src.services.json_to_baseline_tf import BaselineTerraformGenerator
 from src.services.llm_mapper import LLMMapper
+from qdrant_client import QdrantClient
 
 class CloudContextGenerator:
     def __init__(self):
-        self.input_folder = "src/input_files/generic_json_rules"
-        self.output_folder = "src/output_files/cloudcontext"
-        self.context_dir = "src/input_files/cloud_reference_context"
-        os.makedirs(self.output_folder, exist_ok=True)
+        mongo_uri = os.getenv("MONGO_URI")
+        qdrant_host = os.getenv("QDRANT_HOST")
+        qdrant_port = int(os.getenv("QDRANT_PORT", "6333"))
+
+        self.qdrant = QdrantClient(host=qdrant_host, port=qdrant_port)
         self.llm = LLMMapper()
 
-    def generate_context(self, selected_frameworks, selected_providers):
-        """
-        Generate a single merged context JSON, deduplicating resources.
-        """
-        for provider in selected_providers:
-            baseline_path = os.path.join(self.context_dir, f"{provider.lower()}_context.json")
-            if not os.path.exists(baseline_path):
-                print(f"❌ Baseline file not found: {baseline_path}")
-                continue
+        self.mongo_client = MongoClient(mongo_uri)
+        self.mongo_db = self.mongo_client["Skylock"]
+        self.mongo_collection = self.mongo_db["Cloud_JSON_Baselines"]
 
-            with open(baseline_path, "r") as f:
-                baseline = json.load(f)
+    def get_rules_from_qdrant(self, selected_frameworks):
+        all_rules = []
+        for fw in selected_frameworks:
+            hits, _ = self.qdrant.scroll(
+                collection_name="framework_rules_gemma2b",
+                scroll_filter={
+                    "must": [
+                        {"key": "framework", "match": {"value": fw.upper()}}
+                    ]
+                },
+                limit=1000
+            )
+            for hit in hits:
+                all_rules.append(hit.payload)
+        return all_rules
+
+    def generate_context(self, selected_frameworks, selected_providers):
+        print(f"⚡ generate_context() CALLED with {selected_frameworks} / {selected_providers}")
+        
+        for provider in selected_providers:
+            baseline = self.mongo_collection.find_one({"provider": provider.lower()})
+            if not baseline:
+                print(f"❌ No baseline found in MongoDB for provider: {provider}")
+                # Try loading from local reference file as fallback
+                reference_path = os.path.join(
+                    os.path.dirname(__file__), 
+                    "..", 
+                    "input_files",
+                    "cloud_reference_context",
+                    f"{provider.lower()}_context.json"
+                )
+                try:
+                    with open(reference_path, 'r') as f:
+                        baseline = json.load(f)
+                    print(f"✅ Loaded baseline from reference file: {reference_path}")
+                except FileNotFoundError:
+                    print(f"❌ No reference baseline found at: {reference_path}")
+                    continue
+                except json.JSONDecodeError:
+                    print(f"❌ Invalid JSON in reference file: {reference_path}")
+                    continue
 
             baseline_resources = baseline.get("resources", {})
+
             selected_fw_lower = [fw.lower() for fw in selected_frameworks]
 
             selected_resources = {}
@@ -67,28 +100,57 @@ class CloudContextGenerator:
                 "provider": provider.lower(),
                 "services": selected_services,
                 "settings": selected_resources,
-                "resource_sources": {
-                    k: list(v) for k, v in resource_sources.items()
-                }
+                "resource_sources": {k: list(v) for k, v in resource_sources.items()}
             }]
 
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-            outfile = os.path.join(
-                self.output_folder,
-                f"cloud_context_{'_'.join(f.lower() for f in selected_frameworks)}_{provider.lower()}_{timestamp}.json"
-            )
-            with open(outfile, "w") as out:
-                json.dump(context, out, indent=2)
-            print(f"✅ Saved context to {outfile}")
+            # --- OLD file output commented ---
+            # outfile = os.path.join(
+            #     self.output_folder,
+            #     f"cloud_context_{'_'.join(f.lower() for f in selected_frameworks)}_{provider.lower()}_{timestamp}.json"
+            # )
+            # with open(outfile, "w") as out:
+            #     json.dump(context, out, indent=2)
+            # print(f"✅ Saved context to {outfile}")
 
-            # Validate coverage
-            validation_results = self.validate_against_rules(selected_frameworks, provider, outfile)
+            # --- Save context JSON to MongoDB ---
+            mongo_doc = {
+                "frameworks": selected_frameworks,
+                "provider": provider.lower(),
+                "timestamp": timestamp,
+                "context": context
+            }
+            result = self.mongo_client["Skylock"]["Cloud_Context_JSON"].insert_one(mongo_doc)
+            print(f"✅ Context inserted into MongoDB: Skylock.Cloud_Context_JSON")
+            print("✅ Inserted with _id:", result.inserted_id)
 
-            # Save compliance report
+            inserted_doc = self.mongo_client["Skylock"]["Cloud_Context_JSON"].find_one({"_id": result.inserted_id})
+            print("🔍 Inserted document:")
+            print(json.dumps(inserted_doc, indent=2, default=str))
+
+            # --- Validate coverage ---
+            validation_results = self.validate_against_rules(selected_frameworks, provider, context)
+
             self.save_rule_validation_report(selected_frameworks, provider, validation_results)
 
-            # Generate Terraform
+            # --- OLD TF file output commented ---
+            # base_dir = os.path.abspath(
+            #     os.path.join(os.path.dirname(__file__), "..", "output_files", "terraform_files")
+            # )
+            # tf_output_dir = os.path.join(
+            #     base_dir,
+            #     provider,
+            #     "_".join(f.lower() for f in selected_frameworks),
+            #     timestamp
+            # )
+            # os.makedirs(tf_output_dir, exist_ok=True)
+            # tf_output_path = os.path.join(
+            #     tf_output_dir,
+            #     f"terraform_{'_'.join(f.lower() for f in selected_frameworks)}_{provider.lower()}_{timestamp}.tf"
+            # )
+
+            # --- NEW: Still using disk output folder ---
             base_dir = os.path.abspath(
                 os.path.join(os.path.dirname(__file__), "..", "output_files", "terraform_files")
             )
@@ -105,41 +167,54 @@ class CloudContextGenerator:
                 f"terraform_{'_'.join(f.lower() for f in selected_frameworks)}_{provider.lower()}_{timestamp}.tf"
             )
 
+            # --- Generate Terraform
             tf_generator = BaselineTerraformGenerator()
             print(f"🚀 Generating Terraform for unified baseline...")
-            tf_generator.generate_baseline_from_provider_json(
-                json_path=outfile,
-                tf_output_path=tf_output_path
+            tf_result = tf_generator.generate_baseline_from_provider_json(
+                json_data=context,
+                tf_output_path=tf_output_path,
+                framework=selected_frameworks[0]
             )
-            print(f"✅ Terraform generated: {tf_output_path}")
+            print("✅ Terraform content generated.")
 
-    def validate_against_rules(self, selected_frameworks, provider, context_path):
-        """
-        Generate LLM ReAct commentary focusing on actionability, coverage, and further improvements.
-        Returns a list of validation results.
-        """
+            # --- Deduplication check before insert ---
+            existing = self.mongo_client["Skylock"]["Terraform_Files"].find_one({
+                "provider": provider.lower(),
+                "frameworks": selected_frameworks,
+                "timestamp": timestamp
+            })
+            if existing:
+                print("⚠️ Terraform file already exists for this combination—skipping insert.")
+                continue
+
+            terraform_doc = {
+                "provider": provider.lower(),
+                "frameworks": selected_frameworks,
+                "timestamp": timestamp,
+                "folder_structure": {
+                    "provider": provider.lower(),
+                    "framework": "_".join(f.lower() for f in selected_frameworks),
+                    "timestamp": timestamp
+                },
+                "terraform_filename": f"terraform_{'_'.join(f.lower() for f in selected_frameworks)}_{provider.lower()}_{timestamp}.tf",
+                "terraform_content": tf_result["terraform"],
+                "variables_tf_content": tf_result["variables"],
+                "lockfile_content": tf_result["lockfile"]
+            }
+
+            result_tf = self.mongo_client["Skylock"]["Terraform_Files"].insert_one(terraform_doc)
+            print(f"✅ Terraform file inserted into MongoDB: Skylock.Terraform_Files")
+
+    def validate_against_rules(self, selected_frameworks, provider, context):
         print("\n🔍 Validating technical coverage of selected baseline services...\n")
-
-        with open(context_path, "r") as f:
-            context = json.load(f)
 
         context_entry = context[0]
         selected_services = context_entry["services"]
         selected_settings = context_entry["settings"]
-
         settings_json = json.dumps(selected_settings, indent=2)
 
-        rule_files = []
-        for fw in selected_frameworks:
-            for filename in os.listdir(self.input_folder):
-                if fw.lower() in filename.lower() and filename.endswith(".json"):
-                    rule_files.append(os.path.join(self.input_folder, filename))
-
-        all_rules = []
-        for path in rule_files:
-            with open(path) as f:
-                rules = json.load(f)
-                all_rules.extend(rules)
+        all_rules = self.get_rules_from_qdrant(selected_frameworks)
+        print(f"Fetched {len(all_rules)} rules from Qdrant for frameworks: {selected_frameworks}")
 
         validation_results = []
 
@@ -205,7 +280,6 @@ Explanation: <your explanation here>
             further_recommendations = further_match.group(1).strip() if further_match else "Unknown"
             explanation = explanation_match.group(1).strip() if explanation_match else "No explanation returned."
 
-            # Enforce consistency: if not actionable, override coverage and recommendations
             if actionable == "No":
                 coverage = "Not Satisfied"
                 further_recommendations = "No"
@@ -227,18 +301,7 @@ Explanation: <your explanation here>
         return validation_results
 
     def save_rule_validation_report(self, selected_frameworks, provider, validation_results):
-        """
-        Save rules needing recommendations or not satisfied to a JSON report.
-        """
-        report_dir = "src/output_files/rule_validation_reports"
-        os.makedirs(report_dir, exist_ok=True)
-
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        outfile = os.path.join(
-            report_dir,
-            f"rule_validation_report_{'_'.join(f.lower() for f in selected_frameworks)}_{provider.lower()}_{timestamp}.json"
-        )
-
         report_data = {
             "report_metadata": {
                 "provider": provider,
@@ -261,11 +324,10 @@ Explanation: <your explanation here>
                     "further_recommendations": r["further_recommendations"],
                     "reason": r["explanation"],
                     "recommendations": {
-                        "note": f"Review this rule manually to determine which {provider.capitalize()} services and configurations are needed to further improve coverage.",
+                        "note": f"Review this rule manually to determine which {provider.capitalize()} services and configurations are needed to further improve coverage."
                     }
                 })
 
-        with open(outfile, "w") as f:
-            json.dump(report_data, f, indent=2)
-
-        print(f"✅ Compliance report saved: {outfile}")
+        result = self.mongo_client["Skylock"]["Rule_Validation_Reports"].insert_one(report_data)
+        print(f"✅ Compliance report inserted into MongoDB: Skylock.Rule_Validation_Reports")
+        print("✅ Inserted with _id:", result.inserted_id)

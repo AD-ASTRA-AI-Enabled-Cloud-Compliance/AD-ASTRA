@@ -6,8 +6,8 @@
 # generation of Terraform configuration code for compliance automation workflows.
 # --------------------------------------------------------------------------------------------------------------------
 
-
 import json
+
 
 class TerraformTemplateWriter:
     @staticmethod

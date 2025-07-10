@@ -136,3 +136,4 @@ def react_chat():
 
     result = handle_chat_query(query)
     return jsonify(result)
+
