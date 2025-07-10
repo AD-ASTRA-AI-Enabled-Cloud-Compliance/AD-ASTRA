@@ -269,7 +269,7 @@ Connect using a DB client with credentials:
                             db: adastra
 
 
-✨ 4: User Guide
+✨ 4: User Guide  --- Compliance Rule Ingestion Pipeline
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 4.1 🚀 Getting Started  🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
@@ -379,7 +379,7 @@ Filter results by:
 ✅ All updates are logged for audit trails.
 
 
-🛠️ 5: Troubleshooting Guide 
+🛠️ 5: Troubleshooting Guide --- Compliance Rule Ingestion Pipeline deployment
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 5.1 🧩 Common Issues and Solutions 🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩
