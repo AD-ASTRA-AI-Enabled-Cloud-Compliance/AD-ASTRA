@@ -1,4 +1,3 @@
-
 import os
 import json
 import re
@@ -12,7 +11,9 @@ from flask import request
 from more_itertools import chunked
 
 from ..utils.functions import remove_special_chars  # pip install more-itertools
-from ..utils.vector_store import ensure_collection_exists
+# Updated by Harsimran Kaur
+# Updated import as moved ensure_collection_exists to ExtractService
+from ..services.extract_service import ExtractService
 
 from ..services.websocket.ws import WebsocketService
 from .gpt_service import call_ollama
@@ -38,8 +39,8 @@ embedder = OllamaEmbedder()
 # Base paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-ensure_collection_exists("framework_chunks")
-ensure_collection_exists("framework_rules")
+ExtractService.ensure_collection_exists("framework_chunks")
+ExtractService.ensure_collection_exists("framework_rules")
 
 
 class RulesService:

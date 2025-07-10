@@ -78,4 +78,5 @@ user_outputs/
 terraform_output/
 output_files/
 logs/
+summaries/
 
