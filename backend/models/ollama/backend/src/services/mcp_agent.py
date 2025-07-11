@@ -4,8 +4,11 @@ import requests
 
 from .websocket.ServiceWebsocket import WebsocketService
 from .gpt_service import call_ollama
-from src.utils.vector_store import search_chunks_and_rules
+# Updated by Harsimran Kaur
+# Updated import as moved search_chunks_and_rules to ExtractService
+from .extract_service import ExtractService
 from .web_search_service import search_tavily
+
 
 load_dotenv()
 
@@ -53,18 +56,18 @@ def react_loop_with_mcp(model: str, query: str, doc_id: str = "", top_k: int = 3
     results = []
 
     # Document search if doc_id provided
-    # if doc_id:
-    #     steps.append("🧠 **Thought**: Query contains known framework keyword.")
-    #     steps.append(f"🔍 **Action**: Searching database for relevant content in `{doc_id.upper()}`...")
-    #     results = search_chunks_and_rules(query, doc_id, top_k=top_k)
-
-    #     if results:
-    #         context_text = "\n\n".join(
-    #             f"DOCUMENT_EXCERPT_{i}:\n{r['content']}\n"
-    #             for i, r in enumerate(results[:3], 1)
-    #         )
-    #         source = "database"
-    #         steps.append("✅ **Observation**: Found relevant content in database.")
+    if doc_id:
+        steps.append("🧠 **Thought**: Query contains known framework keyword.")
+        steps.append(f"🔍 **Action**: Searching database for relevant content in `{doc_id.upper()}`...")
+        results = ExtractService.search_chunks_and_rules(query, doc_id, top_k=top_k)
+        
+        if results:
+            context_text = "\n\n".join(
+                f"DOCUMENT_EXCERPT_{i}:\n{r['content']}\n"
+                for i, r in enumerate(results[:3], 1)
+            )
+            source = "database"
+            steps.append("✅ **Observation**: Found relevant content in database.")
 
     # Enhanced web search fallback
     # if not context_text:
