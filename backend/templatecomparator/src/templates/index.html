@@ -6,16 +6,18 @@
     <title>Terraform File Comparator</title>
 </head>
 <body>
-    <h1>Upload Two Terraform Files to Compare</h1>
-    <form method="POST" enctype="multipart/form-data">
-        <label>File 1:</label><br>
-        <input type="file" name="file1" required><br><br>
+    <h1>Upload Terraform Files to Compare</h1>
+    <form method="POST" enctype="multipart/form-data" action="/upload_files">
+        <label>Baseline Terraform File (.tf):</label><br>
+        <input type="file" name="baseline_file" required><br><br>
 
-        <label>File 2:</label><br>
-        <input type="file" name="file2" required><br><br>
+        <label>Actual Infrastructure File (.tf):</label><br>
+        <input type="file" name="actual_file" required><br><br>
+
+        <label>Optional Variables File (.tfvars):</label><br>
+        <input type="file" name="tfvars_file"><br><br>
 
         <input type="submit" value="Compare & Generate">
     </form>
 </body>
 </html>
-
