@@ -55,28 +55,9 @@ def apply_variables_to_patch(properties, tfvars):
     return updated
 
 
-import re
-
 def apply_variables_to_patch_text(patch_text, variables):
-    print("Variables for substitution:", variables)
     if patch_text is None:
-        raise ValueError("Patch text is None.")
+        raise ValueError("Patch text is None. Cannot perform variable substitution.")
     
     pattern = re.compile(r'\${var\.([a-zA-Z0-9_]+)}')
-
-    def replacer(match):
-        var_name = match.group(1)
-        val = variables.get(var_name)
-        print(f"Replacing {match.group(0)} with {val}")
-        if val is None:
-            return match.group(0)  # leave as is
-        if isinstance(val, str):
-            return f'"{val}"'
-        elif isinstance(val, bool):
-            return str(val).lower()
-        else:
-            return str(val)
-    
-    result = pattern.sub(replacer, patch_text)
-    print("Result after substitution:\n", result[:500])  # print first 500 chars
-    return result
+    return pattern.sub(lambda m: str(variables.get(m.group(1), m.group(0))), patch_text)

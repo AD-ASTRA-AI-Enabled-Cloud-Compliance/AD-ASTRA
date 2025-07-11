@@ -31,7 +31,7 @@ export default function TerraformComparisonPage() {
 
   async function onUpload(data: UploadForm) {
     const formData = new FormData();
-    formData.append('pci_file', data.baseline_file[0]);
+    formData.append('baseline_file', data.baseline_file[0]);
     formData.append('actual_file', data.actual_file[0]);
     if (data.tfvars_file?.[0]) {
       formData.append('tfvars_file', data.tfvars_file[0]);
