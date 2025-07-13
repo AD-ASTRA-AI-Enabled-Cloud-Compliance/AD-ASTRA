@@ -7,6 +7,8 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/s
 import { Separator } from "@radix-ui/react-separator";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { WebSocketProvider } from "../../contexts/WebSocketContext";
+import OCRProgress, { ProgressBar } from "@/components/OCRProgress";
+import { tree } from "next/dist/build/templates/app-page";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +38,9 @@ export default function ManagementLayout({
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+          <header className="fixed flex w-full bg-background
+          text-foreground 
+           shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
             <div className="flex items-center gap-2 px-4">
               <SidebarTrigger className="-ml-1" />
               <ThemeToggle />
@@ -57,9 +61,15 @@ export default function ManagementLayout({
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>
+              <Separator
+                orientation="vertical"
+                className="hidden md:block mr-2 data-[orientation=vertical]:h-4"
+              />
+              <OCRProgress onlyProgress={true} />
             </div>
+
           </header>
-          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          <div className="flex flex-1 flex-col gap-4 p-4 pt-8">
             {children}
           </div>
         </SidebarInset>

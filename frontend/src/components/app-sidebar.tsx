@@ -52,23 +52,36 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Frameworks",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Dashboard",
+          url: "/dashboard",
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "New Document",
+          url: "/process_documentation",
         },
         {
-          title: "Settings",
-          url: "#",
+          title: "Explore Rules",
+          url: "/explore_rules",
         },
+        {
+          title: "Chat",
+          url: "/chat",
+        },
+        // ------------------------------------------------------------------------------------------------------------------------
+        // Added by Harsimran Kaur
+        // This code is part of pipeline 3.
+        // This adds a "Generate Terraform" navigation item to the sidebar for accessing the Terraform generation workflow UI.
+        {
+          title: "Generate Terraform",
+          url: "/terraform",
+        }
+        // ------------------------------------------------------------------------------------------------------------------------
       ],
     },
     {
@@ -77,15 +90,7 @@ const data = {
       icon: Bot,
       items: [
         {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
+          title: "System Prompts",
           url: "#",
         },
       ],

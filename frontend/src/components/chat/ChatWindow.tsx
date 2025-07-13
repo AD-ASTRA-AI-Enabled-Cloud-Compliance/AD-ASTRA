@@ -7,11 +7,14 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Card, CardContent } from "../ui/card";
 import Markdown from "react-markdown";
+import { ModelOptions } from "./ModelOptions";
+import { useModels } from "@/hooks/useDocSetup";
 
 
 export default function ChatWindow() {
   const { messages, input, setInput, handleSend, loading } = useChat();
 
+  const { models, error } = useModels();
   return (
     <Card className="w-full h-full flex flex-col">
       <CardContent>
@@ -71,6 +74,7 @@ export default function ChatWindow() {
           </div>
 
           <div style={{ display: "flex", gap: "0.5rem" }}>
+            <ModelOptions modelsAvailable={models}/>
             <Input
               type="text"
               value={input}
