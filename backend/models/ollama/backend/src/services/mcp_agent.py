@@ -1,8 +1,11 @@
 import os
 from dotenv import load_dotenv
 from .gpt_service import call_ollama
-from src.utils.vector_store import search_chunks_and_rules
+# Updated by Harsimran Kaur
+# Updated import as moved search_chunks_and_rules to ExtractService
+from .extract_service import ExtractService
 from .web_search_service import search_tavily
+
 
 load_dotenv()
 
@@ -51,7 +54,7 @@ def react_loop_with_mcp(query: str, doc_id: str = "", top_k: int = 3):
     if doc_id:
         steps.append("🧠 **Thought**: Query contains known framework keyword.")
         steps.append(f"🔍 **Action**: Searching database for relevant content in `{doc_id.upper()}`...")
-        results = search_chunks_and_rules(query, doc_id, top_k=top_k)
+        results = ExtractService.search_chunks_and_rules(query, doc_id, top_k=top_k)
         
         if results:
             context_text = "\n\n".join(
@@ -91,12 +94,10 @@ Be specific and factual in your response."""
 
     user_prompt = f"""Question: {query}
 
-Context:
-{context_text}
 
 Please provide a direct answer to the question. If using specific sources, mention them."""
 
-    gpt_response = call_ollama(system_prompt, user_prompt)
+    gpt_response = call_ollama(system_prompt, user_prompt, 'gemma:2b')
     
     # Remove the general knowledge tag as it's now implied
     steps.append(f"💡 **Answer**:\n{gpt_response.strip()}")
