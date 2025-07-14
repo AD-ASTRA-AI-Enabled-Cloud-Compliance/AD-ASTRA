@@ -1,0 +1,31 @@
+<!-- templates/result.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comparison Results</title>
+</head>
+<body>
+    <h1>Terraform File Comparison Results</h1>
+
+    {% if differences %}
+        <h2>🔍 Differences Found:</h2>
+        <ul>
+        {% for line_no, line1, line2 in differences %}
+            <li><strong>Line {{ line_no }}:</strong><br>
+                File 1: <code>{{ line1 }}</code><br>
+                File 2: <code>{{ line2 }}</code><br><br>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>✅ No differences found. Files are identical.</p>
+    {% endif %}
+
+    <h2>📥 Final Merged Terraform File:</h2>
+    <pre>{{ merged_content }}</pre>
+
+    <br><a href="/download">⬇️ Download final.tf</a>
+    <br><a href="/">🔁 Compare Again</a>
+</body>
+</html>
