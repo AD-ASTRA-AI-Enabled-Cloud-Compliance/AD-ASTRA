@@ -80,3 +80,7 @@ output_files/
 logs/
 summaries/
 
+storage/
+storage/
+terraform_output/
+user_outputs/

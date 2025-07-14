@@ -1,34 +1,34 @@
 # main.py
 
+import os
+import sys
 from flask import Flask
 from flask_cors import CORS
+
 from src.routes.routes import main_routes
-from src.utils.db_status import log_mongo_status  
+
+from src.utils.db_connection import MongoDB, QdrantDB
+sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 import sys
 import os
 from dotenv import load_dotenv
 load_dotenv()
 
-# 🔁 Ensure `src` folder is in the path
-sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 
 def create_app():
     app = Flask(__name__)
 
-    # ✅ Log DB status using Qdrant (Mongo version commented below)
-    log_mongo_status()
-    
-
     CORS(app)
-    # app.register_blueprint(chat_bp)
     app.register_blueprint(main_routes)
-    # app.register_blueprint(doc_bp)
 
+    MongoDB().healthCheck()
+    QdrantDB().healthCheck()
+    
     return app
 
 if __name__ == "__main__":
     app = create_app()
-    app.run(debug=True, port=3001, use_reloader=False)
+    app.run(debug=True, port=3001)
 
 # 🔒 OLD Alternate startup block (commented)
 # from src import config, app

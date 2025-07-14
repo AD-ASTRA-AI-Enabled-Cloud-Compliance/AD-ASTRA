@@ -14,15 +14,18 @@ type ModelOptionsProps = {
   modelsAvailable: string[]
   value?: string       // <-- new
   onValueChange?: (value: string) => void  // <-- new
+  disabled?: boolean | false
 }
 
 export function ModelOptions({
   modelsAvailable,
   value,
   onValueChange,
+  disabled,
 }: ModelOptionsProps) {
   return (
     <Select
+      disabled={disabled}
       value={value}
       onValueChange={onValueChange}
     >

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/sidebar"
 import { Separator } from "@radix-ui/react-separator"
 import { ThemeToggle } from "@/components/ThemeToggle"
-import { WebSocketProvider } from "../../contexts/WebSocketContext"
+import { WebSocketProvider } from "@/contexts/WebSocketContext"
 
 
 const geistSans = Geist({
@@ -45,7 +45,6 @@ export default function UserLayout({
       return
     }
     
-
     if (role !== "user" && role !== "management") {
       setUnauthorized(true)
       setTimeout(() => {
@@ -91,6 +90,11 @@ export default function UserLayout({
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>
+              {/* Adding the additional separator from the dev layout */}
+              <Separator
+                orientation="vertical"
+                className="hidden md:block mr-2 data-[orientation=vertical]:h-4"
+              />
             </div>
           </header>
           <div className="flex flex-1 flex-col gap-4 p-4 pt-8">

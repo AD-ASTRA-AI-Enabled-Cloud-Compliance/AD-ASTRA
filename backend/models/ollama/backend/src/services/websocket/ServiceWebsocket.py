@@ -1,4 +1,5 @@
 import os
+from uuid import uuid4
 import requests
 
 # FRONTEND_URL = os.getenv("FRONTEND_URL")
@@ -7,15 +8,23 @@ import requests
 # NEXTJS_API_URL = f"{FRONTEND_URL}:{FRONTEND_PORT}{FRONTEND_WS}"
 
 class WebsocketService:
-    def __init__(self):
+    def __init__(self, session):
         self.FRONTEND_URL = os.getenv("FRONTEND_URL")
         self.FRONTEND_PORT = os.getenv("FRONTEND_PORT")
         self.FRONTEND_WS = os.getenv("FRONTEND_WS")
         # self.NEXTJS_API_URL = (f"{FRONTEND_URL}:{FRONTEND_PORT}{FRONTEND_WS}").trim(' ')
         self.FRONTEND_WS_ENDPOINT = f"{self.FRONTEND_URL}:{self.FRONTEND_PORT}/api/ws"
+
+        if isinstance(session, str):
+            self.id = session
+        else:
+            self.id = session.sessionID
+        # else:
+        #     self.id = str(uuid4())
     
     def info(self):
         return {
+            "id": str(self.id),
             "frontend_url": self.FRONTEND_URL,
             "frontend_port": self.FRONTEND_PORT,
             "frontend_ws": self.FRONTEND_WS,
@@ -25,8 +34,10 @@ class WebsocketService:
     
     def send_progress_update(
         self,
+        id: str = None,
         session: str = None, 
         message: str = None, 
+        doc_name: str = None, 
         progress: float = None, 
         current_page: int = None, 
         total_pages: int = None,
@@ -41,10 +52,9 @@ class WebsocketService:
                 progress = None
 
         data = {
-            "session": str(session),
+            "id": self.id,
             "message": message,
-            "message2": str(session),
-            "message3": message,
+            "doc_name": doc_name,
             "progress": progress if progress is not None else 0,
             "currentPage": current_page if current_page is not None else 0,
             "totalPages": total_pages if total_pages is not None else 0,

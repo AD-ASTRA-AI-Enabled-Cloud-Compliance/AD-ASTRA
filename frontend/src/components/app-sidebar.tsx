@@ -63,7 +63,11 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
     },
     {
       title: "Explore Rules",
-      url: "/explore_rules", // This matches your folder structure
+      url: "/explore_rules",
+    },
+    {
+      title: "Explore Documents",
+      url: "/explore_documents",
     },
     {
       title: "Chat",
@@ -73,13 +77,17 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
 
   const managementOnly = [
     {
+      title: "New Document",
+      url: "/process_documentation",
+    },
+    {
       title: "Generate Terraform",
       url: "/terraform",
     },
     {
-      title: "New Document",
-      url: "/process_documentation",
-    },
+      title: "Validate Terraform",
+      url: "/terraform_comparison",
+    }
   ];
 
   // Select appropriate routes based on role
