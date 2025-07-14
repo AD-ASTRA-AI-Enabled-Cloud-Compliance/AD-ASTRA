@@ -3,7 +3,9 @@
 # ✅ Replaced old flat imports with relative/local project imports
 # from services.mcp_agent import react_loop_with_mcp
 from .mcp_agent import react_loop_with_mcp
-from src.utils.vector_store import get_available_doc_ids
+# Updated by Harsimran Kaur
+# Updated import as moved get_available_doc_ids to ExtractService
+from .extract_service import ExtractService
 import difflib
 
 # Static framework detection list
@@ -16,7 +18,7 @@ def handle_chat_query(query: str):
     matched_framework = is_framework_query(query)
 
     if matched_framework:
-        available_ids = get_available_doc_ids()
+        available_ids = ExtractService.get_available_doc_ids()
         doc_id = None
         normalized_framework = matched_framework.lower()
 
