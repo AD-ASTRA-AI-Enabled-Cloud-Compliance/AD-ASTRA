@@ -32,6 +32,7 @@ export default function RuleSelectorForm() {
     })
 
     const data = await res.json()
+    console.log(data)
     setDownloadLinks(data.files || [])
   }
 

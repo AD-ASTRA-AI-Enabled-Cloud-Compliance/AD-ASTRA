@@ -1,14 +1,15 @@
 
-class ChatIndex:
-    pass
+class ChatController():
+    def __init__(self):
+       pass
 
-class ChatGenerate:
-    pass
+    def index(self):
+        pass
 
-class ChatStore:
-    pass
-class ChatUpdate:
-    pass
+    def store(self):
+        pass
+    def update(self):
+        pass
 
-class ChatDelete:
-    pass 
+    def delete(self):
+        pass 

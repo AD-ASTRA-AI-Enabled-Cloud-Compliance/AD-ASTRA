@@ -17,8 +17,22 @@ from src.utils.templates import TerraformTemplateWriter
 INDENT = "  "
 
 class BaselineTerraformGenerator:
-    def __init__(self):
-        pass
+    def __init__(self, session):
+        self.session = session
+        self.sessionID = session.sessionID
+        self.companyID = session.companyID
+        self.userID = session.userID
+
+        self.mongo = session.mongo
+        self.qdrant = session.qdrant
+        self.ws = session.ws.send_progress_update
+
+        self.temperature = session.temperature
+        self.chunk_size = session.chunk_size
+        self.chunk_overlap = session.chunk_overlap
+        self.top_k = session.top_k
+        self.max_token_limit = session.max_token_limit
+
 
     def generate_baseline_from_provider_json(self, json_data, tf_output_path=None, framework=None):
         data = json_data
@@ -135,23 +149,24 @@ class BaselineTerraformGenerator:
         try:
             print(f"🔍 Running terraform fmt in {tf_directory}...")
             subprocess.run(["terraform", "fmt", tf_directory], check=True)
-            print("✅ terraform fmt completed.")
+            self.ws("✅ terraform fmt completed.")
         except subprocess.CalledProcessError as e:
-            print(f"⚠️ terraform fmt failed: {e}")
+            self.ws(f"⚠️ terraform fmt failed: {e}")
 
         try:
             print(f"🔍 Running terraform init -upgrade in {tf_directory}...")
             subprocess.run(["terraform", "init", "-upgrade", "-backend=false"], cwd=tf_directory, check=True)
-            print("✅ terraform init completed.")
+            self.ws("✅ terraform init completed.")
         except subprocess.CalledProcessError as e:
-            print(f"⚠️ terraform init failed: {e}")
+            self.ws(f"⚠️ terraform init failed: {e}")
 
         try:
             print(f"🔍 Running terraform validate in {tf_directory}...")
+            self.ws(f"🔍 Running terraform validate in ...")
             subprocess.run(["terraform", "validate"], cwd=tf_directory, check=True)
-            print("✅ terraform validate passed.")
+            self.ws("✅ terraform validate passed.")
         except subprocess.CalledProcessError as e:
-            print(f"⚠️ terraform validate failed: {e}")
+            self.ws(f"⚠️ terraform validate failed: {e}")
 
     def sanitize_name(self, service):
         return (

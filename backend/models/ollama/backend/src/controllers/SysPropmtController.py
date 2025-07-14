@@ -1,5 +1,5 @@
 
-class FrameworkController():
+class SysPropmtController():
     def __init__(self):
        pass
 
