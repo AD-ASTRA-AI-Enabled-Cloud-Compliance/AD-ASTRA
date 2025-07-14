@@ -1,6 +1,7 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
+import { usePathname } from "next/navigation";
 import {
   AudioWaveform,
   BookOpen,
@@ -12,110 +13,108 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
-} from "lucide-react"
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavUser } from "@/components/nav-user";
+import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
-// This is sample data.
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+// Mocked user data (can be enhanced)
+const user = {
+  name: "Skylock User",
+  email: "m@example.com",
+  avatar: "/avatars/shadcn.jpg",
+};
+
+// Static project list (optional)
+const projects = [
+  {
+    name: "Design Engineering",
+    url: "#",
+    icon: Frame,
   },
-  teams: [
+  {
+    name: "Sales & Marketing",
+    url: "#",
+    icon: PieChart,
+  },
+  {
+    name: "Travel",
+    url: "#",
+    icon: Map,
+  },
+];
+
+// Sidebar items per role with path prefixing
+function getNavItemsByRole(role: string, pathPrefix: string) {
+  // Define routes without prefixes
+  const commonRoutes = [
     {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+      title: "Dashboard",
+      url: "/dashboard",
     },
     {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
+      title: "Explore Rules",
+      url: "/explore_rules", // This matches your folder structure
     },
     {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
+      title: "Chat",
+      url: "/chat",
     },
-  ],
-  navMain: [
+  ];
+
+  const managementOnly = [
+    {
+      title: "Generate Terraform",
+      url: "/terraform",
+    },
+    {
+      title: "New Document",
+      url: "/process_documentation",
+    },
+  ];
+
+  // Select appropriate routes based on role
+  const routes =
+    role === "management" ? [...commonRoutes, ...managementOnly] : commonRoutes;
+
+  // Add path prefix to each route
+  const prefixedRoutes = routes.map((route) => ({
+    ...route,
+    url: route.url.startsWith("#") ? route.url : `${pathPrefix}${route.url}`,
+  }));
+
+  return [
     {
       title: "Frameworks",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
-      items: [
-        {
-          title: "Dashboard",
-          url: "/dashboard",
-        },
-        {
-          title: "New Document",
-          url: "/process_documentation",
-        },
-        {
-          title: "Explore Rules",
-          url: "/explore_rules",
-        },
-        {
-          title: "Chat",
-          url: "/chat",
-        },
-        // ------------------------------------------------------------------------------------------------------------------------
-        // Added by Harsimran Kaur
-        // This code is part of pipeline 3.
-        // This adds a "Generate Terraform" navigation item to the sidebar for accessing the Terraform generation workflow UI.
-        {
-          title: "Generate Terraform",
-          url: "/terraform",
-        }
-        // ------------------------------------------------------------------------------------------------------------------------
-      ],
+      items: prefixedRoutes,
     },
     {
       title: "Models",
       url: "#",
       icon: Bot,
-      items: [
-        {
-          title: "System Prompts",
-          url: "#",
-        },
-      ],
+      items: [{ title: "System Prompts", url: "#" }],
     },
     {
       title: "Documentation",
       url: "#",
       icon: BookOpen,
       items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
+        { title: "Introduction", url: "#" },
+        { title: "Get Started", url: "#" },
+        { title: "Tutorials", url: "#" },
+        { title: "Changelog", url: "#" },
       ],
     },
     {
@@ -123,58 +122,57 @@ const data = {
       url: "#",
       icon: Settings2,
       items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
+        { title: "General", url: "#" },
+        { title: "Team", url: "#" },
+        { title: "Billing", url: "#" },
+        { title: "Limits", url: "#" },
       ],
     },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
+  ];
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [role, setRole] = React.useState("user");
+  const pathname = usePathname();
+
+  // Determine the correct path prefix based on the current path
+  const getPathPrefix = React.useCallback(() => {
+    if (pathname?.startsWith("/management")) {
+      return "/management";
+    } else if (pathname?.startsWith("/user")) {
+      return "/user";
+    }
+    // Default prefix based on role if not in a specific path
+    return role === "management" ? "/management" : "/user";
+  }, [pathname, role]);
+
+  React.useEffect(() => {
+    // Get user role from localStorage
+    const storedRole = localStorage.getItem("role");
+    if (storedRole) {
+      setRole(storedRole);
+    }
+  }, []);
+
+  // Get navigation items with the correct path prefix
+  const navItems = React.useMemo(() => {
+    const pathPrefix = getPathPrefix();
+    return getNavItemsByRole(role, pathPrefix);
+  }, [role, getPathPrefix]);
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher teams={[]} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavMain items={navItems} />
+        <NavProjects projects={projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

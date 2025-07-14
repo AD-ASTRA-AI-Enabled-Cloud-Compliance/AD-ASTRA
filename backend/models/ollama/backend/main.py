@@ -6,6 +6,8 @@ from src.routes.routes import main_routes
 from src.utils.db_status import log_mongo_status  
 import sys
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # 🔁 Ensure `src` folder is in the path
 sys.path.append(os.path.join(os.path.dirname(__file__), "src"))

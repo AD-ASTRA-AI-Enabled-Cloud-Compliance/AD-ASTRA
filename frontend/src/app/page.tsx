@@ -1,10 +1,10 @@
-
 import React from "react";
-import UploadForm from "./management/uploadform"; // adjust path if needed
+import UploadForm from "./management/components/uploadform"; // Corrected path with /components/
 
 function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="container mx-auto py-10">
+      <h1 className="text-2xl font-bold mb-6">Document Upload</h1>
       <UploadForm />
     </div>
   );
