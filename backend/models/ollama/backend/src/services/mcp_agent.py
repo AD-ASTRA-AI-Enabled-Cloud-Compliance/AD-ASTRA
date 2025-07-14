@@ -1,6 +1,9 @@
-import os
-from dotenv import load_dotenv
-import requests
+# import os
+# from dotenv import load_dotenv
+# import requests
+# import os
+# from dotenv import load_dotenv
+# import requests
 
 from .websocket.ServiceWebsocket import WebsocketService
 from .gpt_service import call_ollama
@@ -12,32 +15,55 @@ from .web_search_service import search_tavily
 
 load_dotenv()
 
-GREETINGS = [
-    "hi", "hello", "hey", "how are you",
-    "what's up", "good morning", "good evening"
-]
+# GREETINGS = [
+#     "hi", "hello", "hey", "how are you",
+#     "what's up", "good morning", "good evening"
+# ]
+# GREETINGS = [
+#     "hi", "hello", "hey", "how are you",
+#     "what's up", "good morning", "good evening"
+# ]
 
 
-def enhance_web_search(query: str, max_retries: int = 2) -> list:
-    """Enhanced web search with retries and query reformulation"""
-    attempts = 0
-    while attempts <= max_retries:
-        try:
-            results = search_tavily(query)
-            if results and any(r.strip() for r in results):
-                return results
+# def enhance_web_search(query: str, max_retries: int = 2) -> list:
+#     """Enhanced web search with retries and query reformulation"""
+#     attempts = 0
+#     while attempts <= max_retries:
+#         try:
+#             results = search_tavily(query)
+#             if results and any(r.strip() for r in results):
+#                 return results
+# def enhance_web_search(query: str, max_retries: int = 2) -> list:
+#     """Enhanced web search with retries and query reformulation"""
+#     attempts = 0
+#     while attempts <= max_retries:
+#         try:
+#             results = search_tavily(query)
+#             if results and any(r.strip() for r in results):
+#                 return results
 
-            # Reformulate query if no results
-            attempts += 1
-            if attempts <= max_retries:
-                reformulated = f"{query} -site:wikipedia.org -site:reddit.com"
-                results = search_tavily(reformulated)
-                if results and any(r.strip() for r in results):
-                    return results
-        except Exception as e:
-            print(f"Web search error: {str(e)}")
-        attempts += 1
-    return []
+#             # Reformulate query if no results
+#             attempts += 1
+#             if attempts <= max_retries:
+#                 reformulated = f"{query} -site:wikipedia.org -site:reddit.com"
+#                 results = search_tavily(reformulated)
+#                 if results and any(r.strip() for r in results):
+#                     return results
+#         except Exception as e:
+#             print(f"Web search error: {str(e)}")
+#         attempts += 1
+#     return []
+#             # Reformulate query if no results
+#             attempts += 1
+#             if attempts <= max_retries:
+#                 reformulated = f"{query} -site:wikipedia.org -site:reddit.com"
+#                 results = search_tavily(reformulated)
+#                 if results and any(r.strip() for r in results):
+#                     return results
+#         except Exception as e:
+#             print(f"Web search error: {str(e)}")
+#         attempts += 1
+#     return []
 
 
 def react_loop_with_mcp(model: str, query: str, doc_id: str = "", top_k: int = 3):

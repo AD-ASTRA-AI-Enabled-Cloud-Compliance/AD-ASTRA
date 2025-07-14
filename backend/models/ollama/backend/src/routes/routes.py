@@ -19,11 +19,8 @@ from ..controllers.BusinessLogicController import BusinessLogicController
 # from ..services.extract_service import ExtractService
 from src.services.context_generator import CloudContextGenerator
 
-from ..services.chat_service import handle_chat_query
 
-from ..services.rules_service import RulesService
 from ..services.websocket.ServiceWebsocket import WebsocketService
-from src.services.extract_service import ExtractService
 import os
 
 #from src.services.terraform_generator import TerraformGenerator
@@ -127,6 +124,7 @@ def generate_terraform():
     print("🔔 /generate_terraform endpoint called")  # Add this line
     try:
         data = request.get_json()
+        session = GlobalRequestGenerate()
 
         selected_frameworks = [f.strip().upper() for f in data.get("frameworks", [])]
         selected_providers = [p.strip().lower() for p in data.get("providers", [])]
@@ -136,10 +134,12 @@ def generate_terraform():
         print("📦 Providers selected:", selected_providers)
 
         # ✅ Generate cloud context + Terraform all in one step
-        context_gen = CloudContextGenerator()
-        context_gen.generate_context(selected_frameworks, selected_providers)
+        context_gen = CloudContextGenerator(session=session)
+        final_tf =context_gen.generate_context(selected_frameworks, selected_providers)
 
-        return jsonify({"status": "success"}), 200
+        print(final_tf)
+
+        return jsonify(final_tf), 200
 
     except Exception as e:
         print(f"❌ Error in generation flow: {e}")
