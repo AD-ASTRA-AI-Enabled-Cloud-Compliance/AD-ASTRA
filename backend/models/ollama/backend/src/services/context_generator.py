@@ -18,16 +18,31 @@ from src.services.json_to_baseline_tf import BaselineTerraformGenerator
 from src.services.llm_mapper import LLMMapper
 from qdrant_client import QdrantClient
 
-class CloudContextGenerator:
-    def __init__(self):
-        mongo_uri = os.getenv("MONGO_URI")
-        qdrant_host = os.getenv("QDRANT_HOST")
-        qdrant_port = int(os.getenv("QDRANT_PORT", "6333"))
 
-        self.qdrant = QdrantClient(host=qdrant_host, port=qdrant_port)
+class CloudContextGenerator:
+    def __init__(self, session):
+
+        self.session = session
+        self.sessionID = session.sessionID
+        self.companyID = session.companyID
+        self.userID = session.userID
+
+        self.mongo_client = session.mongo
+        self.qdrant = session.qdrant
+        self.ws = session.ws
+
+        self.temperature = session.temperature
+        self.chunk_size = session.chunk_size
+        self.chunk_overlap = session.chunk_overlap
+        self.top_k = session.top_k
+        self.max_token_limit = session.max_token_limit
+
+        # self.upload_folder = storage.upload_folder
+        # self.output_folder = storage.output_folder
+        # self.terraform_folder = storage.terraform_folder
+
         self.llm = LLMMapper()
 
-        self.mongo_client = MongoClient(mongo_uri)
         self.mongo_db = self.mongo_client["Skylock"]
         self.mongo_collection = self.mongo_db["Cloud_JSON_Baselines"]
 
@@ -48,16 +63,21 @@ class CloudContextGenerator:
         return all_rules
 
     def generate_context(self, selected_frameworks, selected_providers):
-        print(f"⚡ generate_context() CALLED with {selected_frameworks} / {selected_providers}")
-        
+        msg = f"⚡ generate_context() CALLED with {selected_frameworks} / {selected_providers}"
+        self.ws.send_progress_update(
+            session=self.sessionID,
+            message=msg,)
+
         for provider in selected_providers:
-            baseline = self.mongo_collection.find_one({"provider": provider.lower()})
+            baseline = self.mongo_collection.find_one(
+                {"provider": provider.lower()})
             if not baseline:
-                print(f"❌ No baseline found in MongoDB for provider: {provider}")
+                print(
+                    f"❌ No baseline found in MongoDB for provider: {provider}")
                 # Try loading from local reference file as fallback
                 reference_path = os.path.join(
-                    os.path.dirname(__file__), 
-                    "..", 
+                    os.path.dirname(__file__),
+                    "..",
                     "input_files",
                     "cloud_reference_context",
                     f"{provider.lower()}_context.json"
@@ -65,12 +85,15 @@ class CloudContextGenerator:
                 try:
                     with open(reference_path, 'r') as f:
                         baseline = json.load(f)
-                    print(f"✅ Loaded baseline from reference file: {reference_path}")
+                    self.ws.send_progress_update(message=
+                        f"✅ Loaded baseline from reference file")
                 except FileNotFoundError:
-                    print(f"❌ No reference baseline found at: {reference_path}")
+                    print(
+                        f"❌ No reference baseline found at")
                     continue
                 except json.JSONDecodeError:
-                    print(f"❌ Invalid JSON in reference file: {reference_path}")
+                    print(
+                        f"❌ Invalid JSON in reference file")
                     continue
 
             baseline_resources = baseline.get("resources", {})
@@ -85,14 +108,16 @@ class CloudContextGenerator:
                 tags = [t.lower() for t in res_data.get("compliance_tags", [])]
                 if any(tag in selected_fw_lower for tag in tags):
                     if res_name not in selected_resources:
-                        selected_resources[res_name] = res_data.get("settings", {})
+                        selected_resources[res_name] = res_data.get(
+                            "settings", {})
                         resource_sources[res_name] = set(tags)
                         selected_services.append(res_name)
                     else:
                         resource_sources[res_name].update(tags)
 
             if not selected_services:
-                print(f"⚠️ No resources matched frameworks {selected_frameworks} for {provider}.")
+                print(
+                    f"⚠️ No resources matched frameworks {selected_frameworks} for {provider}.")
                 continue
 
             context = [{
@@ -121,18 +146,23 @@ class CloudContextGenerator:
                 "timestamp": timestamp,
                 "context": context
             }
-            result = self.mongo_client["Skylock"]["Cloud_Context_JSON"].insert_one(mongo_doc)
-            print(f"✅ Context inserted into MongoDB: Skylock.Cloud_Context_JSON")
-            print("✅ Inserted with _id:", result.inserted_id)
+            result = self.mongo_client["Skylock"]["Cloud_Context_JSON"].insert_one(
+                mongo_doc)
+            self.ws.send_progress_update(session= self.sessionID, message = f"✅ Context inserted into MongoDB: Skylock.Cloud_Context_JSON")
+            self.ws.send_progress_update(session= self.sessionID, message = f"✅ Inserted with _id: {result.inserted_id}")
 
-            inserted_doc = self.mongo_client["Skylock"]["Cloud_Context_JSON"].find_one({"_id": result.inserted_id})
-            print("🔍 Inserted document:")
+            inserted_doc = self.mongo_client["Skylock"]["Cloud_Context_JSON"].find_one(
+                {"_id": result.inserted_id})
+            
+            self.ws.send_progress_update(message = f"Document stored")
             print(json.dumps(inserted_doc, indent=2, default=str))
 
             # --- Validate coverage ---
-            validation_results = self.validate_against_rules(selected_frameworks, provider, context)
+            validation_results = self.validate_against_rules(
+                selected_frameworks, provider, context)
 
-            self.save_rule_validation_report(selected_frameworks, provider, validation_results)
+            self.save_rule_validation_report(
+                selected_frameworks, provider, validation_results)
 
             # --- OLD TF file output commented ---
             # base_dir = os.path.abspath(
@@ -152,7 +182,8 @@ class CloudContextGenerator:
 
             # --- NEW: Still using disk output folder ---
             base_dir = os.path.abspath(
-                os.path.join(os.path.dirname(__file__), "..", "output_files", "terraform_files")
+                os.path.join(os.path.dirname(__file__), "..",
+                             "output_files", "terraform_files")
             )
             tf_output_dir = os.path.join(
                 base_dir,
@@ -168,14 +199,16 @@ class CloudContextGenerator:
             )
 
             # --- Generate Terraform
-            tf_generator = BaselineTerraformGenerator()
-            print(f"🚀 Generating Terraform for unified baseline...")
+            tf_generator = BaselineTerraformGenerator(self.session)
+            
+            self.ws.send_progress_update(message = f"🚀 Generating Terraform for unified baseline...")
+            
             tf_result = tf_generator.generate_baseline_from_provider_json(
                 json_data=context,
                 tf_output_path=tf_output_path,
                 framework=selected_frameworks[0]
             )
-            print("✅ Terraform content generated.")
+            self.ws.send_progress_update(message = f"✅ Terraform content generated.")
 
             # --- Deduplication check before insert ---
             existing = self.mongo_client["Skylock"]["Terraform_Files"].find_one({
@@ -184,7 +217,8 @@ class CloudContextGenerator:
                 "timestamp": timestamp
             })
             if existing:
-                print("⚠️ Terraform file already exists for this combination—skipping insert.")
+                
+                self.ws.send_progress_update(message = "⚠️ Terraform file already exists for this combination—skipping insert.")
                 continue
 
             terraform_doc = {
@@ -202,11 +236,16 @@ class CloudContextGenerator:
                 "lockfile_content": tf_result["lockfile"]
             }
 
-            result_tf = self.mongo_client["Skylock"]["Terraform_Files"].insert_one(terraform_doc)
-            print(f"✅ Terraform file inserted into MongoDB: Skylock.Terraform_Files")
+            result_tf = self.mongo_client["Skylock"]["Terraform_Files"].insert_one(
+                terraform_doc)
+            
+            self.ws.send_progress_update(message = f"✅ Terraform file inserted into MongoDB: Skylock.Terraform_Files")
+
+            return terraform_doc
 
     def validate_against_rules(self, selected_frameworks, provider, context):
-        print("\n🔍 Validating technical coverage of selected baseline services...\n")
+        
+        self.ws.send_progress_update(message = "\n🔍 Validating technical coverage of selected baseline services...\n")
 
         context_entry = context[0]
         selected_services = context_entry["services"]
@@ -214,7 +253,8 @@ class CloudContextGenerator:
         settings_json = json.dumps(selected_settings, indent=2)
 
         all_rules = self.get_rules_from_qdrant(selected_frameworks)
-        print(f"Fetched {len(all_rules)} rules from Qdrant for frameworks: {selected_frameworks}")
+        
+        self.ws.send_progress_update(message = f"Fetched {len(all_rules)} rules from Qdrant for frameworks: {selected_frameworks}")
 
         validation_results = []
 
@@ -270,15 +310,23 @@ Explanation: <your explanation here>
                 user_prompt=prompt
             )
 
-            actionable_match = re.search(r"Actionable:\s*(Yes|No)", thoughts, re.IGNORECASE)
-            coverage_match = re.search(r"Coverage:\s*(Satisfied|Not Satisfied)", thoughts, re.IGNORECASE)
-            further_match = re.search(r"FurtherRecommendations:\s*(Yes|No)", thoughts, re.IGNORECASE)
-            explanation_match = re.search(r"Explanation:\s*(.*)", thoughts, re.IGNORECASE | re.DOTALL)
+            actionable_match = re.search(
+                r"Actionable:\s*(Yes|No)", thoughts, re.IGNORECASE)
+            coverage_match = re.search(
+                r"Coverage:\s*(Satisfied|Not Satisfied)", thoughts, re.IGNORECASE)
+            further_match = re.search(
+                r"FurtherRecommendations:\s*(Yes|No)", thoughts, re.IGNORECASE)
+            explanation_match = re.search(
+                r"Explanation:\s*(.*)", thoughts, re.IGNORECASE | re.DOTALL)
 
-            actionable = actionable_match.group(1).strip() if actionable_match else "Unknown"
-            coverage = coverage_match.group(1).strip() if coverage_match else "Unknown"
-            further_recommendations = further_match.group(1).strip() if further_match else "Unknown"
-            explanation = explanation_match.group(1).strip() if explanation_match else "No explanation returned."
+            actionable = actionable_match.group(
+                1).strip() if actionable_match else "Unknown"
+            coverage = coverage_match.group(
+                1).strip() if coverage_match else "Unknown"
+            further_recommendations = further_match.group(
+                1).strip() if further_match else "Unknown"
+            explanation = explanation_match.group(1).strip(
+            ) if explanation_match else "No explanation returned."
 
             if actionable == "No":
                 coverage = "Not Satisfied"
@@ -328,6 +376,7 @@ Explanation: <your explanation here>
                     }
                 })
 
-        result = self.mongo_client["Skylock"]["Rule_Validation_Reports"].insert_one(report_data)
+        result = self.mongo_client["Skylock"]["Rule_Validation_Reports"].insert_one(
+            report_data)
         print(f"✅ Compliance report inserted into MongoDB: Skylock.Rule_Validation_Reports")
         print("✅ Inserted with _id:", result.inserted_id)

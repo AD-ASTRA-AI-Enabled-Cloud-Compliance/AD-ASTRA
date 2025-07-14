@@ -132,7 +132,7 @@ class ExtractService:
             # with open(f"debug_ollama_output_{framework}.txt", "w", encoding="utf-8") as f:
             #     f.write(response)
 
-            print("📥 Ollama response preview:\n", response[:300])
+#             print("📥 Ollama response preview:\n", response[:300])
 
             matches = re.findall(r"\[.*\]", response, re.DOTALL)
             if not matches:
@@ -445,12 +445,12 @@ DOCUMENT SECTION:
             )
         )
 
-        combined = [
-            {"score": r.score, "content": r.payload.get(
-                "chunk") or r.payload.get("rule")}
-            for r in (chunk_results + rule_results)
-        ]
-        return sorted(combined, key=lambda x: -x["score"])[:top_k]
+#         combined = [
+#             {"score": r.score, "content": r.payload.get(
+#                 "chunk") or r.payload.get("rule")}
+#             for r in (chunk_results + rule_results)
+#         ]
+#         return sorted(combined, key=lambda x: -x["score"])[:top_k]
 
 
     def get_available_doc_ids(self):

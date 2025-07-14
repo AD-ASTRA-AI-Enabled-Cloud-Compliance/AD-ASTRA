@@ -1,17 +1,17 @@
 # vector_store.py (Qdrant version with class-based initialization and logic)
 
-# OLD MongoDB Setup (commented)
-# from pymongo import MongoClient
-# mongo_client = MongoClient(os.getenv("MONGODB_URI"))
-# db = mongo_client[os.getenv("MONGODB_DB", "compliance")]
-# chunks_collection = db["framework_chunks"]
-# rules_collection = db["framework_rules"]
+# # OLD MongoDB Setup (commented)
+# # from pymongo import MongoClient
+# # mongo_client = MongoClient(os.getenv("MONGODB_URI"))
+# # db = mongo_client[os.getenv("MONGODB_DB", "compliance")]
+# # chunks_collection = db["framework_chunks"]
+# # rules_collection = db["framework_rules"]
 
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
 from qdrant_client.http.exceptions import UnexpectedResponse
 from uuid import uuid4
-from src.services.websocket.ws import WebsocketService
+from services.websocket.ServiceWebsocket import WebsocketService
 from src.services.gpt_service import OllamaEmbedder
 import os
 

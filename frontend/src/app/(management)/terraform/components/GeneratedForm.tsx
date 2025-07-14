@@ -1,12 +1,6 @@
 'use client'
 
-interface FormData {
-    model: string;
-    framework: string;
-    csp: string;
-    file: FileList;
-}
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
     useEffect,
     useState
@@ -52,19 +46,27 @@ import { getModelNames } from '@/utils/llama_models'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Badge } from '@/components/ui/badge'
 import { useModels } from '@/hooks/useDocSetup';
+import { Textarea } from "@/components/ui/textarea"
 
+interface FormData {
+    model: string;
+    framework: string;
+    csp: string;
+    file: FileList;
+    textBased: string; // Add this field
+}
 export const GeneratedForm = () => {
 
     const [step, setStep] = useState(0)
 
     // const [models, setModels] = useState<string[]>([]);
-    
+
     const { models, loading, error } = useModels();
 
     const [docId, setDocId] = useState("");
     const [uploadMessage, setUploadMessage] = useState("");
     const [docOptions, setDocOptions] = useState<string[]>([]);
-    // const [loading, setLoading] = useState<boolean>(false);
+    const [loadingPage, setLoadingPage] = useState<boolean>(false);
     const totalSteps = 2
 
 
@@ -74,7 +76,8 @@ export const GeneratedForm = () => {
         handleSubmit,
         control,
         reset,
-        getValues
+        getValues,
+        register
     } = form
 
     const frameworks = ['GDPR', 'PCI', 'HIPAA', 'NIST', 'ISO-127001']
@@ -86,17 +89,20 @@ export const GeneratedForm = () => {
             return
         }
 
-        const { model, framework, file } = formData
+        const { model, framework, file, textBased } = formData
 
-        if (!file || !file[0]) {
-            toast.error("File is required.")
+        if (!file && textBased == null || textBased == "") {
+            toast.error("File or text is required.")
             return
         }
-
+        
         const uploadForm = new FormData()
         uploadForm.append("model", model)
         uploadForm.append("framework", framework)
-        uploadForm.append("file", file[0])
+        uploadForm.append("textBased", textBased)
+        if (file) {
+            uploadForm.append("file", file[0])
+        }
 
         try {
             const res = await fetch("http://localhost:3001/upload", {
@@ -114,50 +120,52 @@ export const GeneratedForm = () => {
                 toast.error(data.error || "Upload failed")
             }
         } catch (err) {
+
+            setLoadingPage(false);
             console.error(err)
             toast.error("Network error during upload")
         }
     }
 
 
-    const handleUpload = async ({
-        model,
-        framework,
-        file,
-    }: {
-        model: string;
-        framework: string;
-        file: File;
-    }) => {
+    // const handleUpload = async ({
+    //     model,
+    //     framework,
+    //     file,
+    // }: {
+    //     model: string;
+    //     framework: string;
+    //     file: File;
+    // }) => {
 
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("model", model);
-        formData.append("framework", framework);
-        alert(formData.get("framework"));
-        setUploadMessage("Uploading...");
-        setLoading(true);
-        try {
-            const res = await fetch("http://localhost:3001/upload", {
-                method: "POST",
-                body: formData,
-            });
-            const data = await res.json();
-            if (data.rules_saved) {
-                const docName = data.rules_saved.replace(".json", "");
-                setDocId(docName);
-                setUploadMessage("✅ Uploaded and processed: " + data.rules_saved);
-                setDocOptions((prev) => Array.from(new Set([...prev, docName])));
-            } else {
-                setUploadMessage("Upload failed");
-            }
-            setLoading(false);
-        } catch (err) {
-            setLoading(false);
-            console.error(err);
-            setUploadMessage("❌ Error uploading file");
-        }
-    };
+    //     const formData = new FormData();
+    //     formData.append("file", file);
+    //     formData.append("model", model);
+    //     formData.append("framework", framework);
+    //     alert(formData.get("framework"));
+    //     setUploadMessage("Uploading...");
+    //     setLoadingPage(true);
+    //     try {
+    //         const res = await fetch("http://localhost:3001/upload", {
+    //             method: "POST",
+    //             body: formData,
+    //         });
+    //         const data = await res.json();
+    //         if (data.rules_saved) {
+    //             const docName = data.rules_saved.replace(".json", "");
+    //             setDocId(docName);
+    //             setUploadMessage("✅ Uploaded and processed: " + data.rules_saved);
+    //             setDocOptions((prev) => Array.from(new Set([...prev, docName])));
+    //         } else {
+    //             setUploadMessage("Upload failed");
+    //         }
+    //         setLoadingPage(false);
+    //     } catch (err) {
+    //         setLoadingPage(false);
+    //         console.error(err);
+    //         setUploadMessage("❌ Error uploading file");
+    //     }
+    // };
 
     const handleBack = () => {
         if (step > 0) {
@@ -325,16 +333,38 @@ export const GeneratedForm = () => {
                                 <FormField
                                     key="file"
                                     control={control}
+
                                     name="file"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Input 2</FormLabel>
-                                            <FormControl>
-                                                <FileInput
-                                                    value={field.value?.[0] || null}
-                                                    onChange={(file) => field.onChange(file ? [file] : [])}
-                                                    accept="image/*, application/pdf"
-                                                />
+                                            <FormControl >
+                                                <Tabs defaultValue="account" className="flex justify-center w-full">
+                                                    <div className="flex justify-center w-full">
+
+                                                        <TabsList>
+                                                            <TabsTrigger value="file">File</TabsTrigger>
+                                                            <TabsTrigger value="text">Text/code</TabsTrigger>
+                                                        </TabsList>
+                                                    </div>
+                                                    <TabsContent value="file">
+
+                                                        <FileInput
+                                                            value={field.value?.[0] || null}
+                                                            onChange={(file) => field.onChange(file ? [file] : [])}
+                                                            accept="image/*, application/pdf"
+                                                        />
+                                                    </TabsContent>
+                                                    <TabsContent value="text">
+
+                                                        <Textarea
+                                                            {...register("textBased")}
+                                                            className="h-30"
+                                                            placeholder="Paste the text to process..."
+                                                        />
+
+                                                    </TabsContent>
+                                                </Tabs>
                                             </FormControl>
                                             <FormDescription></FormDescription>
                                         </FormItem>
@@ -348,11 +378,15 @@ export const GeneratedForm = () => {
                                         size="sm"
                                         onClick={handleBack}
                                         disabled={step === 0}
-                                        
+
                                     >
                                         Back
                                     </Button>
-                                    <Button type="submit" size="sm" className="font-medium">
+                                    {/* <SubmitButton step={step} loading={loadingPage} /> */}
+
+                                    <Button type="submit" size="sm" className="font-medium"
+
+                                        {...loadingPage ? { disabled: true } : {}}>
                                         {step === 1 ? 'Generate Cloud-Specific Rules' : 'Next'}
                                     </Button>
                                 </div>
@@ -365,3 +399,23 @@ export const GeneratedForm = () => {
         </div >
     )
 }
+
+type SubmitButtonType = {
+    step: number
+    loading: boolean
+}
+
+const SubmitButton = ({ step, loading }: SubmitButtonType) => {
+    return (
+
+        <Button type="submit" size="sm" className="font-medium"
+
+            {...loading ? { disabled: true } : {}}>
+            {step >= 1 ? 'Submit' : 'Next'}
+            {loading && loading === true && <>
+                loading</>}
+        </Button>
+    )
+}
+
+export default SubmitButton

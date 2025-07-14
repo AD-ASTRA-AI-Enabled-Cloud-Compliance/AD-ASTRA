@@ -1,0 +1,334 @@
+# gpt_service.py (Ollama + HF Embeddings)
+
+from typing import List
+from flask import json, jsonify, request
+import requests
+from transformers import AutoTokenizer, AutoModel
+import torch
+import os
+
+from ..utils.functions import clearMemory
+
+from ..services.websocket.ws import WebsocketService
+
+# 🔁 Renamed for clarity: This calls Ollama running Gemma 2B
+
+OLLAMA_API_URL = os.getenv("OLLAMA_API_URL")
+
+def call_ollama(system_prompt: str, user_prompt: str, model: str, temperature: float = 0.1) -> str:
+    ws = WebsocketService()
+    OLLAMA_API_URL = os.getenv("OLLAMA_API_URL")
+
+    # Clean prompts
+    system_prompt = system_prompt.strip() if system_prompt else ""
+    user_prompt = user_prompt.strip() if user_prompt else ""
+
+    ws.send_progress_update(
+        message=f"Call made to Ollama API model {model}.",
+    )
+
+    try:
+        url = f"{OLLAMA_API_URL}api/chat"
+        ws.send_progress_update(message=url)
+        payload = {
+            "model": model,
+            "messages": [
+                {
+                    "role": "system",
+                    "content": system_prompt
+                },
+                {
+                    "role": "user",
+                    "content": user_prompt
+                }
+            ],
+            "stream": False,
+            "temperature": temperature
+        }
+        # print(f"Sending payload: {json.dumps(payload, indent=2)}")  # Debug print
+
+        response = requests.post(url, json=payload)
+        response.raise_for_status()
+
+        if response.status_code != 200:
+            print(f"Error response content: {response.text}")  # Debug print
+            error_content = response.json()
+            raise Exception(f"Ollama API error: {error_content}")
+
+        response_json = response.json()
+        # print(f"Response received: {json.dumps(response_json, indent=2)}")  # Debug print
+
+        content = response_json["message"]["content"]
+        print('content')
+        print(content)
+        if not content:
+            raise ValueError("Ollama returned empty response.")
+
+        # Unloads model from memory to save resources
+        clearMemory(model, url)
+
+        return content
+    except Exception as e:
+        print(f"❌ Ollama API call error: {str(e)}")
+        print(f"Full error: {repr(e)}")  # More detailed error info
+        return "I'm sorry, I couldn't generate a response at the moment."
+
+
+# ✅ Local transformer-based embedding for Qdrant
+# class SimpleEmbedding:
+#     def __init__(self, model_name="sentence-transformers/all-MiniLM-L6-v2"):
+#         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+#         self.model = AutoModel.from_pretrained(model_name)
+
+#     def encode(self, text):
+#         inputs = self.tokenizer(text, return_tensors="pt", truncation=True, padding=True)
+#         with torch.no_grad():
+#             outputs = self.model(**inputs)
+#             embeddings = outputs.last_hidden_state.mean(dim=1)
+#             return embeddings[0].tolist()
+
+# embed_model = SimpleEmbedding()
+
+# def get_embedding(text: str):
+#     try:
+#         return embed_model.encode(text)
+#     except Exception as e:
+#         print(f"❌ Embedding error: {e}")
+#         return None
+
+
+class OllamaClient:
+    def __init__(self, host: str = "http://localhost:11434", system_prompt: str = None, user_prompt: str = None, model: str = None, temperature: float = 0.1) -> None:
+        self.host = host
+        self.model = model
+        self.session = requests.Session()
+        self.ws = WebsocketService()
+        self.system_prompt = system_prompt
+        self.user_prompt = user_prompt
+        self.temperature = temperature
+
+
+    def list_models(self) -> List[str]:
+        """List available models on the Ollama server"""
+        response = self.session.get(f"{self.host}/api/tags")
+        response.raise_for_status()
+        return [m['name'] for m in response.json().get("models", [])]
+    
+    def chat(self):
+        try:
+            url = f"{OLLAMA_API_URL}/api/generate"
+            self.ws.send_progress_update(message=url)
+            payload = {
+                "model": self.model,
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": self.system_prompt
+                    },
+                    {
+                        "role": "user",
+                        "content": self.user_prompt
+                    }
+                ],
+                "stream": False,
+                "temperature": self.temperature
+            }
+            # print(f"Sending payload: {json.dumps(payload, indent=2)}")  # Debug print
+
+            response = requests.post(url, json=payload)
+            response.raise_for_status()
+
+            if response.status_code != 200:
+                print(f"Error response content: {response.text}")  # Debug print
+                error_content = response.json()
+                raise Exception(f"Ollama API error: {error_content}")
+
+            response_json = response.json()
+            # print(f"Response received: {json.dumps(response_json, indent=2)}")  # Debug print
+
+            content = response_json["message"]["content"]
+            print('content')
+            print(content)
+            if not content:
+                raise ValueError("Ollama returned empty response.")
+
+            # Unloads model from memory to save resources
+            clearMemory(self.model, url)
+
+            return content
+        except Exception as e:
+            print(f"❌ Ollama API call error: {str(e)}")
+            print(f"Full error: {repr(e)}")  # More detailed error info
+            return "I'm sorry, I couldn't generate a response at the moment."
+
+
+    def embed(self):
+        try:
+            url = f"{OLLAMA_API_URL}/api/chat"
+            self.ws.send_progress_update(message=url)
+            payload = {
+                "model": self.model,
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": self.system_prompt
+                    },
+                    {
+                        "role": "user",
+                        "content": self.user_prompt
+                    }
+                ],
+                "stream": False,
+                "temperature": self.temperature
+            }
+            # print(f"Sending payload: {json.dumps(payload, indent=2)}")  # Debug print
+
+            response = requests.post(url, json=payload)
+            response.raise_for_status()
+
+            if response.status_code != 200:
+                print(f"Error response content: {response.text}")  # Debug print
+                error_content = response.json()
+                raise Exception(f"Ollama API error: {error_content}")
+
+            response_json = response.json()
+            # print(f"Response received: {json.dumps(response_json, indent=2)}")  # Debug print
+
+            content = response_json["message"]["content"]
+            print('content')
+            print(content)
+            if not content:
+                raise ValueError("Ollama returned empty response.")
+
+            # Unloads model from memory to save resources
+            clearMemory(self.model, url)
+
+            return content
+        except Exception as e:
+            print(f"❌ Ollama API call error: {str(e)}")
+            print(f"Full error: {repr(e)}")  # More detailed error info
+            return "I'm sorry, I couldn't generate a response at the moment."
+
+    def generate(self):
+
+            # payload = {
+            #     "model": self.model,
+            #     "prompt": t
+            # }
+            
+        try:
+            url = f"{OLLAMA_API_URL}/api/generate"
+            self.ws.send_progress_update(message=url)
+            payload = {
+                "model": self.model,
+                "prompt": self.user_prompt,
+                "stream": False,
+                "temperature": self.temperature
+            }
+            # print(f"Sending payload: {json.dumps(payload, indent=2)}")  # Debug print
+
+            response = requests.post(url, json=payload)
+            response.raise_for_status()
+
+            if response.status_code != 200:
+                print(f"Error response content: {response.text}")  # Debug print
+                error_content = response.json()
+                raise Exception(f"Ollama API error: {error_content}")
+
+            response_json = response.json()
+            # print(f"Response received: {json.dumps(response_json, indent=2)}")  # Debug print
+
+            content = response_json["message"]["content"]
+            print('content')
+            print(content)
+            if not content:
+                raise ValueError("Ollama returned empty response.")
+
+            # Unloads model from memory to save resources
+            clearMemory(self.model, url)
+
+            return content
+        except Exception as e:
+            print(f"❌ Ollama API call error: {str(e)}")
+            print(f"Full error: {repr(e)}")  # More detailed error info
+            return "I'm sorry, I couldn't generate a response at the moment."
+class OllamaEmbedder:
+    def __init__(self, host: str = "http://localhost:11434", model: str = "gemma:2b") -> None:
+        self.host = host
+        self.model = model
+        self.session = requests.Session()
+        self.ws = WebsocketService()
+
+    def list_models(self) -> List[str]:
+        """List available models on the Ollama server"""
+        response = self.session.get(f"{self.host}/api/tags")
+        response.raise_for_status()
+        return [m['name'] for m in response.json().get("models", [])]
+
+    def embed(self, text: str | List[str]) -> List[float] | List[List[float]]:
+        """Generate embeddings for text or list of texts"""
+        url = f"{self.host}/api/embeddings"
+
+        # self.ws.send_progress_update(
+        #     f"Using {self.model} model to generate embeddings.",
+        # )
+
+        # Handle single text
+        if isinstance(text, str):
+            payload = {
+                "model": self.model,
+                "prompt": text
+            }
+            response = self.session.post(url, json=payload)
+            response.raise_for_status()
+            return response.json()["embedding"]
+
+        # Handle list of texts
+        embeddings = []
+        for t in text:
+            payload = {
+                "model": self.model,
+                "prompt": t
+            }
+            response = self.session.post(url, json=payload)
+            response.raise_for_status()
+            embeddings.append(response.json()["embedding"])
+
+        # Uloads model from memory to save resources
+        clearMemory(self.model, url)
+
+        return embeddings
+
+    def chunk_text(self, text: str, chunk_size: int = 500, overlap: int = 50) -> List[str]:
+        """Split long text into overlapping chunks"""
+        words = text.split()
+        chunks = []
+        for i in range(0, len(words), chunk_size - overlap):
+            chunk = words[i:i + chunk_size]
+            chunks.append(" ".join(chunk))
+        return chunks
+
+
+class OllamaMemory:
+    def __init__(self, host: str = "http://localhost:11434", model: str = "gemma:2b") -> None:
+        self.host = host
+        self.models = OllamaEmbedder().list_models()
+        self.url = f"{self.host}/api/embeddings"
+        self.ws = WebsocketService()
+        self.session = requests.Session()
+        self.clear()
+
+    def clear(self):
+        for model in self.models:
+            payload = {
+                "model": model,
+                "prompt": "",
+                "keep_alive": 0
+
+            }
+            response = self.session.post(self.url, json=payload)
+            self.ws.send_progress_update(
+                message= "Memory cleared"
+            )
+            print(response)
+        # return response

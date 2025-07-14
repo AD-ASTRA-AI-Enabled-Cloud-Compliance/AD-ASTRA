@@ -2,7 +2,7 @@ import datetime
 
 from flask import request
 
-from ..services.websocket.ws import WebsocketService
+from ..services.websocket.ServiceWebsocket import WebsocketService
 
 def timestamped_filename() -> str:
     """
@@ -34,16 +34,6 @@ def remove_special_chars(text: str) -> str:
     
     return noChars
 
-    
-def clearMemory(model,url):
-    ws = WebsocketService()
-    payloadUload = {
-        "model": model,
-        "keep_alive": 0
-    }
-    # request.post(url, json=payloadUload)
-    # ws.send_progress_update(
-    #     f"######## Unloaded {model} model from memory.",
-    # )
-    return 
-
+def mergePrompts(prompts: list[str]):
+    finalPrompt = "\n\n".join(prompts).strip()
+    return finalPrompt

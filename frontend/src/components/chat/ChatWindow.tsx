@@ -2,19 +2,37 @@
 
 import React from "react";
 import ReactMarkdown from "react-markdown";
+import { useForm, FormProvider } from "react-hook-form";
+
 import useChat from "../../hooks/useChat";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { Card, CardContent } from "../ui/card";
-import Markdown from "react-markdown";
-import { ModelOptions } from "./ModelOptions";
 import { useModels } from "@/hooks/useDocSetup";
+import { Textarea } from "../ui/textarea";
+import { ModelOptions } from "./ModelOptions";
 
+export type ChatData = {
+  model: string;
+  query: string;
+  history?: { role: string; content: string }[];
+};
 
 export default function ChatWindow() {
-  const { messages, input, setInput, handleSend, loading } = useChat();
+  const methods = useForm<ChatData>({
+    defaultValues: { model: "", query: "" },
+  });
+  const { handleSubmit, register, setValue, watch } = methods;
+  const selectedModel = watch("model");
 
-  const { models, error } = useModels();
+  const { messages, handleSend, loading } = useChat();
+  const { models } = useModels();
+
+  const onSubmit = (data: ChatData) => {
+
+    handleSend(data);
+    setValue("query", ""); // Clear input after send
+  };
+
   return (
     <Card className="w-full h-full flex flex-col">
       <CardContent>
@@ -73,24 +91,26 @@ export default function ChatWindow() {
 
           </div>
 
-          <div style={{ display: "flex", gap: "0.5rem" }}>
-            <ModelOptions modelsAvailable={models}/>
-            <Input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask about HIPAA, PCI, NIST..."
-              onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              disabled={loading}
-            />
-            <Button
-              onClick={handleSend}
-              disabled={loading}
-            >
-              {loading ? "..." : "Send"}
-            </Button>
+          <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(onSubmit)} className="flex gap-2">
+              <ModelOptions
+                disabled={loading}
+                modelsAvailable={models}
+                value={selectedModel}
+                onValueChange={(val) => setValue("model", val)}
+              />
+              <Textarea
+                {...register("query", { required: true })}
+                className="w-full"
+                placeholder="Ask about HIPAA, PCI, NIST..."
+                disabled={loading}
+              />
+              <Button type="submit" disabled={loading}>
+                {loading ? "..." : "Send"}
+              </Button>
+            </form>
+          </FormProvider>
           </div>
-        </div>
 
       </CardContent>
     </Card>
