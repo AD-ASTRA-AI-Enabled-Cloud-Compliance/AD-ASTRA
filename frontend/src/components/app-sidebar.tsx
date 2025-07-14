@@ -84,8 +84,12 @@ const data = {
         {
           title: "Generate Terraform",
           url: "/terraform",
-        }
+        },
         // ------------------------------------------------------------------------------------------------------------------------
+        {
+          title: "Validate Terraform",
+          url: "/terraform_comparison",
+        }
       ],
     },
     {

@@ -22,7 +22,7 @@ export default function useChat() {
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: `**Answer**: ${result.answer}` },
-        ...result.steps.map((step: any) => ({
+        ...result.steps.map((step: string) => ({
           role: "assistant",
           content: Object.entries(step)
             .map(([k, v]) => `**${k}**: ${v}`)

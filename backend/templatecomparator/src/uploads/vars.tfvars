@@ -1,6 +1,0 @@
-rg_name   = "myResourceGroup"
-location             = "East US"
-storage_account_name = "examplestorageacct123"
-env                  = "dev"
-allowed_cidr         = "10.0.0.0/16"
-law_id               = "/subscriptions/xxxx/resourceGroups/rg/providers/Microsoft.OperationalInsights/workspaces/workspace"
