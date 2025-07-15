@@ -1,4 +1,4 @@
-import { RulePoint, RuleRow } from '@/app/(management)/explore_rules/components/lib';
+import { RulePoint, RuleRow } from '@/app/management/explore_rules/components/lib';
 import { useEffect, useState, useCallback } from 'react';
 
 
@@ -16,6 +16,7 @@ export const useRulesData = () => {
       if (!response.ok) throw new Error("Bad response");
 
       const res = await response.json();
+      console.log(res);
       const points: RulePoint[] = res.points;
 
       const tableData: RuleRow[] = points.map(point => ({

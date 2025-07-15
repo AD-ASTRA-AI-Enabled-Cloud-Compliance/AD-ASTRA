@@ -6,7 +6,6 @@
 # - Implements a method to call Ollama with system and user prompts.
 # - Validates if the generated response matches the intended cloud provider (AWS, Azure, or GCP) by checking for provider-specific resource prefixes.
 # ------------------------------------------------------------------------------------------------------------------------------------------------------
-
 import os
 import requests
 # import tiktoken

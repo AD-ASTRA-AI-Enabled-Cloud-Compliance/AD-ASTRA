@@ -17,9 +17,11 @@ from flask import request
 from more_itertools import chunked
 from pymongo import MongoClient
 from datetime import datetime
+from pymongo import MongoClient
+from datetime import datetime
 
 from ..utils.functions import remove_special_chars  # pip install more-itertools
-from ..services.websocket.ws import WebsocketService
+from .websocket.ServiceWebsocket import WebsocketService
 from .gpt_service import call_ollama
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
@@ -132,12 +134,13 @@ class ExtractService:
             # with open(f"debug_ollama_output_{framework}.txt", "w", encoding="utf-8") as f:
             #     f.write(response)
 
-            print("📥 Ollama response preview:\n", response[:300])
+#             print("📥 Ollama response preview:\n", response[:300])
 
             matches = re.findall(r"\[.*\]", response, re.DOTALL)
             if not matches:
                 raise ValueError("❌ No JSON array found in Ollama response")
             json_blob = matches[0]
+
             parsed = json.loads(json_blob)
 
             return [
@@ -445,12 +448,12 @@ DOCUMENT SECTION:
             )
         )
 
-        combined = [
-            {"score": r.score, "content": r.payload.get(
-                "chunk") or r.payload.get("rule")}
-            for r in (chunk_results + rule_results)
-        ]
-        return sorted(combined, key=lambda x: -x["score"])[:top_k]
+#         combined = [
+#             {"score": r.score, "content": r.payload.get(
+#                 "chunk") or r.payload.get("rule")}
+#             for r in (chunk_results + rule_results)
+#         ]
+#         return sorted(combined, key=lambda x: -x["score"])[:top_k]
 
 
     def get_available_doc_ids(self):
