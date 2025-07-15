@@ -133,8 +133,6 @@ class ExtractService:
 
             # with open(f"debug_ollama_output_{framework}.txt", "w", encoding="utf-8") as f:
             #     f.write(response)
-            # with open(f"debug_ollama_output_{framework}.txt", "w", encoding="utf-8") as f:
-            #     f.write(response)
 
 #             print("📥 Ollama response preview:\n", response[:300])
 
@@ -142,10 +140,7 @@ class ExtractService:
             if not matches:
                 raise ValueError("❌ No JSON array found in Ollama response")
             json_blob = matches[0]
-            matches = re.findall(r"\[.*\]", response, re.DOTALL)
-            if not matches:
-                raise ValueError("❌ No JSON array found in Ollama response")
-            json_blob = matches[0]
+
             parsed = json.loads(json_blob)
 
             return [
