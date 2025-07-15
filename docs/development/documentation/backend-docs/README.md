@@ -26,9 +26,9 @@ The scope includes installation, architecture, APIs, user workflows, troubleshoo
 🛡️ 1.3 Compliance Frameworks Supported  🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️ 
 
 The pipeline is designed to support ingestion from multiple compliance frameworks, including but not limited to:
-✅ PCI DSS                          ✅ HIPAA
-✅ GDPR                             ✅ NIST 800-53
-✅ ISO 27001                        ✅ SOC 2
+✅ PCI DSS (Payment Card Industry Data Security Standard)             ✅ ISO 27001 
+✅ GDPR                                                               ✅ NIST 800-53 & 800-171
+✅ HIPAA (Health Insurance Portability and Accountability Act)        ✅ SOC 2
 
 The pipeline architecture is modular, allowing the addition of new frameworks easily as your organization's compliance needs evolve.
 

@@ -1,75 +1,118 @@
-🌟 Real-Time OCR & Progress Reporting Pipeline
+🌟 Compliance Evaluation & Remediation Pipeline 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🪐 1.1 Purpose and Benefits  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
 
-The Real-Time OCR & Progress Reporting Pipeline empowers users to upload documents and track their OCR processing live, fostering transparency, user trust, and immediate insight into document digitization workflows. Unlike typical “upload and wait” systems, this pipeline streams granular progress updates, showing real-time percentage completion, current processing stages, and instant failure alerts.
+The Compliance Evaluation & Remediation Pipeline is engineered to automate the assessment of cloud environments against compliance frameworks while enabling immediate remediation of detected violations.
 
 ✨ Benefits: 
-                🟢 Improved User Trust: Users see live activity instead of a spinning loader.
-                ⚡ Faster Feedback Loops: Users can identify stalled processes quickly.
-                📈 Audit-Friendly: Logs all progress states for traceability.
-                🖥️ Smooth UX: Visual indicators maintain user engagement during heavy OCR tasks.
 
+                🟢 Continuous Compliance: Automates evaluations, reducing risks of drifting from standards.
+                ⚡ Accelerated Remediation: Enforces compliance at the pace of development, reducing audit failures.
+                📈 Operational Efficiency: Frees engineers from repetitive remediation tasks.
+                🌟 Trust and Visibility: Builds a transparent compliance posture with clear, actionable insights.
+                📌 Framework Flexibility: Adaptable to NIST, CIS Benchmarks, PCI DSS, HIPAA, and organizational policies.
+
+                
 🧩 1.2 Audience and Scope
 
 This documentation is crafted for:
-✅ Frontend engineers integrating OCR progress UI.
-✅ DevOps & SREs monitoring real-time system responsiveness.
-✅ Product managers & QA validating live user experience and expected behaviors.
-✅ Technical writers preparing user-facing guides.
-✅ Clients and auditors verifying compliance with workflow transparency requirements.
+                ✅ DevOps Engineers: Automate and enforce compliance within CI/CD.
+                ✅ Cloud Architects: Validate infrastructure against frameworks.
+                ✅ Security & Compliance Teams: Monitor posture and ensure audit readiness.
+                ✅ CTOs & Stakeholders: Gain high-level visibility into compliance health.
 
 📌 Scope: 📌📌📌📌📌📌📌📌📌📌
 
-This pipeline covers the frontend orchestration layer only for real-time OCR progress, leveraging:
-                            ✅WebSocket streams from backend OCR services.
-                            ✅React components and hooks for live updates.
-                            ✅User-friendly dashboards to visualize document processing stages.
-                            ✅It excludes backend OCR extraction logic, focusing instead on user interaction, UI updates, and connection management.
+This pipeline covers focuses on cloud infrastructure and IaC compliance evaluations:
+
+                        ✅ Automates remediation steps post evaluation.
+                        ✅ Designed to integrate with existing CI/CD pipelines, dashboards, and reporting tools.
+                        ✅ Supports multi-cloud environments (AWS, Azure, GCP)
+
 
 📚 1.3 Key Concepts and Terminologies  📚📚📚📚📚📚📚📚📚📚
-                        ✅OCR (Optical Character Recognition): Extraction of machine-readable text from images/PDFs.
-                        ✅Progress Events: Structured real-time updates indicating current OCR stage and % completed.
-                        ✅WebSocket Streaming: Persistent bi-directional communication to push live data.
-                        ✅Frontend Dashboard: The UI layer showing progress bars, logs, and status indicators.
-                        ✅Event-driven UI: Frontend components update based on incoming events without polling.
 
-🛡️ 1.4 Supported Document Types  🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️
+                ✅ Compliance Evaluation: Process of comparing environment configurations and resources against regulatory or organizational policies.
+                ✅ Remediation: Automated or manual correction of compliance violations to align with policies.
+                ✅ Framework Profiles: Defined sets of rules (PCI DSS, HIPAA, NIST, CIS) used as evaluation baselines.
+                ✅ Evaluation Trigger: Events (example., new deployment, PR merge, scheduled scan) that initiate compliance checks.
+                ✅ Compliance Dashboard: UI component displaying the current state of compliance across resources and the results of remediation actions.
+                ✅ Remediation Actions: Corrective steps applied to infrastructure or code to fix detected violations, often using IaC templates, RBAC adjustments, or direct API calls.
+                ✅ Status Artifacts: JSON or YAML output files representing the results of compliance scans for traceability and audits.
 
-The pipeline supports OCR progress tracking for:
-                            📄 PDF files (scanned documents).
-                            🖼️ Image formats (JPEG, PNG, TIFF).
-                            📘 Multi-page documents tracked per page and total %.
+🛡️ 1.4 Compliance Frameworks Supported  🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️ 
 
+The Compliance Evaluation & Remediation Pipeline currently supports the following frameworks, with modular extension capability:
+
+✅ PCI DSS (Payment Card Industry Data Security Standard)                       ✅ NIST 800-53 & 800-171
+✅ HIPAA (Health Insurance Portability and Accountability Act)                  ✅ CIS Benchmarks
+✅ GDPR (General Data Protection Regulation)                                    ✅ Custom Internal Compliance Policies
 
 🏗️ 2. System Architecture
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🪐 2.1 High-Level Architecture Diagram  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
 
-+-----------------+       WebSocket       +------------------------+
-| User Dashboard  |<--------------------->| OCR Progress Broadcaster|
-+-----------------+                       +------------------------+
-         |                                            |
-         | REST API (Upload Document)                 |
-         V                                            V
-+-----------------+                          +---------------------+
-| File Upload API |                          | OCR Processing Engine|
-+-----------------+                          +---------------------+
-                                                      |
-                                               Status Updates via
-                                               Event Bus/WebSocket
-                                                      |
-                                              +---------------------+
-                                              | Progress Formatter  |
-                                              +---------------------+
++---------------------------+
+|      User Interface       |
+| (Compliance Dashboard UI) |
++-----------+---------------+
+            |
+            v
++---------------------------+
+|  Compliance Evaluation    |
+|        Engine              |
+| (Evaluation Logic, Rules) |
++-----------+---------------+
+            |
+            v
++---------------------------+
+|     Remediation Engine    |
+|  (IaC Patcher, RBAC Fix)  |
++-----------+---------------+
+            |
+            v
++---------------------------+
+|    Notification System    |
+|   (Status, Errors, Logs)  |
++---------------------------+
+
+✨ 2.2 Components Breakdown ✨✨✨✨✨✨✨✨✨✨✨✨
+
+🖥️ 2.2.1 React Frontend & Compliance Dashboard 🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️
+
+                                ✅ Displays compliance evaluation results.
+                                ✅ Allows users to initiate evaluations and remediation.
+                                ✅ Shows status updates and progress indicators.
+                                ✅ Uses react-query and Zustand for state management.
+
+🛠️ 2.2.2 Evaluation Engine 🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️
+
+                                ✅ Core logic for validating resources against compliance rules.
+                                ✅ Supports event-based triggers (PR merges, deployments, schedules).
+                                ✅ Generates structured JSON reports with evaluation results.
+
+🪄 2.2.3 Remediation Engine 🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄
+
+                                ✅ Generates IaC patches.
+                                ✅ Can execute direct API calls for remediation.
+                                ✅ Supports approval gates before auto-remediation.
+
+🔔 2.2.4 Notification and Logging 🔔🔔🔔🔔🔔🔔🔔🔔🔔🔔
+
+                        ✅ Slack, Teams, or Email notifications on compliance changes.
+                        ✅ Logs status updates for audit trails.
+                        ✅ Integrates with Metrics & Reporting Pipeline for historical trend analysis.
 
 
-🟩 User Dashboard (Frontend): React/Next.js interface displaying live OCR progress using websockets and dynamic charts.
-🟧 OCR Progress Broadcaster: Backend service broadcasting OCR progress events.
-🟦 OCR Processing Engine: Backend service handling document processing and emitting structured progress updates.
-🟨 Progress Formatter: Converts backend updates into user-friendly, granular stages before frontend consumption.
+
+
+
+
+
+
+
 
 🧬 2.2 Real-Time OCR & Progress Reporting Pipeline - UML Diagram  🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
 
@@ -89,6 +132,16 @@ This diagram shows how our pipeline processes document/image uploads with OCR, e
 This diagram illustrates how our OCR pipeline is physically deployed across frontend, backend, and WebSocket servers, emphasizing live progress updates and vector/metadata storage in your real-time OCR processing system.
 
 ![Real-Time OCR & Progress Reporting Pipeline Deployment Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/c37b0dc72806ea26902cb77c3ea8cf3d7aaed074/docs/development/documentation/frontend-docs/real-time%20OCR%20pipeline/diagrams/Real-Time%20OCR%20&%20Progress%20Reporting%20Pipeline%20-%20Deployment%20Diagram.png)
+
+
+
+
+
+
+
+
+
+
 
 
 🌿 3 Installation and Setup
