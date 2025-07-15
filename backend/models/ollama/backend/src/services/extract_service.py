@@ -17,9 +17,11 @@ from flask import request
 from more_itertools import chunked
 from pymongo import MongoClient
 from datetime import datetime
+from pymongo import MongoClient
+from datetime import datetime
 
 from ..utils.functions import remove_special_chars  # pip install more-itertools
-from ..services.websocket.ws import WebsocketService
+from .websocket.ServiceWebsocket import WebsocketService
 from .gpt_service import call_ollama
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
@@ -138,6 +140,7 @@ class ExtractService:
             if not matches:
                 raise ValueError("❌ No JSON array found in Ollama response")
             json_blob = matches[0]
+
             parsed = json.loads(json_blob)
 
             return [

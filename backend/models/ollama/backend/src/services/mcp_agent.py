@@ -1,10 +1,9 @@
 # import os
-# from dotenv import load_dotenv
 # import requests
 # import os
-# from dotenv import load_dotenv
 # import requests
 
+from dotenv import load_dotenv
 from .websocket.ServiceWebsocket import WebsocketService
 from .gpt_service import call_ollama
 # Updated by Harsimran Kaur

@@ -119,9 +119,12 @@ def upload():
 # using the CloudContextGenerator service, and returns a success or error response.
 # Used for automating cloud compliance and infrastructure-as-code generation.
 # ------------------------------------------------------------------------
+from flask import request, jsonify
+from bson import ObjectId
+
 @main_routes.route("/generate_terraform", methods=["POST"])
 def generate_terraform():
-    print("🔔 /generate_terraform endpoint called")  # Add this line
+    print("🔔 /generate_terraform endpoint called")
     try:
         data = request.get_json()
         session = GlobalRequestGenerate()
@@ -135,15 +138,26 @@ def generate_terraform():
 
         # ✅ Generate cloud context + Terraform all in one step
         context_gen = CloudContextGenerator(session=session)
-        final_tf =context_gen.generate_context(selected_frameworks, selected_providers)
+        final_tf = context_gen.generate_context(selected_frameworks, selected_providers)
 
         print(final_tf)
 
-        return jsonify(final_tf), 200
+        # ✅ Add safe ObjectId conversion before jsonify
+        def convert_objectid(obj):
+            if isinstance(obj, ObjectId):
+                return str(obj)
+            if isinstance(obj, dict):
+                return {k: convert_objectid(v) for k, v in obj.items()}
+            if isinstance(obj, list):
+                return [convert_objectid(i) for i in obj]
+            return obj
+
+        return jsonify(convert_objectid(final_tf)), 200
 
     except Exception as e:
         print(f"❌ Error in generation flow: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
     
 
 # javier changes
