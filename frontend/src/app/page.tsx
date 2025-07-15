@@ -1,19 +1,23 @@
 'use client'
 
-import React from "react";
-import UploadForm from "./management/uploadform"; // adjust path if needed
-import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-function App() {
+export default function App() {
   const router = useRouter();
+  
+  useEffect(() => {
+    // Redirect to login page
+    router.push('/login');
+  }, [router]);
+
+  // Simple loading indicator while redirecting
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <Button onClick={() => router.push('/dashboard')}>
-        Dashboard
-      </Button>
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
+        <p className="text-muted-foreground">Redirecting to login...</p>
+      </div>
     </div>
   );
 }
-
-export default App;

@@ -12,6 +12,7 @@ import subprocess
 from datetime import datetime
 from io import StringIO
 
+from bson import ObjectId  # ✅ Added for ObjectId serialization
 from src.utils.templates import TerraformTemplateWriter
 
 INDENT = "  "
@@ -25,6 +26,7 @@ class BaselineTerraformGenerator:
 
         self.mongo = session.mongo
         self.qdrant = session.qdrant
+
         self.ws = session.ws.send_progress_update
 
         self.temperature = session.temperature
@@ -32,7 +34,6 @@ class BaselineTerraformGenerator:
         self.chunk_overlap = session.chunk_overlap
         self.top_k = session.top_k
         self.max_token_limit = session.max_token_limit
-
 
     def generate_baseline_from_provider_json(self, json_data, tf_output_path=None, framework=None):
         data = json_data
@@ -84,10 +85,8 @@ class BaselineTerraformGenerator:
                 for var_name in sorted(all_variable_names):
                     vf.write(f'variable "{var_name}" {{}}\n')
 
-            # Run format and validate
             self.format_and_validate(os.path.dirname(tf_output_path))
 
-            # Read .terraform.lock.hcl
             lockfile_path = os.path.join(os.path.dirname(tf_output_path), ".terraform.lock.hcl")
             if os.path.exists(lockfile_path):
                 with open(lockfile_path, "r", encoding="utf-8") as lf:
@@ -95,20 +94,23 @@ class BaselineTerraformGenerator:
             else:
                 lockfile_content = ""
 
-            # Read formatted terraform file
             with open(tf_output_path, "r", encoding="utf-8") as tf:
                 terraform_content = tf.read()
 
-            # Read variables.tf
             with open(var_file, "r", encoding="utf-8") as vf:
                 variables_content = vf.read()
 
-            # Return all artifacts (NO plan)
-            return {
+            result = {
                 "terraform": terraform_content,
                 "variables": variables_content,
                 "lockfile": lockfile_content
             }
+
+            # ✅ Convert ObjectId to string if accidentally added to result
+            if '_id' in result:
+                result['_id'] = str(result['_id'])
+
+            return result
 
         else:
             tf_buffer = StringIO()
@@ -162,7 +164,7 @@ class BaselineTerraformGenerator:
 
         try:
             print(f"🔍 Running terraform validate in {tf_directory}...")
-            self.ws(f"🔍 Running terraform validate in ...")
+            self.ws("🔍 Running terraform validate...")
             subprocess.run(["terraform", "validate"], cwd=tf_directory, check=True)
             self.ws("✅ terraform validate passed.")
         except subprocess.CalledProcessError as e:
