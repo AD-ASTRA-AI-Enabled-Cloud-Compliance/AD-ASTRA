@@ -1,36 +1,23 @@
-import React from "react";
-import UploadForm from "./management/components/UploadForm";
+'use client'
 
-function App() {
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+export default function App() {
   const router = useRouter();
+  
+  useEffect(() => {
+    // Redirect to login page
+    router.push('/login');
+  }, [router]);
+
+  // Simple loading indicator while redirecting
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="text-2xl font-bold mb-6">Document Upload</h1>
-      <UploadForm />
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
+        <p className="text-muted-foreground">Redirecting to login...</p>
+      </div>
     </div>
   );
 }
-
-export default App;
-
-//Commented old code:
-
-// 'use client'
-
-// import React from "react";
-// import UploadForm from "./management/uploadform"; // adjust path if needed
-// import { Button } from "@/components/ui/button";
-// import { useRouter } from "next/navigation";
-
-// function App() {
-//   const router = useRouter();
-//   return (
-//     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-//       <Button onClick={() => router.push('/dashboard')}>
-//         Dashboard
-//       </Button>
-//     </div>
-//   );
-// }
-
-// export default App;

@@ -21,7 +21,7 @@ from pymongo import MongoClient
 from datetime import datetime
 
 from ..utils.functions import remove_special_chars  # pip install more-itertools
-from ..services.websocket.ws import WebsocketService
+from .websocket.ServiceWebsocket import WebsocketService
 from .gpt_service import call_ollama
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue

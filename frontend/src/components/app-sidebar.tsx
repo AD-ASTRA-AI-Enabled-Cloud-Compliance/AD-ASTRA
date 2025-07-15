@@ -66,10 +66,6 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
       url: "/explore_rules",
     },
     {
-      title: "Explore Documents",
-      url: "/explore_documents",
-    },
-    {
       title: "Chat",
       url: "/chat",
     },
@@ -79,6 +75,10 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
     {
       title: "New Document",
       url: "/process_documentation",
+    },
+    {
+      title: "Explore Documents",
+      url: "/explore_documents",
     },
     {
       title: "Generate Terraform",
