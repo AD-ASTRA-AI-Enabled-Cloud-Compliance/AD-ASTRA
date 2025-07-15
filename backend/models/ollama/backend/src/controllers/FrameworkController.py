@@ -1,14 +1,15 @@
 
-class FrameworkIndex:
-    pass
+class FrameworkController():
+    def __init__(self):
+       pass
 
-class FrameworkGenerate:
-    pass
+    def index(self):
+        pass
 
-class FrameworkStore:
-    pass
-class FrameworkUpdate:
-    pass
+    def store(self):
+        pass
+    def update(self):
+        pass
 
-class FrameworkDelete:
-    pass
+    def delete(self):
+        pass 
