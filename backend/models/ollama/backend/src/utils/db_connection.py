@@ -1,4 +1,4 @@
-# db_status.py
+# db_connection.py
 
 # Client instance is created and terminated in each method (call) to reduce connection TTL
 

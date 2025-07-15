@@ -1,4 +1,4 @@
-import { RulePoint, RuleRow } from '@/app/(management)/explore_rules/components/lib';
+import { RulePoint, RuleRow } from '@/app/management/explore_rules/components/lib';
 import { useEffect, useState, useCallback } from 'react';
 
 
