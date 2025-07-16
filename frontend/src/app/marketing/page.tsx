@@ -40,24 +40,24 @@ import {
 
 import * as React from 'react'
 
-import { ButtonLink } from '#components/button-link/button-link'
-import { Faq } from '#components/faq'
-import { Features } from '#components/features'
-import { BackgroundGradient } from '#components/gradients/background-gradient'
-import { Hero } from '#components/hero'
+import { ButtonLink } from '@/components/landing/button-link/button-link'
+import { Faq } from '@/components/landing/faq'
+import { Features } from '@/components/landing/features'
+import { BackgroundGradient } from '@/components/landing/gradients/background-gradient'
+import { Hero } from '@/components/landing/hero'
 import {
   Highlights,
   HighlightsItem,
   HighlightsTestimonialItem,
-} from '#components/highlights'
-import { ChakraLogo, NextjsLogo } from '#components/logos'
-import { FallInPlace } from '#components/motion/fall-in-place'
-import { Pricing } from '#components/pricing/pricing'
-import { Testimonial, Testimonials } from '#components/testimonials'
-import { Em } from '#components/typography'
-import faq from '#data/faq'
-import pricing from '#data/pricing'
-import testimonials from '#data/testimonials'
+} from '@/components/landing/highlights'
+import { ChakraLogo, NextjsLogo } from '@/components/landing/logos'
+import { FallInPlace } from '@/components/landing/motion/fall-in-place'
+import { Pricing } from '@/components/landing/pricing/pricing'
+import { Testimonial, Testimonials } from '@/components/landing/testimonials'
+import { Em } from '@/components/landing/typography'
+import faq from '@/data/faq'
+import pricing from '@/data/pricing'
+import testimonials from '@/data/testimonials'
 
 export const meta: Metadata = {
   title: 'Saas UI Landingspage',
@@ -341,7 +341,7 @@ const FeaturesSection = () => {
       iconSize={4}
       features={[
         {
-          title: '#components.',
+          title: '@/components/landing.',
           icon: FiBox,
           description:
             'All premium components are available on a private NPM registery, no more copy pasting and always up-to-date.',
@@ -379,7 +379,7 @@ const FeaturesSection = () => {
           title: 'Upselling.',
           icon: FiTrendingUp,
           description:
-            '#components and hooks for upgrade flows designed to make upgrading inside your app frictionless.',
+            '@/components/landing and hooks for upgrade flows designed to make upgrading inside your app frictionless.',
           variant: 'inline',
         },
         {
