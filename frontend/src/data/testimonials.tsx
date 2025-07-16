@@ -3,38 +3,32 @@ export default {
   items: [
     {
       name: 'Eelco Wiersma',
-      description: 'Founder Saas UI',
+      description: 'Cloud Security Engineer',
       avatar:
         'https://pbs.twimg.com/profile_images/1470742164024008706/k-eXHtu0_normal.jpg',
       children: (
         <>
-          “With SaaS UI I am able to produce high quality dashboard apps and
-          internal tools without a lot of design skills. The ROI really is
-          amazing.”
+          "Skylock revolutionized our cloud compliance. We trust its security because baselines are generated directly from established framework documents. Uploading our Terraform files for an immediate, detailed comparison against these reliable baselines is invaluable. The real-time scoring and clear remediation guidance boost our confidence and efficiency."
         </>
       ),
     },
     {
       name: 'Caroline Yahaya',
-      description: 'Fullstack Developer',
+      description: 'Cloud Solutions Architect',
       avatar: '/static/images/avatar2.jpg',
       children: (
         <>
-          “Saas UI allows me to build beautiful and functional UI super fast.
-          The components are very well thought out and the Next.js starter kit
-          saved me at least 100 hours of work.”
+          “Skylock allows us to build beautiful and functional cloud environments securely and super fast. The automated validation of IaC against security rules and the intelligent mapping of policies mean we're building compliant infrastructure from the start, which is a huge win for both development and management.”
         </>
       ),
     },
     {
       name: 'Alberto Vazquez',
-      description: 'Frontend Engineer',
+      description: 'Platform Engineer',
       avatar: '/static/images/avatar3.jpg',
       children: (
         <>
-          “Saas UI gave us a perfect starting point for our project, having the
-          storybooks already set up with beautifully crafted components and
-          fully mocked pages was a treat.”
+          “Skylock gave us a perfect starting point for our projects, enabling continuous cloud governance. Their direct, transparent approach, combined with real-time scoring, makes compliance seamless and highly reliable. The beautifully crafted outputs already set up was a treat, making compliance a seamless part of our process.”
         </>
       ),
     },
