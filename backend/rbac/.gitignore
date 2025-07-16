@@ -1,0 +1,68 @@
+# ----------------------
+# Global
+# ----------------------
+.DS_Store
+Thumbs.db
+*.log
+*.pem
+*.bak
+*~
+*.old
+*.orig
+*.tmp
+
+# ----------------------
+# Python - Backend (Flask)
+# ----------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+pip-wheel-metadata/
+__pypackages__/
+build/
+dist/
+venv/
+.env
+.env.*
+
+# Flask specific
+instance/
+*.sqlite3
+
+# ----------------------
+# Docker
+# ----------------------
+.dockerignore
+*.pid
+*.tar
+*.img
+
+# ----------------------
+# VSCode/Editor Settings
+# ----------------------
+.vscode/
+.idea/
+*.swp
+
+# ----------------------
+# Output and Log folders (custom)
+uploads/
+cloud_outputs/
+user_outputs/
+terraform_output/
+output_files/
+logs/
+summaries/
+storage/
+
+# ----------------------
+# macOS Metadata
+**/.DS_Store
+
+# ----------------------
+# Windows Metadata
+ehthumbs.db
+Desktop.ini

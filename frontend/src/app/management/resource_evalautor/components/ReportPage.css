@@ -1,0 +1,160 @@
+.report-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.report-container h2 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 30px;
+  font-size: 2em;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 15px;
+}
+
+.report-container h3 {
+  color: #34495e;
+  margin-top: 25px;
+  margin-bottom: 15px;
+  font-size: 1.4em;
+}
+
+.assessment-summary {
+  background-color: #ecf0f1;
+  border-left: 5px solid #3498db;
+  padding: 15px 20px;
+  margin-bottom: 30px;
+  border-radius: 5px;
+}
+
+.assessment-summary p {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.assessment-summary strong {
+  color: #2c3e50;
+}
+
+.report-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.download-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.download-button.json {
+  background-color: #f39c12;
+  color: white;
+}
+
+.download-button.json:hover {
+  background-color: #e67e22;
+}
+
+.download-button.text {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.download-button.text:hover {
+  background-color: #7f8c8d;
+}
+
+.report-table-container {
+  overflow-x: auto; /* Ensures table is scrollable on smaller screens */
+  margin-top: 20px;
+}
+
+.compliance-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.compliance-table th,
+.compliance-table td {
+  border: 1px solid #ddd;
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.compliance-table th {
+  background-color: #3498db;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.9em;
+}
+
+.compliance-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.compliance-table tr:hover {
+  background-color: #f8f8f8;
+}
+
+.status-compliant {
+  color: #27ae60;
+  font-weight: bold;
+}
+
+.status-non-compliant {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.status-not-applicable {
+  color: #8e44ad;
+  font-weight: bold;
+}
+
+.rule-list {
+  list-style-type: disc;
+  padding-left: 20px;
+  margin: 0;
+}
+
+.rule-list li {
+  margin-bottom: 5px;
+}
+
+.back-button {
+  display: block;
+  width: auto;
+  padding: 12px 25px;
+  background-color: #34495e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 30px;
+  text-align: center;
+  float: right; /* Aligns to the right */
+}
+
+.back-button:hover {
+  background-color: #2c3e50;
+  transform: translateY(-2px);
+}
