@@ -54,7 +54,7 @@ The Remediation Pipeline currently supports the following frameworks, with modul
 
 🪐 2.1 High-Level Architecture Diagram  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
 
-+---------------------------+
+`+---------------------------+`
 |      User Interface       |
 | (Compliance Dashboard UI) |
 +-----------+---------------+
@@ -488,7 +488,7 @@ Section provides concise, clearly categorized answers to common questions from e
 ✅ Depends on infrastructure size and framework complexity, but for a single virtual machine or IAM policy, it averages under 5 seconds for evaluation and 10–30 seconds for remediation.
 
 
-🔧 10.2 Technical FAQs 🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧
+🔧 6.2 Technical FAQs 🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧
 
 🔹 Q1: How are remediation actions applied?
 ✅ Remediations are generated as infrastructure-as-code snippets and applied via API integrations (e.g., Terraform Cloud, Ansible Playbooks, or custom shell scripts).
@@ -506,7 +506,7 @@ Section provides concise, clearly categorized answers to common questions from e
 ✅ Developers can define custom rules as JSON logic expressions or SQL-like policy queries. The UI supports uploading and managing custom rule sets.
 
 
-🔐 10.3 Compliance & Security FAQs 🔐🔐🔐🔐🔐🔐🔐🔐🔐🔐
+🔐 6.3 Compliance & Security FAQs 🔐🔐🔐🔐🔐🔐🔐🔐🔐🔐
 
 🔹 Q1: How is sensitive data protected?
 ✅ All data is encrypted at rest and in transit using industry-standard protocols (AES-256, TLS 1.3). Access to evaluation and remediation data is governed by RBAC (Role-Based Access Control).
@@ -522,23 +522,3 @@ Section provides concise, clearly categorized answers to common questions from e
 
 🔹 Q5: Are compliance framework updates handled automatically?
 ✅ Yes. Frameworks can be version-pinned or subscribed to real-time updates. Notifications inform admins of any rule changes impacting their systems.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
