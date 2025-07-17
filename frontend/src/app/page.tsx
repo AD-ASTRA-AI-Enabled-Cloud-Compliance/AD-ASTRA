@@ -44,14 +44,14 @@ import { Footer } from '@/components/landing/layout/footer'
 //   description: 'Free SaaS landingspage starter kit',
 // }
 
-export const metadata: Metadata = {
-  title: 'SkyLock – Cloud Compliance Made Easy',
-  description: 'Automate cloud compliance validation and secure infrastructure with SkyLock. AI-powered Terraform generation for HIPAA, PCI-DSS, NIST, and GDPR. Trusted by cloud teams.',
-}
+// export const metadata: Metadata = {
+//   title: 'SkyLock – Cloud Compliance Made Easy',
+//   description: 'Automate cloud compliance validation and secure infrastructure with SkyLock. AI-powered Terraform generation for HIPAA, PCI-DSS, NIST, and GDPR. Trusted by cloud teams.',
+// }
 const Home: NextPage = () => {
   return (
     <Box>
-      <Header/>
+      <Header />
 
       <HeroSection />
 
