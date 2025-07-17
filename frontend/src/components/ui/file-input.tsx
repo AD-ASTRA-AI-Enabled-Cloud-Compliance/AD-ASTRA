@@ -87,6 +87,28 @@ const FileInput = ({
           </p>
         </div>
       </div>
+      {value &&
+        <DocumentsSelected
+          value={value}
+          handleRemove={() => handleRemove}
+        />
+      }
+    </div>
+  )
+}
+
+export { FileInput }
+
+
+type DocumentsSelectedTypes = {
+  value: File
+  disabled?: boolean
+  handleRemove?: () => void
+}
+
+export const DocumentsSelected = ({ value, disabled, handleRemove }: DocumentsSelectedTypes) => {
+  return (
+    <>
       {value && (
         <div className="flex items-center gap-2 rounded-md bg-muted/50 p-2">
           <div className="rounded-md bg-background p-2">
@@ -111,8 +133,6 @@ const FileInput = ({
           </Button>
         </div>
       )}
-    </div>
+    </>
   )
 }
-
-export { FileInput }

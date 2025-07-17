@@ -55,21 +55,3 @@ resource "azurerm_storage_account" "pci_storage" {
 }]
 }]
 }
-
-resource "azuread_conditional_access_policy" "mfa_policy" {
-  display_name = "PCI-MFA-Requirement"
-  state = "enabled"
-  conditions = [{
-  client_app_types = ["all"]
-  applications = [{
-  included_applications = ["All"]
-}]
-  users = [{
-  included_users = ["All"]
-}]
-}]
-  grant_controls = [{
-  operator = "OR"
-  built_in_controls = ["mfa"]
-}]
-}
