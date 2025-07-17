@@ -1,9 +1,9 @@
-🌟 Compliance Evaluation & Remediation Pipeline 
+🌟 Remediation Pipeline 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🪐 1.1 Purpose and Benefits  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
 
-The Compliance Evaluation & Remediation Pipeline is engineered to automate the assessment of cloud environments against compliance frameworks while enabling immediate remediation of detected violations.
+The Remediation Pipeline is engineered to automate the assessment of cloud environments against compliance frameworks while enabling immediate remediation of detected violations.
 
 ✨ Benefits: 
 
@@ -43,11 +43,11 @@ This pipeline covers focuses on cloud infrastructure and IaC compliance evaluati
 
 🛡️ 1.4 Compliance Frameworks Supported  🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️ 
 
-The Compliance Evaluation & Remediation Pipeline currently supports the following frameworks, with modular extension capability:
+The Remediation Pipeline currently supports the following frameworks, with modular extension capability:
 
 ✅ PCI DSS (Payment Card Industry Data Security Standard)                       ✅ NIST 800-53 & 800-171
 ✅ HIPAA (Health Insurance Portability and Accountability Act)                  ✅ CIS Benchmarks
-✅ GDPR (General Data Protection Regulation)                                    ✅ Custom Internal Compliance Policies
+✅ GDPR (General Data Protection Regulation)
 
 🏗️ 2. System Architecture
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -106,6 +106,18 @@ The Compliance Evaluation & Remediation Pipeline currently supports the followin
                         ✅ Integrates with Metrics & Reporting Pipeline for historical trend analysis.
 
 
+🧬 2.3 Remediation Pipeline - UML Diagram  🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
+
+This diagram models the end-to-end sequence flow from a user viewing compliance status to triggering automated remediation. It shows interactions between user, API gateway, evaluation and remediation services, and backend components.
+
+![Remediation Pipeline UML Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/timmy/docs/development/documentation/frontend-docs/remediation%20pipeline/diagrams/Remediation%20Pipeline%20-%20UML%20Diagram.png)
+
+
+🎯 2.4 Remediation Pipeline  - Component Diagram  🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯
+
+This diagram maps out the key components, services, databases, and external systems involved in your end-to-end compliance evaluation and remediation pipeline, highlighting data flow, interactions, and communication patterns across backend, frontend, and external layers.
+
+![Remediation Pipeline Component Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/62017cfc2cbdf9a7eb6f06c5edf05bdf636a29c8/docs/development/documentation/frontend-docs/remediation%20pipeline/diagrams/Remediation%20Pipeline%20-%20Component%20Diagram.png)
 
 
 
@@ -113,18 +125,6 @@ The Compliance Evaluation & Remediation Pipeline currently supports the followin
 
 
 
-
-🧬 2.2 Real-Time OCR & Progress Reporting Pipeline - UML Diagram  🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
-
-This diagram shows the sequence of interactions between the user, frontend, backend services etc during the OCR document processing lifecycle, including real-time progress updates and completion notifications.
-
-![Real-Time OCR & Progress Reporting Pipeline UML Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/c37b0dc72806ea26902cb77c3ea8cf3d7aaed074/docs/development/documentation/frontend-docs/real-time%20OCR%20pipeline/diagrams/Real-Time%20OCR%20&%20Progress%20Reporting%20Pipeline%20-%20UML%20Diagram.png)
-
-🎯 2.3 Real-Time OCR & Progress Reporting Pipeline  - Component Diagram  🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯
-
-This diagram shows how our pipeline processes document/image uploads with OCR, enriches them optionally with LLM analysis, stores extracted data, and streams real-time progress and status updates to users.
-
-![Real-Time OCR & Progress Reporting Pipeline Component Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/c37b0dc72806ea26902cb77c3ea8cf3d7aaed074/docs/development/documentation/frontend-docs/real-time%20OCR%20pipeline/diagrams/Real-Time%20OCR%20&%20Progress%20Reporting%20Pipeline%20--%20component.png)
 
 
 ⚡ 2.4 Real-Time OCR & Progress Reporting Pipeline - Deployment Diagram  ⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡
