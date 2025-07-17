@@ -9,6 +9,7 @@ const faq = {
       a: (
         <>
           Yes, select the resources, cloud provider, and regulatory frameworks. Once processed, you can download the Terraform/IaC files or deploy them with one click.
+          Yes, select the resources, cloud provider, and regulatory frameworks. Once processed, you can download the Terraform/IaC files or deploy them with one click.
           <br />
           (A policy with the appropriate permissions must 
           be created in your environment)
@@ -16,6 +17,24 @@ const faq = {
       ),
     },
     {
+      q: 'What frameworks does SkyLock support?',
+      a: (
+        <>
+          SkyLock supports a growing list of regulatory frameworks including HIPAA, PCI-DSS, GDPR, NIST CSF, and more.
+          <br />
+          (Custom frameworks can also be uploaded in PDF format.)
+        </>
+      ),
+    },
+    {
+      q: 'How does SkyLock ensure compliance?',
+      a: (
+        <>
+          SkyLock uses AI to extract rules from compliance documents, maps them to cloud provider services, and generates Terraform to enforce those rules.
+          <br />
+          (You can compare your infrastructure against these baselines for coverage.)
+        </>
+      ),
       q: 'What frameworks does SkyLock support?',
       a: (
         <>
