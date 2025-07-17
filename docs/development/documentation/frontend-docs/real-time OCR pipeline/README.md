@@ -111,8 +111,21 @@ Before installing the Real-Time OCR & Progress Reporting Pipeline, ensure the fo
                     docker-compose --version
 
 2️⃣ Clone your repository:
-                    git clone https://github.com/your-org/adastra.git
-                    cd adastra-cloud-compliance
+                    git clone https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA.git
+                    cd ad-adastra-cloud-compliance
+
+
+🌍  3.1.2 Environment Configuration 🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍
+
+1️⃣ Navigate to:
+
+                        frontend/
+
+2️⃣ Create .env.local:
+
+                        NEXT_PUBLIC_BACKEND_URL=http://localhost:3030
+                        NEXT_PUBLIC_WEBSOCKET_URL=ws://localhost:3000
+                        OCR_MODEL=tesseract
 
 
 🛠️ 3.2 Step-by-Step Installation Guide  🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️
@@ -419,5 +432,3 @@ Solution: Scale resources via Docker, optimize scans, and monitor container reso
                                     frontend/src/components/
 
 To match your branding and operational preferences.
-
-

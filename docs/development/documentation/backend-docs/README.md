@@ -163,7 +163,7 @@ Before installation, ensure the following are in place:
 Preferred installation method is using Docker and Docker Compose for a clean, isolated, and replicable environment.
 
 📄 Step 1: Clone the Repository
-                            ![git clone https://github.com/your-org/ad-astra-compliance-pipeline.git]()
+                            ![git clone https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA.git]()
                             ![cd ad-astra-compliance-pipeline]()
 
 📄 Step 2: Verify Environment Variables
