@@ -1,3 +1,5 @@
+'use client'
+
 import { Box, Center, Stack, Text } from '@chakra-ui/react'
 import { Auth } from '@saas-ui/auth'
 import { Link } from '@saas-ui/react'
@@ -74,7 +76,7 @@ const Login: NextPage = () => {
               <Auth
                 view="signup"
                 title={siteConfig.signup.title}
-                providers={providers}
+                //providers={providers}
                 loginLink={<Link href="/login">Log in</Link>}
               >
                 <Text color="muted" fontSize="sm">

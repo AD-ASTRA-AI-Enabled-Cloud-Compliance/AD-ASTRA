@@ -39,11 +39,15 @@ import faq from '@/data/faq'
 import { Header } from '@/components/landing/layout/header'
 import { Footer } from '@/components/landing/layout/footer'
 
-export const meta: Metadata = {
-  title: 'Saas UI Landingspage',
-  description: 'Free SaaS landingspage starter kit',
-}
+// export const meta: Metadata = {
+//   title: 'Saas UI Landingspage',
+//   description: 'Free SaaS landingspage starter kit',
+// }
 
+export const meta: Metadata = {
+  title: 'SkyLock – Cloud Compliance Made Easy',
+  description: 'Automate cloud compliance validation and secure infrastructure with SkyLock. AI-powered Terraform generation for HIPAA, PCI-DSS, NIST, and GDPR. Trusted by cloud teams.',
+}
 const Home: NextPage = () => {
   return (
     <Box>
@@ -57,7 +61,7 @@ const Home: NextPage = () => {
 
       <TestimonialsSection />
 
-      <ComplianceDiagramSection />  {/* REPLACED: PricingSection with ComplianceDiagramSection */}
+      <ComplianceDiagramSection />
 
       <FaqSection />
 
@@ -78,6 +82,7 @@ const HeroSection: React.FC = () => {
             px="0"
             title={
               <FallInPlace>
+                Skylock <br /><br />
                 Cloud Compliance
                 <Br /> made easy
               </FallInPlace>
@@ -102,7 +107,7 @@ const HeroSection: React.FC = () => {
                 </ButtonLink>
                 <ButtonLink
                   size="lg"
-                  href="https://demo.saas-ui.dev"
+                  href="https://bit.ly/Skylock-Promo"
                   variant="outline"
                   rightIcon={
                     <Icon
@@ -134,10 +139,10 @@ const HeroSection: React.FC = () => {
             <FallInPlace delay={1}>
               <Box overflow="hidden" height="100%">
                 <Image
-                  src="/static/screenshots/list.png"
+                  src="/static/screenshots/rules.png"
                   width={1200}
                   height={762}
-                  alt="Screenshot of a ListPage in Saas UI Pro"
+                  alt="Screenshot of Skylock Compliance"
                   quality="75"
                   priority
                 />
@@ -297,42 +302,42 @@ const FeaturesSection = () => {
           title: 'Intelligent Policy & Rule Ingestion',
           icon: FiBox,
           description:
-            'Our system efficiently ingests regulatory standards, organizational policies, and cloud provider compliance documents , transforming these diverse inputs into actionable JSON security rules. It then intelligently maps these rules to cloud-provider specific services, ensuring alignment with your established baselines.',
+            'Our system ingests regulatory standards, internal policies, and cloud provider documents, converting them into actionable JSON security rules. These are then mapped to cloud-specific services, aligned with our baselines.',
           variant: 'inline',
         },
         {
           title: 'Automated Compliance Validation',
           icon: FiLock,
           description:
-            'The platform rigorously validates whether your cloud services and Infrastructure as Code (IaC) adhere to defined security rules. When non-compliance is detected, it generates detailed reports with remediation suggestions, empowering us to refine and update our JSON baselines for continuous improvement.',
+            'We validate your cloud services and IaC against defined security rules. Non-compliance triggers detailed reports with remediation suggestions, helping improve baseline rules continuously.',
           variant: 'inline',
         },
         {
           title: 'Dynamic Terraform Baseline Generation',
           icon: FiSearch,
           description:
-            'For each compliance framework and cloud provider, or a combination thereof, the tool generates and stores a tailored Terraform baseline in our secure database. This allows for the selection of the most relevant baseline based on your specific project requirements.',
+            'For each framework and cloud provider, the tool generates and stores a Terraform baseline tailored to your needs, ensuring relevant configurations are always available.',
           variant: 'inline',
         },
         {
           title: 'Intuitive IaC Comparison & Configuration',
           icon: FiUserPlus,
           description:
-            'Users can upload their existing Terraform files for a direct comparison against our curated baselines. The differences in Terraform blocks are clearly presented as interactive checkboxes on-screen, enabling precise review and selection of desired configurations for inclusion in your IaC.',
+            'Upload your Terraform files to compare with our baselines. Differences are shown as interactive checkboxes for easy review and inclusion in your final IaC.',
           variant: 'inline',
         },
         {
           title: 'Real-time Compliance Scoring',
           icon: FiFlag,
           description:
-            "A dynamic compliance score is instantly calculated and displayed, reflecting the percentage of applicable compliance controls successfully applied based on the comparison between your IaC template and our Terraform baseline. This provides a clear reflection of the security alignment of your infrastructure as code with established baselines.",
+            'A compliance score is calculated instantly, showing how well your IaC aligns with security baselines.',
           variant: 'inline',
         },
         {
           title: 'Automated Remediation & Download',
           icon: FiTrendingUp,
           description:
-            'After you have reviewed and selected the necessary adjustments via the on-screen checkboxes, a "generate patch" function updates the score gauge to reflect your new compliance posture. You then have the option to download the corrected Terraform file, ready for immediate application to your infrastructure, ensuring rapid remediation and enhanced security.',
+            'After selecting changes, a patch is generated with an updated score. Download the revised Terraform file for fast remediation and improved security.',
           variant: 'inline',
         },
         // {
