@@ -237,7 +237,7 @@ Run using Docker:
                             docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=adastra -e MYSQL_USER=adastra -e MYSQL_PASSWORD=adastrapass mysql:8.0
 
 
-3.4 🚦 Health Checks  🚦🚦🚦🚦🚦🚦🚦🚦🚦🚦
+3.4 🚦 Checklist  🚦🚦🚦🚦🚦🚦🚦🚦🚦🚦
 
 Verify system readiness:
 
@@ -253,7 +253,7 @@ Test Flask API health endpoint:
                             Expect {"status": "healthy"}
 
 ✅ Qdrant
-                            Visit http://localhost:6333/dashboard (if dashboard is enabled)
+                            Visit http://localhost:6333/dashboard
 
 ✅ Ollama
 
@@ -496,7 +496,7 @@ Manually send a test chunk to the LLM endpoint to validate:
 curl -X POST http://localhost:11434/your-llm-endpoint -d '{"text":"Sample compliance chunk"}'
 
 
-❓ 6: Frequently Asked Questions (FAQs)
+❓ 6: Frequently Asked Questions (FAQs) -- Compliance Rule Ingestion Pipeline
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This section consolidates common, technical, and compliance-related questions to support rapid onboarding, troubleshooting, and user confidence while using the Compliance Rule Ingestion Pipeline.

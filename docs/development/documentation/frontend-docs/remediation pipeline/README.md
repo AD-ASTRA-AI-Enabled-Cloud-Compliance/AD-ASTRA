@@ -130,3 +130,354 @@ This diagram presents how the remediation system is physically structured and de
 🌿 3 Installation and Setup
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+⚙️ 3.1 Prerequisites ⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️
+
+Before installation, ensure the following dependencies are pre-installed on your local or cloud environment:
+
+| Dependency              | Minimum Version | Description                                |
+| ----------------------- | --------------- | ------------------------------------------ |
+| Node.js                 | `>= 18.x`       | JavaScript runtime for the frontend        |
+| Yarn or NPM             | `>= 1.22 / 9.x` | Dependency manager                         |
+| Docker & Docker-Compose | `>= 20.x / 2.x` | For containerizing backend evaluation APIs |
+| Git                     | `>= 2.x`        | Version control                            |
+| .env File               | Custom          | Environment variables setup (see below)    |
+
+💡 Optional: Use nvm to manage multiple Node versions seamlessly.
+
+
+🌍 3.1.2 Environment Variables 🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍
+
+Create a .env file at the root of your frontend folder. Below are the required variables:
+
+                        REACT_APP_API_BASE_URL=http://localhost:8081
+                        REACT_APP_REMEDIATION_STATUS_REFRESH_INTERVAL=10000
+                        REACT_APP_AUTH_TOKEN=your_secure_token_here
+                        REACT_APP_ENABLE_DEBUG=true
+
+| Variable                                        | Purpose                                        |
+| ----------------------------------------------- | ---------------------------------------------- |
+| `REACT_APP_API_BASE_URL`                        | Base URL to connect React UI with backend APIs |
+| `REACT_APP_REMEDIATION_STATUS_REFRESH_INTERVAL` | Polling interval for real-time updates (ms)    |
+| `REACT_APP_AUTH_TOKEN`                          | Authentication token for protected API calls   |
+| `REACT_APP_ENABLE_DEBUG`                        | Enables verbose client logging                 |
+
+
+🚀 3.2 Launching Locally 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
+
+1️⃣ Clone the Repository
+
+                        git clone https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA.git
+                        cd ad-adastra-cloud-compliance-eval-ui
+
+2️⃣ Install Frontend Dependencies
+
+                        yarn install
+
+🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄 OR IF USING NPM 🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄
+
+                        npm install
+
+3️⃣ Start Frontend Server
+
+                        yarn start
+
+
+🚦 3.3 Checklist  🚦🚦🚦🚦🚦🚦🚦🚦🚦🚦
+
+After startup, verify the following:
+
+                ✅ Dashboard Loads: Ensure the Compliance Dashboard UI renders without crash.
+                ✅ API Connectivity: Test endpoint /fetch-compliance-status via browser or Postman.
+                ✅ Status Auto Refresh: Real-time progress bar updates based on backend polling.
+                ✅ Trigger Button Active: “Initiate Remediation” button should appear once results load.
+                ✅ Console Logs: Should show Evaluating compliance rules... during fetch cycle.
+
+🚀 3.4 Dockerized Launnch 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
+
+                docker-compose -f docker-compose.eval.yaml up --build
+
+Ensure the following volumes and ports are properly mapped:
+
+                services:
+                frontend-eval:
+                    build: ./compliance-eval-ui
+                    ports:
+                    - "3000:3000"
+                    environment:
+                    - REACT_APP_API_BASE_URL=http://backend-eval:8081
+
+🛡️ Security Tip: Never expose the REACT_APP_AUTH_TOKEN in production builds. Use secret injection tools.
+
+After completing these steps, the pieline should be ready to use real-time remediation logic connected to backend APIs with a fully responsive interface, API synchronization, and secure configuration.
+
+
+🧭 4 User Guide – Remediation Pipeline
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+This provides a complete walkthrough for interacting with the Remediation Pipeline’s frontend dashboard. From accessing evaluation results to launching automated remediation flows, this guide ensures that both technical and non-technical users can navigate the system efficiently with confidence
+
+🪐 4.1 Getting Started 🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
+
+🚀 4.1.1 Navigating the Dashboard 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
+
+Upon visiting the app’s main route http://localhost:3000, you’ll land on the Dashboard.
+
+
+| Section                         | Description                                                                |
+| ------------------------------- | -------------------------------------------------------------------------- |
+| 📊 *Compliance Summary Cards*   | Visualizes number of rules evaluated, compliant, and non-compliant states. |
+| 🧩 *Framework Tabs*             | Switch between NIST, HIPAA, PCI-DSS, etc. evaluations.                     |
+| 📉 *Status Timeline Chart*      | Live timeline of evaluation execution and progress.                        |
+| 🧪 *Evaluation Logs Panel*      | Displays real-time messages pushed by backend APIs.                        |
+| ⚙️ *Trigger Remediation Button* | Starts remediation sequence if violations exist.                           |
+
+
+🖼️ 4.2 Interpreting Compliance Results 🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️
+
+Once evaluation is triggered (automatically or manually), the UI populates with structured, color-coded results:
+
+| Indicator               | Meaning                                        |
+| ----------------------- | ---------------------------------------------- |
+| ✅ *Green (Compliant)*   | Rule passed; infrastructure meets requirement. |
+| ❌ *Red (Non-Compliant)* | Rule failed; remediation needed.               |
+| 🟡 *Yellow (Warning)*   | Partial compliance or requires human review.   |
+| ⏳ *Blue (Evaluating)*   | Evaluation in progress for that rule.          |
+
+
+Clicking any rule expands a modal with:
+
+                        ✅ Rule ID & Description
+                        ✅ Associated Framework Clause
+                        ✅ Compliance Evidence (e.g., screenshot, log file)
+                        ✅ Suggested Remediation Actions (if applicable)
+
+🩻 4.3 Initiating Remediation 🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻
+
+    Once the system identifies violations, you can initiate remediation in two ways:
+
+Option 1: ✨ Single-Click Remediation (Recommended) ✨✨✨✨✨
+
+    Click the "Initiate Remediation" button at the top-right corner. This triggers:
+
+                                                                ✅ Immediate backend remediation workflows
+                                                                ✅ UI modal for progress visibility
+                                                                ✅ Real-time updates via WebSockets or polling
+
+Option 2: 🛎️ Manual Rule-by-Rule Remediation 🛎️🛎️🛎️🛎️
+
+    Each failed rule has a "Remediate" button, allowing selective remediation.
+
+    📌 Confirmation Required: Users must confirm remediation actions to prevent accidental changes.
+
+    🧩 Behind the Scenes:
+
+                        ✅ React dispatches a POST /remediate call
+                        ✅ Backend queues the action
+                        ✅ UI updates status on success/failure
+
+
+📡 4.4 Tracking Remediation Status 📡📡📡📡📡📡📡📡📡📡
+
+Once remediation begins, the Progress Timeline section activates:
+
+| Step                      | Status Color | Meaning                                     |
+| ------------------------- | ------------ | ------------------------------------------- |
+| 🟢 Applied                | Green        | Fix was executed successfully               |
+| 🔄 In Progress            | Blue         | Fix being applied                           |
+| 🔴 Failed                 | Red          | Fix attempt failed; log is available        |
+| ⚠️ Manual Review Required | Yellow       | Action needs user confirmation/intervention |
+
+            Users can:
+
+                                    ✅ Click to view execution logs
+                                    ✅ Re-run failed steps
+                                    ✅ Export remediation results as JSON or PDF
+
+
+📤 4.5 Exporting Results & Reports 📤📤📤📤📤📤📤📤📤📤
+
+            From the top menu, users can:
+
+                                    🧾 Download Evaluation Report (CSV, JSON, PDF)
+                                    📬 Email Results to predefined stakeholders
+                                    🔐 Send to Audit Logs via API integration (if configured)
+
+
+🔐 4.6 Role-Based Access 🔐🔐🔐🔐🔐🔐🔐🔐🔐🔐
+
+| Role         | Permissions                                                  |
+| ------------ | ------------------------------------------------------------ |
+| **Admin**    | Full access (evaluate, remediate, export)                    |
+| **Reviewer** | View evaluations and logs, cannot remediate                  |
+| **Auditor**  | View-only access, with permission to download/export reports |
+
+🛡️ Security Note: All user actions are logged and timestamped for audit traceability.
+
+Following this guide, users will be able to interpret evaluation results, launch automated fixes, monitor progress visually, and generate compliance artifacts effortlessly — all via a thoughtfully designed and highly responsive frontend experience.
+
+
+🛠️ 5: Troubleshooting Guide --- Remediation Pipeline
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Technical compass for resolving operational hiccups, ensuring smooth usage of the evaluation and remediation interface. From UI stalling issues to deeper API or remediation failures, each category below provides actionable guidance with clear visuals, expert logic, and tested recovery steps.
+
+
+🖼️ 5.1 UI Not Updating on Status Change 🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️
+
+🔍 Symptom: After triggering remediation or compliance evaluation, the UI shows no visible change.
+
+        📦 Possible Causes:
+
+                        ✅ Lost WebSocket connection or polling timeout
+                        ✅ React state mutation error
+                        ✅ Frontend failed to receive updated evaluation result from backend
+
+🛠 Recommended Steps: 🛠🛠🛠🛠🛠🛠🛠🛠🛠🛠
+
+1️⃣ 🔁 Manual Refresh: Hit Ctrl + R to force refresh the app state.
+
+2️⃣ 🔍 Inspect Console Logs:
+
+                        ✅ Check browser dev tools for WebSocket disconnects.
+                        ✅ Verify if React errors are raised during useEffect() triggers.
+
+3️⃣ 🧪 Trigger Diagnostics:
+
+                        ✅ Run local test script npm run test:state-sync to verify frontend state sync.
+
+✅ Fix: Ensure socket.emit and socket.on("status_update") are connected, and that Redux/Context is updating the UI appropriately.
+
+
+❌ 5.2 Remediation Errors ❌❌❌❌❌❌❌❌❌❌
+
+🔍 Symptom: Remediation fails partially or completely for selected rules.
+
+        📦 Possible Causes:
+
+                        ✅ IAM misconfiguration (example., insufficient permissions)
+                        ✅ Invalid resource references in generated Terraform/YAML
+                        ✅ API timeout or rate limiting from cloud provider
+
+🛠 Recommended Steps: 🛠🛠🛠🛠🛠🛠🛠🛠🛠🛠
+
+1️⃣ 🔑 Check Role Permissions:
+
+                ✅ Confirm IAM roles assigned to the automation backend include write, update, and delete privileges.
+
+2️⃣ 📁 Review Logs:
+
+                ✅ Locate remediation.log inside container logs:
+
+                        docker logs remediation-service | grep "ERROR"
+
+3️⃣ 🧬 Dry Run Mode:
+
+                Re-run remediation in “dry-run” mode by sending the flag ?dryRun=true in the POST /remediate call.
+
+
+✅ Fix: Validate generated infra changes before applying and ensure all dependent resources are correctly addressed.
+
+🛜 5.3 API Connection Failures 🛜🛜🛜🛜🛜🛜🛜🛜🛜🛜
+
+🔍 Symptom: React app shows "Unable to fetch compliance status" or "Backend not reachable".
+
+        📦 Possible Causes:
+
+                        ✅ Backend API container not running or unreachable
+                        ✅ Port mismatch between .env config and frontend .env.local
+                        ✅ CORS misconfiguration during frontend build
+
+🛠 Recommended Steps: 🛠🛠🛠🛠🛠🛠🛠🛠🛠🛠
+
+1️⃣ 🚦 API Health Check:
+
+                            curl http://localhost:5020/health
+
+        Response should be:
+
+                            { "status": "OK" }
+
+
+2️⃣ ⚙️ Verify Environment Variables:
+
+        In frontend .env.local, make sure:
+
+                            NEXT_PUBLIC_API_URL=http://localhost:5020
+
+
+3️⃣ 🧪 Run Connectivity Test:
+
+                            ping backend-api
+                            docker inspect backend-api --format '{{.NetworkSettings.IPAddress}}'
+
+✅ Fix: Rebuild both services and use docker-compose up --build to restore stable linkage.
+
+
+🧩 5.4 Rule Evaluation Fails Intermittently 🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩
+
+🔍 Symptom: Evaluation works on some documents but fails on others unpredictably.
+
+                📦 Possible Causes:
+
+                            ✅ Malformed or unsupported JSON rule structures
+                            ✅ Inconsistent mapping between compliance framework and evaluation logic
+                            ✅ Memory issues when processing large rule sets
+
+🛠 Recommended Steps: 🛠🛠🛠🛠🛠🛠🛠🛠🛠🛠
+
+1️⃣ 🗂️ Log Review:
+
+    Examine logs in evaluation-service/logs/evaluation_errors.log
+
+    Look for:
+
+                RuleMappingError: Missing control_id in PCI v3.2.1 clause
+
+2️⃣ 💾 Memory Constraints:
+
+    Review container memory settings. Ensure service has at least 2GB:
+
+                services:
+                evaluation:
+                    mem_limit: 2048m
+
+
+3️⃣ 🛠️ Enable Debug Mode:
+
+Temporarily enable verbose mode in the backend:
+
+                DEBUG=true npm start
+
+✅ Fix: Ensure all rules are pre-validated during upload and frameworks include complete mappings.
+
+📄 5.5 Troubleshooting Cheatsheet Summary 📄📄📄📄📄📄📄📄📄📄📄📄
+
+| Issue                            | Root Cause Example            | Resolution                             |
+| -------------------------------- | ----------------------------- | -------------------------------------- |
+| UI not updating                  | React state not syncing       | Refresh UI, check WebSocket            |
+| Remediation fails                | IAM or API misconfig          | Dry run, fix permissions               |
+| API unreachable                  | Network or port issue         | Confirm port mapping                   |
+| Inconsistent evaluation results  | Malformed input or low memory | Validate JSON & raise memory           |
+| “Unknown error occurred” in logs | Generic catch block error     | Enable debug mode & inspect tracebacks |
+
+
+💬 Tip
+
+Enable automatic health pinging by setting up a simple watchdog job inside the frontend or orchestrator that calls:
+
+                GET /api/evaluation/health
+
+If the response isn't 200 OK, log the failure with a timestamp and auto-retry remediation queues after a cooldown period.
+
+❓ 6: Frequently Asked Questions (FAQs) --  Remediation Pipeline 
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+This section provides concise, clearly categorized answers to common questions from engineers, analysts, security leads, and DevOps professionals. It ensures fast resolution of doubts and accelerates onboarding and effective pipeline use.
+
+
+
+
+
+
+
+
+
+

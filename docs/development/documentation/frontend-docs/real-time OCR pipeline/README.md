@@ -115,7 +115,7 @@ Before installing the Real-Time OCR & Progress Reporting Pipeline, ensure the fo
                     cd ad-adastra-cloud-compliance
 
 
-🌍  3.1.2 Environment Configuration 🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍
+🌍  3.1.2 Environment Variables 🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍
 
 1️⃣ Navigate to:
 
@@ -316,7 +316,7 @@ If progress bars do not update:
                 Restart OCR backend:
                             docker restart document_preprocess
 
-🪛 6.6 Reprocessing Failed Documents  🪛🪛🪛🪛🪛🪛🪛🪛🪛🪛🪛
+🪛 5.6 Reprocessing Failed Documents  🪛🪛🪛🪛🪛🪛🪛🪛🪛🪛🪛
 
 If OCR fails mid-processing:
                 ✅ Use the Retry Option on the frontend.
@@ -324,12 +324,12 @@ If OCR fails mid-processing:
                 ✅ Re-upload with improved scan quality if pages were unreadable.
 
 
-❓ 7: Frequently Asked Questions (FAQs)
+❓ 6: Frequently Asked Questions (FAQs)  -- Real-Time OCR & Progress Reporting Pipeline
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Accessible FAQ section to resolve common user questions quickly, reducing support overhead while improving user confidence and pipeline adoption.
 
-🪐 7.1 General FAQs 🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
+🪐 6.1 General FAQs 🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
 
 🔹 Q1: What types of documents can I upload for OCR processing?
 ✅ The pipeline supports PDF, PNG, JPEG, and TIFF formats, including scanned compliance documents, forms, and handwritten notes if scan quality is adequate.
@@ -343,7 +343,7 @@ Accessible FAQ section to resolve common user questions quickly, reducing suppor
 🔹 Q4: Is the OCR processing real-time or batch?
 ✅ The system supports real-time processing with live progress updates but can also handle batch ingestion for high-volume document processing.
 
-🔧 7.2 Technical FAQs 🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧
+🔧 6.2 Technical FAQs 🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧
 
 🔹 Q1: How does the real-time progress reporting work?
 ✅ Progress updates are streamed via WebSockets, emitting JSON updates from the backend to the frontend using socket.io.
@@ -377,7 +377,7 @@ The pipeline emits updates like:
                 Locally within /processed_docs inside the container.
                 Optionally uploaded to your Qdrant vector database for semantic search integration.
 
-🔐 7.3 Security and Privacy FAQs  🔐🔐🔐🔐🔐🔐🔐🔐🔐🔐
+🔐 6.3 Security and Privacy FAQs  🔐🔐🔐🔐🔐🔐🔐🔐🔐🔐
 
 🔹 Q1: Is document data stored permanently?
 ✅ By default, documents are retained only for processing and temporary caching. You can configure auto-deletion or manual cleanup.
@@ -397,7 +397,7 @@ The pipeline emits updates like:
                         Use secure storage with encryption if retaining outputs.
                         Regularly audit and clean stored data as per your compliance framework.
 
-🌟 7.4 Performance FAQs 🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
+🌟 6.4 Performance FAQs 🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 
 🔹 Q1: Why is my OCR processing slow?
 ✅ Possible reasons:
@@ -417,7 +417,7 @@ Solution: Scale resources via Docker, optimize scans, and monitor container reso
                 Use lower DPI where acceptable.
                 Allocate additional CPU cores to the backend container.
 
-⚙️ 7.5 Integration FAQs ⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️
+⚙️ 6.5 Integration FAQs ⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️
 
 🔹 Q1: Can I integrate the OCR outputs with compliance tools?
 ✅ Yes, outputs are designed to be compatible with the Compliance Rule Ingestion Pipeline for seamless pipeline chaining.
