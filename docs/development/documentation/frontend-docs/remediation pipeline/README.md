@@ -54,7 +54,7 @@ The Remediation Pipeline currently supports the following frameworks, with modul
 
 🪐 2.1 High-Level Architecture Diagram  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
 
-+---------------------------+
+`+---------------------------+`
 |      User Interface       |
 | (Compliance Dashboard UI) |
 +-----------+---------------+
