@@ -43,7 +43,7 @@ export const Header = (props: HeaderProps) => {
     >
       <Container maxW="container.2xl" px="8" py="10" minH="120px">
         <Flex width="full" align="center" justify="space-between">
-          <Box p="2" borderRadius="md" bg='white'>
+          <Box borderRadius="md" bg='white'>
             <Image
               src="/sky_lock_logo.png"
               alt="SkyLock Logo"
