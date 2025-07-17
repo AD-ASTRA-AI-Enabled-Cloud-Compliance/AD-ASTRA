@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { apiCallBuilder } from "@/lib/apiCallBuilder";
-import OCRProgress from "../../../components/OCRProgress";
-import { useWebSocket } from "../../../contexts/WebSocketContext";
+import { useWebSocket } from "@/contexts/WebSocketContext";
+import OCRProgress from "@/components/OCRProgress";
+
 
 export default function UploadForm() {
   const router = useRouter();

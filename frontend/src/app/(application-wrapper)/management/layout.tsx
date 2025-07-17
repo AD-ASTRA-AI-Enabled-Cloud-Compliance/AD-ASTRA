@@ -55,7 +55,7 @@ export default function ManagementLayout({
       </div>
     )
   }
-
+ 
   return (
     <WebSocketProvider>
       <SidebarProvider>
