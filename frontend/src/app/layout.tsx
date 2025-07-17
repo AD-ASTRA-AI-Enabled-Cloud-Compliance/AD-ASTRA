@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/dev
 import "./globals.css";
 import { ContextsWrapper } from "@/contexts/ContextsWrapper";
 import { ThemeProvider } from "next-themes";
@@ -28,8 +32,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+<<<<<<< HEAD
       // className={`${GeistSans.variable} ${GeistMono.variable}`}
       suppressHydrationWarning
+=======
+      // className={${GeistSans.variable} ${GeistMono.variable}}
+     suppressHydrationWarning={true}
+>>>>>>> origin/dev
     >
       <body className="antialiased">
         <ThemeProvider
