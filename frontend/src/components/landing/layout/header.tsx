@@ -36,12 +36,16 @@ export const Header = (props: HeaderProps) => {
       borderColor="whiteAlpha.100"
       transitionProperty="common"
       transitionDuration="normal"
-      bg={y > height ? bg : ''}
+      // Modified by Harsimran Kaur
+      // Changed background color for better visibility
+      bg={y > height ? bg : 'rgba(103, 93, 128, 0.15)'}
       boxShadow={y > height ? 'md' : ''}
       borderBottomWidth={y > height ? '1px' : ''}
       {...props}
     >
-      <Container maxW="container.2xl" px="8" py="10" minH="120px">
+      {/* Modified by Harsimran Kaur
+      Changed py to reduce header size */}
+      <Container maxW="container.2xl" px="8" py="3" minH="100px">
         <Flex width="full" align="center" justify="space-between">
           <Box borderRadius="md" bg='white'>
             <Image

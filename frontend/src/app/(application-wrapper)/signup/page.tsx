@@ -1,9 +1,11 @@
-import { LoginForm } from "@/components/login-form"
+"use client"
+
+import { SignupForm } from "@/components/signup-form"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { GoBackButton } from "@/components/go-back-button"
 
 
-export default function LoginPage() {
+export default function SignupPage() {
   return (
     <div
       className="relative min-h-svh w-full bg-cover bg-center bg-no-repeat flex items-center justify-center p-6 md:p-10"
@@ -24,7 +26,7 @@ export default function LoginPage() {
 
       {/* Glassy card form */}
       <div className="relative z-10 w-full max-w-sm md:max-w-3xl">
-        <LoginForm />
+        <SignupForm />
       </div>
     </div>
   )
