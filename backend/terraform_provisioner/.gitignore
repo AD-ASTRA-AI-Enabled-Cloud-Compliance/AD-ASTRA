@@ -1,0 +1,9 @@
+# Ignore Terraform deployment directories, state, and local providers
+deployments/
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# Ignore Python virtual environment
+venv/
+__pycache__/
