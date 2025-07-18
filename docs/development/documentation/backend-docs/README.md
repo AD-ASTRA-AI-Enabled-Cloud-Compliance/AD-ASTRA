@@ -58,19 +58,22 @@ User ➡️ Upload Document
 
 This diagram shows how a compliance document (PDF/TXT) is uploaded by a user, processed to extract structured compliance rules, stored in your vector database, and status updates are published for tracking in your system.
 
-![Compliance Rule Ingestion Pipeline UML Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/766436e9bcdba0f7c1dbdcd11f233eef68951c72/docs/development/documentation/backend-docs/diagrams/Compliance%20Rule%20Ingestion%20Pipeline%20-%20UML%20Diagram.png)
+![Compliance Rule Ingestion Pipeline UML Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/62017cfc2cbdf9a7eb6f06c5edf05bdf636a29c8/docs/development/documentation/backend-docs/diagrams/Compliance%20Rule%20Ingestion%20Pipeline%20-%20UML%20Diagram.png)
+
 
 🎯 2.3 Compliance Rule Ingestion Pipeline - Component Diagram  🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯
 
 This diagram shows the architectural components and their interactions for your pipeline that ingests compliance documents, parses them, extracts structured rules, stores them, and updates the user with status.
 
-![Compliance Rule Ingestion Pipeline Component Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/766436e9bcdba0f7c1dbdcd11f233eef68951c72/docs/development/documentation/backend-docs/diagrams/Compliance%20Rule%20Ingestion%20Pipeline%20-%20Component%20Diagram.png)
+![Compliance Rule Ingestion Pipeline Component Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/62017cfc2cbdf9a7eb6f06c5edf05bdf636a29c8/docs/development/documentation/backend-docs/diagrams/Compliance%20Rule%20Ingestion%20Pipeline%20-%20Component%20Diagram.png)
+
 
 ⚡ 2.4 Compliance Rule Ingestion Pipeline - Deployment Diagram  ⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡
 
 This diagram shows how our pipeline components are physically deployed and communicate, emphasizing technology, ports, and containerized structure for your compliance rule ingestion system.
 
-![Compliance Rule Ingestion Pipeline Deployment Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/766436e9bcdba0f7c1dbdcd11f233eef68951c72/docs/development/documentation/backend-docs/diagrams/Compliance%20Rule%20Ingestion%20Pipeline%20-%20Deployment%20Diagram%20(Technolgy%20Focus).png)
+![Compliance Rule Ingestion Pipeline Deployment Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/62017cfc2cbdf9a7eb6f06c5edf05bdf636a29c8/docs/development/documentation/backend-docs/diagrams/Compliance%20Rule%20Ingestion%20Pipeline%20-%20Deployment%20Diagram%20(Technolgy%20Focus).png)
+
 
 🛠️ 2.5 Core Components   🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️
  

@@ -75,22 +75,23 @@ The pipeline supports OCR progress tracking for:
 
 This diagram shows the sequence of interactions between the user, frontend, backend services etc during the OCR document processing lifecycle, including real-time progress updates and completion notifications.
 
-![Real-Time OCR & Progress Reporting Pipeline UML Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/c37b0dc72806ea26902cb77c3ea8cf3d7aaed074/docs/development/documentation/frontend-docs/real-time%20OCR%20pipeline/diagrams/Real-Time%20OCR%20&%20Progress%20Reporting%20Pipeline%20-%20UML%20Diagram.png)
+![Real-Time OCR & Progress Reporting Pipeline UML Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/375795006b313fbb753cf84939354551cfee49e3/docs/development/documentation/frontend-docs/real-time_OCR_pipeline/diagrams/Real-Time%20OCR%20&%20Progress%20Reporting%20Pipeline%20-%20UML%20Diagram.png)
+
 
 🎯 2.3 Real-Time OCR & Progress Reporting Pipeline  - Component Diagram  🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯
 
 This diagram shows how our pipeline processes document/image uploads with OCR, enriches them optionally with LLM analysis, stores extracted data, and streams real-time progress and status updates to users.
 
-![Real-Time OCR & Progress Reporting Pipeline Component Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/c37b0dc72806ea26902cb77c3ea8cf3d7aaed074/docs/development/documentation/frontend-docs/real-time%20OCR%20pipeline/diagrams/Real-Time%20OCR%20&%20Progress%20Reporting%20Pipeline%20--%20component.png)
+![Real-Time OCR & Progress Reporting Pipeline Component Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/375795006b313fbb753cf84939354551cfee49e3/docs/development/documentation/frontend-docs/real-time_OCR_pipeline/diagrams/Real-Time%20OCR%20&%20Progress%20Reporting%20Pipeline%20--%20component.png)
 
 
 ⚡ 2.4 Real-Time OCR & Progress Reporting Pipeline - Deployment Diagram  ⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡
 
 This diagram illustrates how our OCR pipeline is physically deployed across frontend, backend, and WebSocket servers, emphasizing live progress updates and vector/metadata storage in your real-time OCR processing system.
 
-![Real-Time OCR & Progress Reporting Pipeline Deployment Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/c37b0dc72806ea26902cb77c3ea8cf3d7aaed074/docs/development/documentation/frontend-docs/real-time%20OCR%20pipeline/diagrams/Real-Time%20OCR%20&%20Progress%20Reporting%20Pipeline%20-%20Deployment%20Diagram.png)
-
-
+![Real-Time OCR & Progress Reporting Pipeline Deployment Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/375795006b313fbb753cf84939354551cfee49e3/docs/development/documentation/frontend-docs/real-time_OCR_pipeline/diagrams/Real-Time%20OCR%20&%20Progress%20Reporting%20Pipeline%20-%20Deployment%20Diagram.png)
+        
+        
 🌿 3 Installation and Setup
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

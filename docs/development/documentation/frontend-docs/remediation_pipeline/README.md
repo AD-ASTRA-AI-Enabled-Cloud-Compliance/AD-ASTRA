@@ -110,21 +110,21 @@ The Remediation Pipeline currently supports the following frameworks, with modul
 
 This diagram models the end-to-end sequence flow from a user viewing compliance status to triggering automated remediation. It shows interactions between user, API gateway, evaluation and remediation services, and backend components.
 
-![Remediation Pipeline UML Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/timmy/docs/development/documentation/frontend-docs/remediation%20pipeline/diagrams/Remediation%20Pipeline%20-%20UML%20Diagram.png)
+![Remediation Pipeline UML Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/375795006b313fbb753cf84939354551cfee49e3/docs/development/documentation/frontend-docs/remediation_pipeline/diagrams/Remediation%20Pipeline%20-%20UML%20Diagram.png)
 
 
 🎯 2.4 Remediation Pipeline  - Component Diagram  🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯
 
 This diagram maps out the key components, services, databases, and external systems involved in your end-to-end compliance evaluation and remediation pipeline, highlighting data flow, interactions, and communication patterns across backend, frontend, and external layers.
 
-![Remediation Pipeline Component Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/62017cfc2cbdf9a7eb6f06c5edf05bdf636a29c8/docs/development/documentation/frontend-docs/remediation%20pipeline/diagrams/Remediation%20Pipeline%20-%20Component%20Diagram.png)
+![Remediation Pipeline Component Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/375795006b313fbb753cf84939354551cfee49e3/docs/development/documentation/frontend-docs/remediation_pipeline/diagrams/Remediation%20Pipeline%20-%20Component%20Diagram.png)
 
 
 ⚡ 2.5 Remediation Pipeline - Deployment Diagram  ⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡
 
 This diagram presents how the remediation system is physically structured and deployed in a containerized cloud environment, with an emphasis on real-time infrastructure scanning, policy enforcement, and user interaction.
 
-![Remediation Pipeline - Deployment Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/62017cfc2cbdf9a7eb6f06c5edf05bdf636a29c8/docs/development/documentation/frontend-docs/remediation%20pipeline/diagrams/Remediation%20Pipeline%20deployment%20diagram.png)
+![Remediation Pipeline - Deployment Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/375795006b313fbb753cf84939354551cfee49e3/docs/development/documentation/frontend-docs/remediation_pipeline/diagrams/Remediation%20Pipeline%20deployment%20diagram.png)
 
 
 🌿 3 Installation and Setup
