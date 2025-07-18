@@ -49,16 +49,57 @@ class AuthController:
             data = request.get_json()
             email = data.get("email")
             password = data.get("password")
+            name = data.get("name", "")  # <-- get name from request
 
-            if not email or not password:
-                return jsonify({"message": "Email and password are required"}), 400
+            if not email or not password or not name:
+                return jsonify({"message": "Email, name, and password are required"}), 400
 
             try:
-                user = user_service.create_user(email, password)
+                user = user_service.create_user(email, password, name=name)
                 return jsonify({"message": "User created", "email": user["email"]}), 201
             except Exception as e:
                 return jsonify({"message": str(e)}), 400
 
         except Exception as e:
             print(f"Signup error: {str(e)}")
+            return jsonify({"message": f"Server error: {str(e)}"}), 500
+
+    @staticmethod
+    @auth_routes.route("/forgot-password", methods=["POST"])
+    def forgot_password():
+        try:
+            data = request.get_json()
+            email = data.get("email")
+            if not email:
+                return jsonify({"message": "Email is required"}), 400
+
+            user = user_service.find_by_email(email)
+            if not user or user.get("role") != "user":
+                return jsonify({"message": "If your email exists, you will receive a reset link."}), 200
+
+            # TODO: Generate a reset token, send email, etc.
+            # For now, just return a generic message
+            return jsonify({"message": "If your email exists, you will receive a reset link."}), 200
+        except Exception as e:
+            print(f"Forgot password error: {str(e)}")
+            return jsonify({"message": f"Server error: {str(e)}"}), 500
+
+    @staticmethod
+    @auth_routes.route("/reset-password", methods=["POST"])
+    def reset_password():
+        try:
+            data = request.get_json()
+            email = data.get("email")
+            new_password = data.get("new_password")
+            if not email or not new_password:
+                return jsonify({"message": "Email and new password are required"}), 400
+
+            user = user_service.find_by_email(email)
+            if not user or user.get("role") not in ["user", "management"]:
+                return jsonify({"message": "User not found"}), 404
+
+            user_service.update_password(email, new_password)
+            return jsonify({"message": "Password updated"}), 200
+        except Exception as e:
+            print(f"Reset password error: {str(e)}")
             return jsonify({"message": f"Server error: {str(e)}"}), 500
