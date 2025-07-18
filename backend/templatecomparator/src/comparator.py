@@ -1,20 +1,28 @@
 def find_resource_gaps(reference, actual):
-    # Normalize to dicts
     def normalize(resources):
         result = {}
         if isinstance(resources, list):
+            # New format: list of resource dicts with type, name, config
             for item in resources:
+                r_type = item.get("type")
+                r_name = item.get("name")
+                r_config = item.get("config", {})
+                if r_type and r_name:
+                    if r_type not in result:
+                        result[r_type] = {}
+                    result[r_type][r_name] = r_config
+        elif isinstance(resources, dict):
+            # Old format: {"resource": [{"aws_s3_bucket": {...}}]}
+            for item in resources.get("resource", []):
                 for r_type, blocks in item.items():
                     if r_type not in result:
                         result[r_type] = {}
                     for r_name, r_config in blocks.items():
                         result[r_type][r_name] = r_config
-        elif isinstance(resources, dict):
-            return resources
         return result
 
-    ref_resources = normalize(reference.get("resource", []))
-    actual_resources = normalize(actual.get("resource", []))
+    ref_resources = normalize(reference)
+    actual_resources = normalize(actual)
 
     missing_resources = []
 

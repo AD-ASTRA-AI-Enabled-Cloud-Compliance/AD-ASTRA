@@ -9,15 +9,18 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { GaugeChartScore } from '@/components/GaugeChartScore';
 
+// Type definition for the upload form
 type UploadForm = {
-  baseline_file: FileList;   // renamed from pci_file
+  baseline_file: FileList;
   actual_file: FileList;
   tfvars_file?: FileList;
 };
 
+// Resource structure includes optional comment
 type Resource = {
   type: string;
   name: string;
+  comment?: string;
 };
 
 export default function TerraformComparisonPage() {
@@ -29,6 +32,7 @@ export default function TerraformComparisonPage() {
   const [step, setStep] = useState<'upload' | 'select'>('upload');
   const [message, setMessage] = useState('');
 
+  // Handle file upload and fetch initial gaps and score
   async function onUpload(data: UploadForm) {
     const formData = new FormData();
     formData.append('baseline_file', data.baseline_file[0]);
@@ -53,6 +57,7 @@ export default function TerraformComparisonPage() {
     setMessage('✅ Files uploaded. Select resources to patch.');
   }
 
+  // Toggle resource selection
   function toggle(res: Resource) {
     setSelected((prev) =>
       prev.some((r) => r.type === res.type && r.name === res.name)
@@ -61,6 +66,7 @@ export default function TerraformComparisonPage() {
     );
   }
 
+  // Handle patch generation from selected resources
   async function onGenerate() {
     const body = {
       selected_resources: selected.map((r) => `${r.type}::${r.name}`),
@@ -82,11 +88,13 @@ export default function TerraformComparisonPage() {
     }
   }
 
+  // Copy merged patch to clipboard
   function onCopy() {
     navigator.clipboard.writeText(mergedContent);
     setMessage('📋 Copied to clipboard!');
   }
 
+  // Download merged patch as .tf file
   function onDownload() {
     const blob = new Blob([mergedContent], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -100,6 +108,7 @@ export default function TerraformComparisonPage() {
   return (
     <div className="p-6 space-y-4">
       {step === 'upload' ? (
+        // Upload form
         <Card className="max-w-md mx-auto p-6 space-y-4">
           <form onSubmit={handleSubmit(onUpload)} className="space-y-4">
             <div>
@@ -119,21 +128,31 @@ export default function TerraformComparisonPage() {
           {message && <p>{message}</p>}
         </Card>
       ) : (
+        // Gap selection and patch preview
         <div className="flex flex-col md:flex-row gap-6">
           {/* Left: Resource Selection */}
           <Card className="w-full md:w-1/2 p-4 overflow-y-auto h-[600px]">
             <h2 className="text-lg font-semibold mb-2">Select Resources</h2>
             {resources.map((res) => (
-              <div key={`${res.type}-${res.name}`} className="flex items-center mb-2">
-                <Checkbox
-                  id={`${res.type}-${res.name}`}
-                  checked={selected.some((r) => r.type === res.type && r.name === res.name)}
-                  onCheckedChange={() => toggle(res)}
-                />
-                <label htmlFor={`${res.type}-${res.name}`} className="ml-2">
-                  {res.type} "{res.name}"
-                </label>
-              </div>
+              <Card key={`${res.type}-${res.name}`} className="p-3 mb-3 border rounded-md">
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id={`${res.type}-${res.name}`}
+                    checked={selected.some((r) => r.type === res.type && r.name === res.name)}
+                    onCheckedChange={() => toggle(res)}
+                  />
+                  <div>
+                    <Label htmlFor={`${res.type}-${res.name}`} className="font-medium">
+                      {res.type} "{res.name}"
+                    </Label>
+                    {res.comment && (
+                      <p className="text-sm text-gray-500 italic mt-1">
+                        🛡️ {res.comment}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </Card>
             ))}
             <Button onClick={onGenerate} className="mt-4">
               Generate Patch
@@ -148,16 +167,18 @@ export default function TerraformComparisonPage() {
               <span className="text-sm text-green-700 font-semibold">Score: {score}%</span>
             </div>
 
-            {/* Gauge Chart here */}
+            {/* Gauge Chart Visualization */}
             <div className="mb-4">
               <GaugeChartScore score={score} />
             </div>
 
+            {/* Copy / Download Actions */}
             <div className="flex gap-2 mb-3">
               <Button variant="outline" onClick={onCopy}>📋 Copy</Button>
               <Button variant="outline" onClick={onDownload}>⬇️ Download</Button>
             </div>
 
+            {/* Final Patch Output */}
             <div className="overflow-y-auto bg-muted p-2 rounded-md text-sm font-mono whitespace-pre-wrap flex-1">
               {mergedContent || 'Patch content will appear here after generation.'}
             </div>

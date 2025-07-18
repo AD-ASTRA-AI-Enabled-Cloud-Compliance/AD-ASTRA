@@ -1,6 +1,7 @@
 import os
 import re
 
+# --- TFVARS Parsing ---
 def parse_tfvars_file(path):
     if not path or not os.path.exists(path):
         return {}
@@ -22,7 +23,7 @@ def parse_tfvars_file(path):
                 variables[key.strip()] = value
     return variables
 
-
+# --- HCL Conversion ---
 def hcl_safe(value):
     """Convert a Python value to HCL-compatible syntax."""
     if isinstance(value, str):
@@ -39,44 +40,32 @@ def hcl_safe(value):
         return "{\n" + "\n".join(f"  {k} = {hcl_safe(v)}" for k, v in value.items()) + "\n}"
     return str(value)
 
-
-def apply_variables_to_patch(properties, tfvars):
-    updated = {}
-    for key, value in properties.items():
-        if isinstance(value, str) and value.startswith("${") and value.endswith("}"):
-            var_name = value.strip("${}").replace("var.", "")
-            updated[key] = tfvars.get(var_name, value)
-        elif isinstance(value, dict):
-            updated[key] = apply_variables_to_patch(value, tfvars)
-        elif isinstance(value, list):
-            updated[key] = [apply_variables_to_patch(v, tfvars) if isinstance(v, dict) else v for v in value]
-        else:
-            updated[key] = value
-    return updated
-
-
-import re
-
+# --- Patch Text Variable Interpolation ---
 def apply_variables_to_patch_text(patch_text, variables):
-    print("Variables for substitution:", variables)
     if patch_text is None:
         raise ValueError("Patch text is None.")
-    
-    pattern = re.compile(r'\${var\.([a-zA-Z0-9_]+)}')
 
-    def replacer(match):
-        var_name = match.group(1)
-        val = variables.get(var_name)
-        print(f"Replacing {match.group(0)} with {val}")
-        if val is None:
-            return match.group(0)  # leave as is
-        if isinstance(val, str):
-            return f'"{val}"'
-        elif isinstance(val, bool):
-            return str(val).lower()
-        else:
-            return str(val)
-    
-    result = pattern.sub(replacer, patch_text)
-    print("Result after substitution:\n", result[:500])  # print first 500 chars
-    return result
+    print("Variables for substitution:", variables)
+
+    # --- Replace ${var.xyz} format ---
+    patch_text = re.sub(r'\${var\.([a-zA-Z0-9_]+)}', lambda m: substitute_variable(m.group(1), variables, quoted=True), patch_text)
+
+    # --- Replace var.xyz format ---
+    patch_text = re.sub(r'\bvar\.([a-zA-Z0-9_]+)\b', lambda m: substitute_variable(m.group(1), variables, quoted=False), patch_text)
+
+    print("Result after substitution:\n", patch_text[:500])  # preview
+    return patch_text
+
+# --- Substitution logic for individual variable ---
+def substitute_variable(var_name, variables, quoted=False):
+    val = variables.get(var_name)
+    print(f"Replacing var.{var_name} with {val}")
+    if val is None:
+        return f'var.{var_name}' if not quoted else f'${{var.{var_name}}}'  # Keep as-is
+
+    if isinstance(val, str):
+        return f'"{val}"' if not quoted else val
+    elif isinstance(val, bool):
+        return str(val).lower()
+    else:
+        return str(val)

@@ -39,7 +39,7 @@ resource "azurerm_key_vault" "pci_kv" {
     bypass         = "AzureServices"
   }
 }
-
+# Disk encryption
 resource "azurerm_disk_encryption_set" "pci_des" {
   name                = "des-pci-${var.env}"
   resource_group_name = var.rg_name
@@ -50,13 +50,13 @@ resource "azurerm_disk_encryption_set" "pci_des" {
   }
 }
 
+# Used to store data with encryption and secure access enabled.
 resource "azurerm_storage_account" "pci_storage" {
   name                     = "stpci${var.env}"
   resource_group_name      = var.rg_name
   location                 = var.location
   account_tier             = "Standard"
   account_replication_type = "GRS"
-  enable_https_traffic_only = true
   min_tls_version          = "TLS1_2"
 
   blob_properties {
@@ -69,6 +69,8 @@ resource "azurerm_storage_account" "pci_storage" {
 ###########################
 # IDENTITY & ACCESS MGMT
 ###########################
+
+# Access policy condition 
 resource "azuread_conditional_access_policy" "mfa_policy" {
   display_name = "PCI-MFA-Requirement"
   state       = "enabled"
@@ -89,6 +91,7 @@ resource "azuread_conditional_access_policy" "mfa_policy" {
   }
 }
 
+# Read only role
 resource "azurerm_role_definition" "pci_reader" {
   name        = "PCI-Reader-${var.env}"
   scope       = data.azurerm_subscription.primary.id
