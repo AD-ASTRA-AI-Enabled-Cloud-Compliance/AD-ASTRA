@@ -6,10 +6,8 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react'
 import { useScroll } from 'framer-motion'
-
+import Image from 'next/image'
 import * as React from 'react'
-
-import { Logo } from './logo'
 import Navigation from './navigation'
 
 export interface HeaderProps extends Omit<BoxProps, 'children'> {}
@@ -38,25 +36,26 @@ export const Header = (props: HeaderProps) => {
       borderColor="whiteAlpha.100"
       transitionProperty="common"
       transitionDuration="normal"
-      bg={y > height ? bg : ''}
+      // Modified by Harsimran Kaur
+      // Changed background color for better visibility
+      bg={y > height ? bg : 'rgba(103, 93, 128, 0.15)'}
       boxShadow={y > height ? 'md' : ''}
       borderBottomWidth={y > height ? '1px' : ''}
       {...props}
     >
-      <Container maxW="container.2xl" px="8" py="4">
+      {/* Modified by Harsimran Kaur
+      Changed py to reduce header size */}
+      <Container maxW="container.2xl" px="8" py="3" minH="100px">
         <Flex width="full" align="center" justify="space-between">
-          <Logo
-            onClick={(e) => {
-              if (window.location.pathname === '/') {
-                e.preventDefault()
-
-                window.scrollTo({
-                  top: 0,
-                  behavior: 'smooth',
-                })
-              }
-            }}
-          />
+          <Box borderRadius="md" bg='white'>
+            <Image
+              src="/sky_lock_logo.png"
+              alt="SkyLock Logo"
+              width={100}
+              height={100}
+              style={{ objectFit: 'contain' }}
+            />
+          </Box>
           <Navigation />
         </Flex>
       </Container>

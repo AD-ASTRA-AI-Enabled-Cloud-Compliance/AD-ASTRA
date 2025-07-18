@@ -5,9 +5,19 @@ __pycache__/
 __pycache__/
 
 local/
+land/
 .env
  dev
+<<<<<<< HEAD
 
 
 # macOS system files
 .DS_Store
+=======
+frontend/src/app/management/resource_evalautor/*.json
+frontend/src/app/management/resource_evalautor/*.txt
+
+
+# macOS system files
+.DS_Store
+>>>>>>> origin/dev
