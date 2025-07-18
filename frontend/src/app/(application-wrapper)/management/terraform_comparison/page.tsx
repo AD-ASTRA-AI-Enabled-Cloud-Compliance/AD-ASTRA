@@ -1,7 +1,12 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
+<<<<<<< HEAD
 import { useState } from 'react';
+=======
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+>>>>>>> origin/dev
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -9,13 +14,19 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { GaugeChartScore } from '@/components/GaugeChartScore';
 
+<<<<<<< HEAD
 // Type definition for the upload form
 type UploadForm = {
   baseline_file: FileList;
+=======
+type UploadForm = {
+  baseline_file: FileList;   // renamed from pci_file
+>>>>>>> origin/dev
   actual_file: FileList;
   tfvars_file?: FileList;
 };
 
+<<<<<<< HEAD
 // Resource structure includes optional comment
 type Resource = {
   type: string;
@@ -24,6 +35,17 @@ type Resource = {
 };
 
 export default function TerraformComparisonPage() {
+=======
+type Resource = {
+  type: string;
+  name: string;
+};
+
+export default function TerraformComparisonPage() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const [unauthorized, setUnauthorized] = useState(false);
+>>>>>>> origin/dev
   const { register, handleSubmit } = useForm<UploadForm>();
   const [resources, setResources] = useState<Resource[]>([]);
   const [selected, setSelected] = useState<Resource[]>([]);
@@ -32,7 +54,32 @@ export default function TerraformComparisonPage() {
   const [step, setStep] = useState<'upload' | 'select'>('upload');
   const [message, setMessage] = useState('');
 
+<<<<<<< HEAD
   // Handle file upload and fetch initial gaps and score
+=======
+  // Authentication and authorization check
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    
+    if (!token) {
+      // No token, redirect to login
+      router.push("/login");
+      return;
+    }
+    
+    // Only management role can access this page
+    if (role !== "management") {
+      setUnauthorized(true);
+      setTimeout(() => {
+        router.push("/user/dashboard");
+      }, 2000); // wait 2 seconds before redirect
+    } else {
+      setIsLoading(false);
+    }
+  }, [router]);
+
+>>>>>>> origin/dev
   async function onUpload(data: UploadForm) {
     const formData = new FormData();
     formData.append('baseline_file', data.baseline_file[0]);
@@ -57,7 +104,10 @@ export default function TerraformComparisonPage() {
     setMessage('✅ Files uploaded. Select resources to patch.');
   }
 
+<<<<<<< HEAD
   // Toggle resource selection
+=======
+>>>>>>> origin/dev
   function toggle(res: Resource) {
     setSelected((prev) =>
       prev.some((r) => r.type === res.type && r.name === res.name)
@@ -66,7 +116,10 @@ export default function TerraformComparisonPage() {
     );
   }
 
+<<<<<<< HEAD
   // Handle patch generation from selected resources
+=======
+>>>>>>> origin/dev
   async function onGenerate() {
     const body = {
       selected_resources: selected.map((r) => `${r.type}::${r.name}`),
@@ -88,13 +141,19 @@ export default function TerraformComparisonPage() {
     }
   }
 
+<<<<<<< HEAD
   // Copy merged patch to clipboard
+=======
+>>>>>>> origin/dev
   function onCopy() {
     navigator.clipboard.writeText(mergedContent);
     setMessage('📋 Copied to clipboard!');
   }
 
+<<<<<<< HEAD
   // Download merged patch as .tf file
+=======
+>>>>>>> origin/dev
   function onDownload() {
     const blob = new Blob([mergedContent], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -105,10 +164,37 @@ export default function TerraformComparisonPage() {
     URL.revokeObjectURL(url);
   }
 
+<<<<<<< HEAD
   return (
     <div className="p-6 space-y-4">
       {step === 'upload' ? (
         // Upload form
+=======
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  // Show unauthorized message if user doesn't have management role
+  if (unauthorized) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen text-center px-4">
+        <h1 className="text-2xl font-bold text-red-600">Access Denied</h1>
+        <p className="mt-2 text-muted-foreground">
+          This page requires management access. Redirecting...
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6 space-y-4">
+      {step === 'upload' ? (
+>>>>>>> origin/dev
         <Card className="max-w-md mx-auto p-6 space-y-4">
           <form onSubmit={handleSubmit(onUpload)} className="space-y-4">
             <div>
@@ -128,12 +214,16 @@ export default function TerraformComparisonPage() {
           {message && <p>{message}</p>}
         </Card>
       ) : (
+<<<<<<< HEAD
         // Gap selection and patch preview
+=======
+>>>>>>> origin/dev
         <div className="flex flex-col md:flex-row gap-6">
           {/* Left: Resource Selection */}
           <Card className="w-full md:w-1/2 p-4 overflow-y-auto h-[600px]">
             <h2 className="text-lg font-semibold mb-2">Select Resources</h2>
             {resources.map((res) => (
+<<<<<<< HEAD
               <Card key={`${res.type}-${res.name}`} className="p-3 mb-3 border rounded-md">
                 <div className="flex items-start gap-3">
                   <Checkbox
@@ -153,6 +243,18 @@ export default function TerraformComparisonPage() {
                   </div>
                 </div>
               </Card>
+=======
+              <div key={`${res.type}-${res.name}`} className="flex items-center mb-2">
+                <Checkbox
+                  id={`${res.type}-${res.name}`}
+                  checked={selected.some((r) => r.type === res.type && r.name === res.name)}
+                  onCheckedChange={() => toggle(res)}
+                />
+                <label htmlFor={`${res.type}-${res.name}`} className="ml-2">
+                  {res.type} "{res.name}"
+                </label>
+              </div>
+>>>>>>> origin/dev
             ))}
             <Button onClick={onGenerate} className="mt-4">
               Generate Patch
@@ -167,18 +269,28 @@ export default function TerraformComparisonPage() {
               <span className="text-sm text-green-700 font-semibold">Score: {score}%</span>
             </div>
 
+<<<<<<< HEAD
             {/* Gauge Chart Visualization */}
+=======
+            {/* Gauge Chart here */}
+>>>>>>> origin/dev
             <div className="mb-4">
               <GaugeChartScore score={score} />
             </div>
 
+<<<<<<< HEAD
             {/* Copy / Download Actions */}
+=======
+>>>>>>> origin/dev
             <div className="flex gap-2 mb-3">
               <Button variant="outline" onClick={onCopy}>📋 Copy</Button>
               <Button variant="outline" onClick={onDownload}>⬇️ Download</Button>
             </div>
 
+<<<<<<< HEAD
             {/* Final Patch Output */}
+=======
+>>>>>>> origin/dev
             <div className="overflow-y-auto bg-muted p-2 rounded-md text-sm font-mono whitespace-pre-wrap flex-1">
               {mergedContent || 'Patch content will appear here after generation.'}
             </div>

@@ -2,7 +2,10 @@ provider "azurerm" {
   features {}
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> origin/dev
 
 resource "azurerm_resource_group" "example" {
   name     = var.resource_group_name
@@ -16,4 +19,7 @@ resource "azurerm_storage_account" "example" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
+<<<<<<< HEAD
+>>>>>>> origin/dev
+=======
 >>>>>>> origin/dev

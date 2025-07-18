@@ -3,6 +3,7 @@ provider "azurerm" {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # --- Patch from PCI Compliance ---
 
 resource "azurerm_storage_account" "pci_storage" {
@@ -19,6 +20,8 @@ resource "azurerm_storage_account" "pci_storage" {
     }
   }
 =======
+=======
+>>>>>>> origin/dev
 resource "azurerm_resource_group" "example" {
   name     = var.resource_group_name
   location = var.location
@@ -71,5 +74,8 @@ resource "azurerm_storage_account" "pci_storage" {
   days = 365
 }]
 }]
+<<<<<<< HEAD
+>>>>>>> origin/dev
+=======
 >>>>>>> origin/dev
 }

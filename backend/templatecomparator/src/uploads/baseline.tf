@@ -40,7 +40,11 @@ resource "azurerm_key_vault" "pci_kv" {
   }
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Disk encryption
+=======
+
+>>>>>>> origin/dev
 =======
 
 >>>>>>> origin/dev
@@ -55,7 +59,10 @@ resource "azurerm_disk_encryption_set" "pci_des" {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Used to store data with encryption and secure access enabled.
+=======
+>>>>>>> origin/dev
 =======
 >>>>>>> origin/dev
 resource "azurerm_storage_account" "pci_storage" {
@@ -65,6 +72,10 @@ resource "azurerm_storage_account" "pci_storage" {
   account_tier             = "Standard"
   account_replication_type = "GRS"
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  enable_https_traffic_only = true
+>>>>>>> origin/dev
 =======
   enable_https_traffic_only = true
 >>>>>>> origin/dev
@@ -81,8 +92,11 @@ resource "azurerm_storage_account" "pci_storage" {
 # IDENTITY & ACCESS MGMT
 ###########################
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 # Access policy condition 
+=======
+>>>>>>> origin/dev
 =======
 >>>>>>> origin/dev
 resource "azuread_conditional_access_policy" "mfa_policy" {
@@ -106,7 +120,10 @@ resource "azuread_conditional_access_policy" "mfa_policy" {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Read only role
+=======
+>>>>>>> origin/dev
 =======
 >>>>>>> origin/dev
 resource "azurerm_role_definition" "pci_reader" {

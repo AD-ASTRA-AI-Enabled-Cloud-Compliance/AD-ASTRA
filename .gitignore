@@ -9,15 +9,21 @@ land/
 .env
  dev
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 # macOS system files
 .DS_Store
 =======
+=======
+>>>>>>> origin/dev
 frontend/src/app/management/resource_evalautor/*.json
 frontend/src/app/management/resource_evalautor/*.txt
 
 
 # macOS system files
 .DS_Store
+<<<<<<< HEAD
+>>>>>>> origin/dev
+=======
 >>>>>>> origin/dev
