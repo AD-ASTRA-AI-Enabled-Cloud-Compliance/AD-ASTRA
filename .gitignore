@@ -7,5 +7,7 @@ __pycache__/
 local/
 .env
  dev
-frontend/src/app/management/resource_evalautor/*.json
-frontend/src/app/management/resource_evalautor/*.txt
+
+
+# macOS system files
+.DS_Store
