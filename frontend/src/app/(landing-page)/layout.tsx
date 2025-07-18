@@ -1,5 +1,11 @@
 import { ColorModeScript, theme } from '@chakra-ui/react'
 
+// Added by Harsimran Kaur
+// Importing CSS for slick-carousel
+import 'slick-carousel/slick/slick.css'
+import 'slick-carousel/slick/slick-theme.css'
+
+
 import { Provider } from './provider'
 
 export default function Layout(props: { children: React.ReactNode }) {

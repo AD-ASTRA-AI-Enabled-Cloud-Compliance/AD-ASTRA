@@ -3,6 +3,7 @@ from datetime import datetime
 from pymongo import MongoClient
 from passlib.hash import bcrypt
 from dotenv import load_dotenv
+from collections import OrderedDict
 
 # ✅ Load .env once
 load_dotenv()
@@ -17,6 +18,14 @@ class UserService:
         self.db = self.client["Skylock_Users"]
         self.users = self.db["Application_Users"]
 
+        # Ensure the Application_Users collection exists
+        if "Application_Users" not in self.db.list_collection_names():
+            self.db.create_collection("Application_Users")
+
+        self.users = self.db["Application_Users"]
+        
+    
+     
     def create_user(self, email, password, name="", role="user"):
         """
         Create a new user in the Application_Users collection
@@ -30,27 +39,28 @@ class UserService:
         Returns:
             The created user object (without password)
         """
+        email = email.lower().strip()  # Normalize email
         if self.users.find_one({"email": email}):
             raise Exception("User already exists")
 
         hashed_password = bcrypt.hash(password)
-        user = {
-            "email": email,
-            "password": hashed_password,
-            "name": name,
-            "role": role,
-            "is_active": True,
-            "created_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
-        }
+        user = OrderedDict([
+            ("email", email),
+            ("password", hashed_password),
+            ("name", name),
+            ("role", role),
+            ("created_at", datetime.utcnow().isoformat() + "Z"),
+            ("is_active", True)
+        ])
         self.users.insert_one(user)
-
-        user_without_password = user.copy()
-        user_without_password.pop("password", None)
-        return user_without_password
+        user.pop("password")
+        return user
 
     def find_by_email(self, email):
-        """Find a user by email in the Application_Users collection"""
-        return self.users.find_one({"email": email})
+        """Find a user by email (case-insensitive)"""
+        return self.users.find_one({
+            "email": {"$regex": f"^{email.strip()}$", "$options": "i"}
+        })
 
     def verify_password(self, plain_password, hashed_password):
         """Verify if the provided password matches the stored bcrypt hash"""
@@ -78,3 +88,8 @@ class UserService:
         user_without_password = user.copy()
         user_without_password.pop("password", None)
         return user_without_password
+
+    def update_password(self, email, new_password):
+        """Update the password for a user"""
+        hashed_password = bcrypt.hash(new_password)
+        self.users.update_one({"email": email.lower().strip()}, {"$set": {"password": hashed_password}})
