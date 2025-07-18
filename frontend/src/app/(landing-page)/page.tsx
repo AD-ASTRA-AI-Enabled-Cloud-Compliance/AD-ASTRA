@@ -65,6 +65,10 @@ const screenshots = [
 ];
 
 
+// export const metadata: Metadata = {
+//   title: 'SkyLock – Cloud Compliance Made Easy',
+//   description: 'Automate cloud compliance validation and secure infrastructure with SkyLock. AI-powered Terraform generation for HIPAA, PCI-DSS, NIST, and GDPR. Trusted by cloud teams.',
+// }
 const Home: NextPage = () => {
   return (
     <Box>
