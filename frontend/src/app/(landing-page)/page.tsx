@@ -39,10 +39,31 @@ import faq from '@/data/faq'
 import { Header } from '@/components/landing/layout/header'
 import { Footer } from '@/components/landing/layout/footer'
 
+// Added by Harsimran Kaur
+// Importing the Slider component for adding slideshow functionality
+import Slider from 'react-slick'
+
+
 // export const meta: Metadata = {
 //   title: 'Saas UI Landingspage',
 //   description: 'Free SaaS landingspage starter kit',
 // }
+
+// export const metadata: Metadata = {
+//   title: 'SkyLock – Cloud Compliance Made Easy',
+//   description: 'Automate cloud compliance validation and secure infrastructure with SkyLock. AI-powered Terraform generation for HIPAA, PCI-DSS, NIST, and GDPR. Trusted by cloud teams.',
+// }
+
+
+// Added by Harsimran Kaur
+// Photos for the slideshow
+
+const screenshots = [
+  '/static/images/compliance.jpg',
+  '/static/images/gdpr-hipaa.png',
+  '/static/screenshots/rules.png',
+];
+
 
 // export const metadata: Metadata = {
 //   title: 'SkyLock – Cloud Compliance Made Easy',
@@ -74,7 +95,9 @@ const HeroSection: React.FC = () => {
   return (
     <Box position="relative" overflow="hidden">
       <BackgroundGradient height="100%" zIndex="-1" />
-      <Container maxW="container.xl" pt={{ base: 40, lg: 60 }} pb="40">
+      {/* Modified by Harsimran Kaur 
+      Changed lg: 20 to reduce space from top*/}
+      <Container maxW="container.xl" pt={{ base: 40, lg: 20 }} pb="5">
         <Stack direction={{ base: 'column', lg: 'row' }} alignItems="center">
           <Hero
             id="home"
@@ -93,13 +116,14 @@ const HeroSection: React.FC = () => {
                   is a tool with security at its core — tailored for startups and modern teams.
                 <Br /> Designed by Cloud Engineers for Cloud Engineers<Br />{' '}
                 <Br /> TF Validation. AI assisted. Easy Deployments. <Br />{' '}
+                <Br />
               </FallInPlace>
             }
           >
             <FallInPlace delay={0.8}>
-              <HStack pt="4" pb="12" spacing="8">
+              {/* <HStack pt="4" pb="12" spacing="8">
                 <NextjsLogo height="28px" /> <ChakraLogo height="20px" />
-              </HStack>
+              </HStack> */}
 
               <ButtonGroup spacing={4} alignItems="center">
                 <ButtonLink colorScheme="primary" size="lg" href="/signup">
@@ -127,28 +151,57 @@ const HeroSection: React.FC = () => {
               </ButtonGroup>
             </FallInPlace>
           </Hero>
+          {/* Modified by Harsimran Kaur
+          Added slideshow on landing page and adjusted positioning */}
           <Box
-            height="600px"
             position="absolute"
-            display={{ base: 'none', lg: 'block' }}
-            left={{ lg: '60%', xl: '55%' }}
-            width="80vw"
-            maxW="1100px"
-            margin="0 auto"
+            right="-150px"
+            top="200px"
+            width="1000px"
+            maxW="unset"
+            overflow="hidden"
+            height="470px"
+            bg={useColorModeValue('white', 'gray.800')}
+            borderRadius="lg"
+            boxShadow="2xl"
+            border="1px solid"
+            borderColor={useColorModeValue('gray.200', 'gray.700')}
+            transition="all 0.3s ease"
+            _hover={{
+              transform: 'scale(1.02)',
+              boxShadow: 'dark-lg',
+            }}
           >
-            <FallInPlace delay={1}>
-              <Box overflow="hidden" height="100%">
-                <Image
-                  src="/static/screenshots/rules.png"
-                  width={1200}
-                  height={762}
-                  alt="Screenshot of Skylock Compliance"
-                  quality="75"
-                  priority
-                />
-              </Box>
-            </FallInPlace>
+            <Slider
+              dots={true}
+              arrows={false}
+              infinite
+              autoplay
+              speed={600}
+              autoplaySpeed={4000}
+              slidesToShow={1}
+              slidesToScroll={1}
+              pauseOnHover
+            >
+              {screenshots.map((src, index) => (
+                <Box key={index}>
+                  <Image
+                    src={src}
+                    alt={`Skylock screenshot ${index + 1}`}
+                    width={1200}
+                    height={762}
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      objectFit: 'cover',
+                    }}
+                    priority={index === 0}
+                  />
+                </Box>
+              ))}
+            </Slider>
           </Box>
+
         </Stack>
       </Container>
 

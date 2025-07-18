@@ -113,6 +113,13 @@ export const Footer: React.FC<FooterProps> = (props) => {
                 </FooterLink>
               )
             })}
+            {/* Add Privacy Policy and Terms of Service links */}
+            <FooterLink href="/privacy-policy" className="text-sm hover:underline">
+              Privacy Policy
+            </FooterLink>
+            <FooterLink href="/terms-of-service" className="text-sm hover:underline">
+              Terms of Service
+            </FooterLink>
           </HStack>
         </SimpleGrid>
       </Container>
