@@ -1,3 +1,4 @@
+// signup-form.tsx
 "use client"
 
 import { useState } from "react"
@@ -8,12 +9,11 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+export function SignupForm({ className, ...props }: React.ComponentProps<"div">) {
+  const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const router = useRouter()
@@ -23,9 +23,13 @@ export function LoginForm({
     setIsLoading(true)
     setError("")
 
-    // Validation checks
-    if (!email.trim() || !password.trim()) {
+    if (!name.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
       setError("All fields are required.")
+      setIsLoading(false)
+      return
+    }
+    if (!/^[A-Za-z\s]+$/.test(name)) {
+      setError("Name must contain only letters and spaces.")
       setIsLoading(false)
       return
     }
@@ -39,40 +43,24 @@ export function LoginForm({
       setIsLoading(false)
       return
     }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.")
+      setIsLoading(false)
+      return
+    }
 
     try {
-      // const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:3010"
-
-      const response = await fetch(`http://127.0.0.1:3010/api/auth/login`, {
+      const response = await fetch(`http://127.0.0.1:3010/api/auth/signup`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password })
       })
 
       const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed")
-      }
-
-      // Save user data in localStorage
-      localStorage.setItem("token", data.token)
-      localStorage.setItem("userId", data.user?._id)
-      localStorage.setItem("email", data.user?.email)
-      localStorage.setItem("role", data.user?.role || "user")
-
-      // Redirect based on role
-      const role = data.user?.role || "user"
-      if (role === "management") {
-        router.push("/management/dashboard")
-      } else {
-        router.push("/user/dashboard")
-      }
+      if (!response.ok) throw new Error(data.message || "Signup failed")
+      router.push("/login")
     } catch (error) {
-      console.error("Login error:", error)
-      setError(error instanceof Error ? error.message : "Failed to login")
+      setError(error instanceof Error ? error.message : "Failed to sign up")
     } finally {
       setIsLoading(false)
     }
@@ -85,9 +73,9 @@ export function LoginForm({
           <form className="p-6 md:p-8" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">Welcome</h1>
+                <h1 className="text-2xl font-bold">Create Account</h1>
                 <p className="text-muted-foreground text-balance">
-                  Login to your Skylock account
+                  Sign up for Skylock
                 </p>
               </div>
 
@@ -97,6 +85,19 @@ export function LoginForm({
                 </div>
               )}
 
+              <div className="grid gap-3">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Your Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  pattern="[A-Za-z\s]+"
+                  title="Name must contain only letters and spaces."
+                />
+              </div>
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -109,15 +110,7 @@ export function LoginForm({
                 />
               </div>
               <div className="grid gap-3">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a
-                    href="/forgot-password"
-                    className="ml-auto text-sm underline-offset-2 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
+                <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -126,18 +119,29 @@ export function LoginForm({
                   required
                 />
               </div>
+              <div className="grid gap-3">
+                <Label htmlFor="confirm-password">Confirm Password</Label>
+                <Input
+                  id="confirm-password"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Login"}
+                {isLoading ? "Signing up..." : "Sign up"}
               </Button>
-            
+
               <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <a href="/signup" className="underline underline-offset-4">
-                  Sign up
+                Already have an account?{" "}
+                <a href="/login" className="underline underline-offset-4">
+                  Login
                 </a>
               </div>
             </div>
           </form>
+
           <div className="relative hidden md:flex items-center justify-center bg-white/80 dark:bg-white/10 backdrop-blur-sm p-6 rounded-r-xl">
             <img
               src="/sky_lock_logo.png"
@@ -147,8 +151,9 @@ export function LoginForm({
           </div>
         </CardContent>
       </Card>
+
       <div className="text-muted-foreground text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        By clicking continue, you agree to our{" "}
+        By continuing, you agree to our{" "}
         <a href="/terms-of-service" className="underline underline-offset-4">
           Terms of Service
         </a>{" "}
