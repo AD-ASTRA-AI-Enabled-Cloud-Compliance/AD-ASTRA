@@ -121,27 +121,19 @@ This illustrates the entire architecture of our LLM-powered chat system, showing
 
 ![Chat & Intelligent Assistance Pipeline Component Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/timmy/docs/development/documentation/frontend-docs/intelligence_assistance_%20pipeline/diagrams/Chat%20&%20Intelligent%20Assistance%20Pipeline%20-%20Component%20Diagram.png)
 
-    
-    
-    
 
-    
+⚡ 2.4  Chat & Intelligent Assistance Pipeline - Deployment Diagram  ⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡
 
-
-
-++++++++++++++++++++++++++++++++
+This diagram outlines how components are deployed and interact across client, frontend server, backend server, and external APIs in your real-time LLM-powered chat system. It shows:
+                                    🔹 Where user queries are processed
+                                    🔹 How context is tracked and prompts are routed
+                                    🔹 How token streaming is managed from LLMs to the user interface
 
 
+![Chat & Intelligent Assistance Pipeline Deployment Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/9bf1098ad5b39bc4235d7817708d82939ab0de3f/docs/development/documentation/frontend-docs/intelligence_assistance_%20pipeline/diagrams/Chat%20&%20Intelligent%20Assistance%20Pipeline%20--%20Deployment%20Diagram.png)
 
 
-
-
-
-
-
-
-
-✨ 2.2 Components Breakdown ✨✨✨✨✨✨✨✨✨✨✨✨
+✨ 2.5 Components Breakdown ✨✨✨✨✨✨✨✨✨✨✨✨
 
 Each component is modular, pluggable, and clearly delineated:
 
@@ -154,7 +146,7 @@ Each component is modular, pluggable, and clearly delineated:
 | **LLM Adapter**       | Handles model-specific input/output transformations, abstracts provider complexity (Mixtral, Claude, etc.). |
 | **Session Engine**    | Stores multi-turn conversation data, response cache, and follow-up query references.                        |
 
-🔁 2.3 State Management Strategy 🔁🔁🔁🔁🔁🔁🔁🔁🔁🔁
+🔁 2.6 State Management Strategy 🔁🔁🔁🔁🔁🔁🔁🔁🔁🔁
 
 This pipeline requires advanced client-side and server-side state synchronization:
 
@@ -166,7 +158,7 @@ This pipeline requires advanced client-side and server-side state synchronizatio
 | **Error State**      | Resolved using `useReducer` pattern with retry strategies, fallbacks, and real-time feedback.              |
 
 
-🧬 2.4 WebSocket & Streaming Mechanics 🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
+🧬 2.7 WebSocket & Streaming Mechanics 🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
 
 This real-time pipeline uses WebSockets for ultra-low-latency interaction. Below is a simplified flow of a message session:
 
@@ -189,16 +181,177 @@ This real-time pipeline uses WebSockets for ultra-low-latency interaction. Below
             Final message emitted with {"done": true}
 
 
+🌿 3 Installation and Setup
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+⚙️ 3.1 Prerequisites ⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️
+
+| Requirement         | Version/Details                                 |
+| ------------------- | ----------------------------------------------- |
+| 🐍 Python           | `>= 3.10`                                       |
+| 🧱 Node.js + npm    | `Node >= 18.x`, `npm >= 9.x`                    |
+| 🧪 OpenAI SDK       | `openai >= 1.x` or LLM-compatible API SDK       |
+| 🔌 WebSocket Server | Python `websockets`, Flask-SocketIO, or FastAPI |
+| 🌐 React Frontend   | `React >= 18.x` with Vite or Next.js            |
+| 🔐 Redis (optional) | For caching chat context (optional)             |
+| 📦 Pipenv/Poetry    | Recommended for Python dependency management    |
+
+💡 Install system dependencies using your package manager (apt, brew, choco, etc.) before proceeding.
 
 
+🌍 3.1.2 Environment Variables 🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍
+
+Create a .env file in both your frontend and backend root directories to securely manage configurations.
+
+📁 Backend .env
+
+                        OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxx
+                        LLM_PROVIDER=openai
+                        MODEL=gpt-4
+                        CHAT_CONTEXT_TTL=3600
+                        ENABLE_LOGGING=true
+                        ALLOWED_ORIGINS=http://localhost:3000
+
+📁 Frontend .env
+
+                        VITE_SOCKET_URL=ws://localhost:8000/ws
+                        VITE_API_BASE=http://localhost:8000/api
+                        VITE_MAX_HISTORY=6
 
 
+🚀 3.2 Launching Locally 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
+
+1️⃣ 🖥️ Backend Setup (FastAPI + WebSocket)
+
+                              # Clone the repo and navigate to backend folder
+                              git clone https://github.com/your-org/cloud-compliance-suite.git
+                              cd backend/chat-assistance
+
+                              # Create a virtual environment
+                              python -m venv venv
+                              source venv/bin/activate  # or .\venv\Scripts\activate on Windows
+
+                              # Install dependencies
+                              pip install -r requirements.txt
+
+                              # Launch backend with WebSocket and REST routes
+                              uvicorn main:app --reload --port 8000
 
 
+2️⃣ 🌐 Frontend Setup (React + Vite)
+
+                              # Navigate to frontend folder
+                              cd ../../frontend
+
+                              # Install frontend dependencies
+                              npm install
+
+                              # Start frontend on port 3000
+                              npm run dev
 
 
+🚦 3.3 Checklist  🚦🚦🚦🚦🚦🚦🚦🚦🚦🚦
 
-START HERE 
+| ✅ Step                  | Tool/Path                              | Status |
+| ----------------------- | -------------------------------------- | ------ |
+| Backend WebSocket Ready | `ws://localhost:8000/ws`               | 🟢     |
+| Backend REST Ready      | `GET http://localhost:8000/api/health` | 🟢     |
+| Frontend Connected      | Auto connects on load                  | 🟢     |
+| Chat Context Streaming  | Confirm streaming response visible     | 🟢     |
 
 
+🧭 4 User Guide – Remediation Pipeline
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+This provides a walkthrough to help users interact seamlessly with the AI assistant interface, interpret responses, and navigate advanced conversation flows.
+
+🟢 4.1 Sending Queries 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢
+
+🎯 This is where the user engages the assistant with prompts, questions, or remediation requests.
+
+💬 Steps to Send a Query:
+1️⃣ Launch the App
+✅ Navigate to the web app at http://localhost:3000 or your deployed endpoint.
+
+2️⃣ Locate Chat Input Field
+✅ A clearly visible input field at the bottom of the chat window is designed for user text input.
+
+3️⃣ Type the Prompt
+    Examples:
+            ✅ “What are the remediation steps for Azure policy XYZ?”
+            ✅ “How compliant is this infrastructure with HIPAA?”
+
+      Press Enter or Click Send
+      A loading spinner appears and the system begins streaming the AI’s response in real-time.
+
+
+💡 4.2 Viewing AI Responses 💡💡💡💡💡💡💡💡💡💡💡
+
+🧠 The LLM responds in a structured and intuitive manner, depending on the context of the query.
+
+📌 Response Features:
+
+            ✅ Streamed Line-by-Line Output – Makes large answers more digestible.
+            📄 Markdown Formatting Support – Tables, lists, and code blocks are styled cleanly.
+            🧩 Clickable Remediation Suggestions – If the assistant returns compliance actions, they are embedded as clickable buttons or collapsible sections.
+            🕓 Timestamped Entries – Each message shows its generation time.
+            🧠 Memory Awareness (if enabled) – The assistant references earlier parts of the conversation.
+
+
+🧪 4.3 Chat Modes 🧪🧪🧪🧪🧪🧪🧪🧪🧪🧪
+
+| Mode Name          | Behavior                              |
+| ------------------ | ------------------------------------- |
+| 🧠 **Standard**    | Default assistant response (balanced) |
+| 🔍 **Verbose**     | Detailed outputs with citations       |
+| ⚡ **FastDraft**    | Minimal delay, less context awareness |
+| 🧩 **Remediation** | Focused on generating code + patches  |
+
+Users can switch modes via the ⚙️ settings icon or chat slash commands: /mode remediation.
+
+
+🧼 4.4 Resetting the Chat 🧼🧼🧼🧼🧼🧼🧼🧼🧼🧼
+
+      Use this if the assistant begins misinterpreting your intent:
+
+      🔹Click Reset Conversation at the top right
+      🔹Confirm prompt: “Clear session and start fresh?”
+
+      ✅ Resets chat context
+      ✅ Closes open remediation guides
+      ✅ Flushes AI memory of current session
+
+
+🛠️ 5: Troubleshooting Guide --- Chat & Intelligent Assistance Pipeline 
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Guide to identifying, isolating, and resolving common issues across UI, backend, streaming events, and assistant misbehavior.
+
+🔁 5.1 Streaming Response Failures 🔁🔁🔁🔁🔁🔁🔁🔁🔁🔁
+
+❌ Issue: The AI stops mid-response or doesn’t reply at all.
+
+📍 Possible Causes:
+                  🔹WebSocket connection is interrupted
+                  🔹LLM backend rate-limited or down
+                  🔹Payload malformed or context size exceeded
+
+✅ Resolution:
+
+            ✅ Check WebSocket status in the browser dev tools.
+            ✅ Restart the WebSocket client via UI or refresh the page.
+            ✅ Inspect backend logs for StreamingError, TokenLimitExceeded, or LLMTimeoutException.
+            ✅ Ensure API server and LLM service are running.
+
+
+🧪 Quick Diagnostic:
+
+                        curl -N http://localhost:5055/health
+
+If service returns non-200, restart backend with:
+
+                        docker restart chat-service
+
+
+🔌 6.2 Disconnected Sessions 🔌🔌🔌🔌🔌🔌🔌🔌🔌🔌🔌🔌
 
