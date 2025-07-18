@@ -29,7 +29,7 @@ const Login: NextPage = () => {
           <Auth
             view="login"
             providers={providers}
-            signupLink={<Link href="/signup">Sign up</Link>}
+            signupLink={<Link href="/signupf">Sign up</Link>}
           />
         </PageTransition>
       </Center>
