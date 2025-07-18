@@ -1,0 +1,259 @@
+/* --- Base, Layout & Typography --- */
+.main {
+  padding: 2rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-dark);
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.3), transparent 30%),
+    radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.2), transparent 40%);
+  min-height: 100vh;
+  color: var(--text-primary);
+}
+.spinner {
+  animation: spin 1s linear infinite;
+  margin-right: 0.5rem;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.centeredLoader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  gap: 1rem;
+}
+
+/* --- Glassmorphism Container for Form & Table --- */
+.formWrapper, .tableContainer {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.2), 0 8px 10px -6px rgb(0 0 0 / 0.2);
+}
+
+/* --- Form --- */
+.formWrapper {
+  max-width: 550px;
+  margin: 2rem auto;
+}
+.form {
+  padding: 2rem 2.5rem;
+  text-align: center;
+}
+.formIcon {
+  display: inline-flex;
+  padding: 1rem;
+  background-color: rgba(139, 92, 246, 0.1);
+  color: var(--primary-purple);
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+.formIcon svg { width: 24px; height: 24px; }
+.form h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.form p {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+.fileInputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.fileInputGroup input[type="file"] { display: none; }
+.fileInputLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 2px dashed var(--border-glass);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  color: var(--text-secondary);
+}
+.fileInputLabel:hover {
+  border-color: var(--primary-purple);
+  background-color: rgba(139, 92, 246, 0.1);
+  color: var(--primary-purple);
+}
+.fileInputLabel svg { width: 20px; height: 20px; }
+
+/* --- Buttons --- */
+.button, .buttonDanger, .buttonSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+/* Launch Button: Green by default */
+.button {
+  color: white;
+  background-color: var(--success-green);
+}
+.button:hover {
+  background-color: var(--success-green-dark);
+}
+.button:disabled {
+  background-color: #166534;
+  color: #a3a3a3;
+  cursor: not-allowed;
+}
+/* Destroy Button: Red by default */
+.buttonDanger {
+  background-color: var(--error-red);
+  color: white;
+}
+.buttonDanger:hover {
+  background-color: var(--error-red-dark);
+}
+/* Secondary Button */
+.buttonSecondary {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-glass);
+}
+.buttonSecondary:hover {
+  background-color: var(--border-glass);
+  color: var(--text-primary);
+}
+
+/* --- Error Display --- */
+.errorContainer {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: rgba(239, 68, 68, 0.1);
+  border-left: 5px solid var(--error-red);
+  border-radius: 12px;
+  text-align: left;
+}
+.errorIcon { color: var(--error-red); }
+.errorIcon svg { width: 24px; height: 24px; }
+.errorTitle {
+  color: #F87171;
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.errorMessage {
+  color: #FCA5A5;
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+}
+.errorDetails summary {
+  cursor: pointer;
+  font-weight: 500;
+  color: #F87171;
+  outline: none;
+}
+.log {
+  margin-top: 1rem;
+  background-color: #000;
+  padding: 1rem;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-height: 300px;
+  overflow-y: auto;
+  font-size: 0.875rem;
+  font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
+  border: 1px solid var(--border-glass);
+}
+
+/* --- Success Page & Table --- */
+.successContainer {
+  max-width: 900px;
+  margin: 2rem auto;
+}
+.successHeader {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+.successIcon {
+  color: var(--success-green);
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 1rem auto;
+}
+.successTitle {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.successSubtitle {
+  color: var(--text-secondary);
+  font-size: 1.125rem;
+}
+.tableContainer {
+  padding: 1rem;
+  /* Uses the shared glassmorphism style from above */
+}
+.tableTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  padding: 1rem 1.5rem;
+  color: var(--text-primary);
+}
+.resourceTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+.resourceTable th, .resourceTable td {
+  padding: 1rem 1.5rem;
+  text-align: left;
+}
+.resourceTable th {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-glass);
+}
+.resourceTable td {
+  color: var(--text-primary);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border-glass);
+}
+.resourceTable tbody tr:last-child td { border-bottom: none; }
+
+/* --- Actions Container (on Success page) --- */
+.actionsContainer {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+.actionsContainer .buttonSecondary, .actionsContainer .buttonDanger {
+    width: auto; /* Allow buttons to size to content */
+}
+.destroyError {
+    margin-top: 1rem;
+    color: #FCA5A5;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}

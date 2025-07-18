@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/sidebar"
 import { Separator } from "@radix-ui/react-separator"
 import { ThemeToggle } from "@/components/ThemeToggle"
-import { WebSocketProvider } from "../../contexts/WebSocketContext"
 import OCRProgress from "@/components/OCRProgress"
+import { WebSocketProvider } from "@/contexts/WebSocketContext"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
