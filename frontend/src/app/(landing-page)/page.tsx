@@ -116,13 +116,14 @@ const HeroSection: React.FC = () => {
                   is a tool with security at its core — tailored for startups and modern teams.
                 <Br /> Designed by Cloud Engineers for Cloud Engineers<Br />{' '}
                 <Br /> TF Validation. AI assisted. Easy Deployments. <Br />{' '}
+                <Br />
               </FallInPlace>
             }
           >
             <FallInPlace delay={0.8}>
-              <HStack pt="4" pb="12" spacing="8">
+              {/* <HStack pt="4" pb="12" spacing="8">
                 <NextjsLogo height="28px" /> <ChakraLogo height="20px" />
-              </HStack>
+              </HStack> */}
 
               <ButtonGroup spacing={4} alignItems="center">
                 <ButtonLink colorScheme="primary" size="lg" href="/signup">
