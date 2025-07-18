@@ -5,8 +5,11 @@ __pycache__/
 __pycache__/
 
 local/
+land/
 .env
  dev
+frontend/src/app/management/resource_evalautor/*.json
+frontend/src/app/management/resource_evalautor/*.txt
 
 
 # macOS system files
