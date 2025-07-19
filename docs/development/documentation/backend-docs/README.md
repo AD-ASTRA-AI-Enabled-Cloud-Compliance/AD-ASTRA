@@ -761,6 +761,7 @@ The appendices provide detailed supporting information to complement the Complia
 | **Sanity Check**               | Quick test to confirm system readiness post-deployment.                                 |
 
 
+
 7.2 📚 Third-Party Libraries and Licenses 📚📚📚📚📚📚📚📚📚📚
 
 | **Library/Tool**    | **Usage in Pipeline**                  | **License**                 |
@@ -780,10 +781,17 @@ The appendices provide detailed supporting information to complement the Complia
 7.3 🔗 Useful Links and Resources 🔗🔗🔗🔗🔗🔗🔗🔗🔗🔗
 
 ✅ Official Project Repository: https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/tree/dev
+
 ✅ Qdrant Documentation: https://qdrant.tech/documentation/
+
 ✅ Ollama LLM Guide: https://ollama.com/docs
+
 ✅ Docker Official Docs: https://docs.docker.com
+
 ✅ Next.js Documentation: https://nextjs.org/docs
+
 ✅ Zod Schema Validation: https://zod.dev
+
 ✅ React Official Docs: https://react.dev
+
 ✅ MIT License Reference: https://opensource.org/licenses/MIT

@@ -14,12 +14,15 @@ The Remediation Pipeline is engineered to automate the assessment of cloud envir
                 📌 Framework Flexibility: Adaptable to NIST, CIS Benchmarks, PCI DSS, HIPAA, and organizational policies.
 
                 
-🧩 1.2 Audience and Scope
+🧩 1.2 Audience and Scope 🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩
 
 This documentation is crafted for:
                 ✅ DevOps Engineers: Automate and enforce compliance within CI/CD.
+
                 ✅ Cloud Architects: Validate infrastructure against frameworks.
+
                 ✅ Security & Compliance Teams: Monitor posture and ensure audit readiness.
+
                 ✅ CTOs & Stakeholders: Gain high-level visibility into compliance health.
 
 📌 Scope: 📌📌📌📌📌📌📌📌📌📌
@@ -27,26 +30,34 @@ This documentation is crafted for:
 This pipeline covers focuses on cloud infrastructure and IaC compliance evaluations:
 
                         ✅ Automates remediation steps post evaluation.
+
                         ✅ Designed to integrate with existing CI/CD pipelines, dashboards, and reporting tools.
+
                         ✅ Supports multi-cloud environments (AWS, Azure, GCP)
 
 
 📚 1.3 Key Concepts and Terminologies  📚📚📚📚📚📚📚📚📚📚
 
                 ✅ Compliance Evaluation: Process of comparing environment configurations and resources against regulatory or organizational policies.
+
                 ✅ Remediation: Automated or manual correction of compliance violations to align with policies.
+
                 ✅ Framework Profiles: Defined sets of rules (PCI DSS, HIPAA, NIST, CIS) used as evaluation baselines.
+
                 ✅ Evaluation Trigger: Events (example., new deployment, PR merge, scheduled scan) that initiate compliance checks.
+
                 ✅ Compliance Dashboard: UI component displaying the current state of compliance across resources and the results of remediation actions.
+
                 ✅ Remediation Actions: Corrective steps applied to infrastructure or code to fix detected violations, often using IaC templates, RBAC adjustments, or direct API calls.
+
                 ✅ Status Artifacts: JSON or YAML output files representing the results of compliance scans for traceability and audits.
 
 🛡️ 1.4 Compliance Frameworks Supported  🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️ 
 
 The Remediation Pipeline currently supports the following frameworks, with modular extension capability:
 
-✅ PCI DSS (Payment Card Industry Data Security Standard)                       ✅ NIST 800-53 & 800-171
-✅ HIPAA (Health Insurance Portability and Accountability Act)                  ✅ CIS Benchmarks
+✅ PCI DSS (Payment Card Industry Data Security Standard)        -------------  ✅ NIST 800-53 & 800-171
+✅ HIPAA (Health Insurance Portability and Accountability Act)   -------------  ✅ CIS Benchmarks
 ✅ GDPR (General Data Protection Regulation)
 
 🏗️ 2. System Architecture
