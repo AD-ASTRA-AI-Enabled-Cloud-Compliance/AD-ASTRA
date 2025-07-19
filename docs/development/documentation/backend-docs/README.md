@@ -17,9 +17,13 @@ The Compliance Rule Ingestion Pipeline is a core module of our AI-Driven Cloud C
 This documentation is crafted for:
 
 ✅ DevOps Engineers & SREs: to deploy, operate, and monitor the pipeline.
+
 ✅ Backend & API Developers: to extend, customize, and integrate APIs.
+
 ✅ Compliance Teams & Auditors: to understand ingestion outputs for validation.
+
 ✅ AI Engineers & Data Scientists: to adapt and improve the LLM-based extraction pipeline.
+
 ✅ Technical Product Managers: to align pipeline capabilities with product goals.
 
 📌 Scope: 📌📌📌📌📌📌📌📌📌📌
@@ -45,28 +49,33 @@ The pipeline architecture is modular, allowing the addition of new frameworks ea
 🪐 2.1 High-Level Architecture Diagram  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
 
 User ➡️ Upload Document
+
           ⬇️
-       Flask API Service (`app.py`)
+
+  Flask API Service (`app.py`)
+
           ⬇️
-       LLM Extraction Service (Ollama)
+
+   LLM Extraction Service (Ollama)
 
           ⬇️
 
    JSON Structuring & Validation
 
           ⬇️
-       Vectorization
+
+   Vectorization
 
           ⬇️
 
     Qdrant Vector DB
 
           ⬇️
-
+          
   Status Updates via RabbitMQ
-
+  
           ⬇️
-
+          
  Real-Time Frontend Dashboard
 
 🧬 2.2 Compliance Rule Ingestion Pipeline - UML Diagram  🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
