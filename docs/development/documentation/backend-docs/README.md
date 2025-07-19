@@ -15,6 +15,7 @@ The Compliance Rule Ingestion Pipeline is a core module of our AI-Driven Cloud C
 🎯 1.2 Audience and Scope  🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯  
 
 This documentation is crafted for:
+
 ✅ DevOps Engineers & SREs: to deploy, operate, and monitor the pipeline.
 
 ✅ Backend & API Developers: to extend, customize, and integrate APIs.
@@ -32,8 +33,11 @@ The scope includes installation, architecture, user workflows, troubleshooting, 
 🛡️ 1.3 Compliance Frameworks Supported  🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️ 
 
 The pipeline is designed to support ingestion from multiple compliance frameworks, including but not limited to:
+
 ✅ PCI DSS (Payment Card Industry Data Security Standard)             ✅ ISO 27001 
+
 ✅ GDPR                                                               ✅ NIST 800-53 & 800-171
+
 ✅ HIPAA (Health Insurance Portability and Accountability Act)        ✅ SOC 2
 
 The pipeline architecture is modular, allowing the addition of new frameworks easily as your organization's compliance needs evolve.
