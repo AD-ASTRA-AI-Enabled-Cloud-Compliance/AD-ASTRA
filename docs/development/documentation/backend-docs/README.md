@@ -63,8 +63,7 @@ User ➡️ Upload Document
    JSON Structuring & Validation
 
           ⬇️
-
-   Vectorization
+       Vectorization
 
           ⬇️
 
@@ -75,7 +74,7 @@ User ➡️ Upload Document
   Status Updates via RabbitMQ
 
           ⬇️
-          
+
  Real-Time Frontend Dashboard
 
 🧬 2.2 Compliance Rule Ingestion Pipeline - UML Diagram  🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
