@@ -75,7 +75,7 @@ User ➡️ Upload Document
   Status Updates via RabbitMQ
   
           ⬇️
-          
+
  Real-Time Frontend Dashboard
 
 🧬 2.2 Compliance Rule Ingestion Pipeline - UML Diagram  🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
@@ -114,25 +114,25 @@ This diagram shows how our pipeline components are physically deployed and commu
  
 🧩 2.6 Data Flow  🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩
 
-1️⃣ Upload:
+1️⃣ Upload -:
 User uploads a compliance document via the frontend or API.
 
-2️⃣ Preprocessing:
+2️⃣ Preprocessing -:
 The Flask service reads the document, performs lightweight cleanup, and streams the content to the LLM extraction engine.
 
-3️⃣ LLM Extraction:
+3️⃣ LLM Extraction -:
 Ollama parses the document, extracts compliance rules, and returns structured content (rule titles, descriptions, references, frameworks).
 
-4️⃣ JSON Structuring & Validation:
+4️⃣ JSON Structuring & Validation -:
 Content is validated against a JSON schema ensuring consistency and completeness.
 
-5️⃣ Vectorization:
+5️⃣ Vectorization -:
 Extracted rules are converted into embeddings using the Ollama model, preparing them for semantic search.
 
-6️⃣ Storage in Qdrant:
+6️⃣ Storage in Qdrant -:
 Embeddings and metadata are upserted into Qdrant, organized under relevant collections and partitions.
 
-7️⃣ Status Updates:
+7️⃣ Status Updates -:
 Each step's status is published to RabbitMQ, which the frontend consumes to show live ingestion progress.
 
 
@@ -151,7 +151,9 @@ Each step's status is published to RabbitMQ, which the frontend consumes to show
 ⚙️ 2.8 API & Interface Points ⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️
 
 ✅ POST /upload – Accepts documents (PDF/text) for ingestion.
+
 ✅ GET /status/<document_id> – Retrieves ingestion progress for a specific document.
+
 ✅ WebSocket via RabbitMQ – Streams real-time ingestion status to subscribed frontend clients.
 
 
@@ -163,12 +165,14 @@ Each step's status is published to RabbitMQ, which the frontend consumes to show
 Before installation, ensure the following are in place:
 
 ✅ System Requirements
+
                             OS: Ubuntu 20.04 LTS / macOS 13+ / Windows 11 WSL2
                             RAM: 8GB minimum, 16GB recommended
                             Disk: 20GB free space
                             Docker & Docker Compose installed
 
 ✅ Software Dependencies
+
                             Docker (v24+)
                             Docker Compose (v2.23+)
                             Node.js (v18+)
@@ -176,6 +180,7 @@ Before installation, ensure the following are in place:
                             Git
 
 ✅ Network & Permissions
+
                             Open ports:
                             3000 (Frontend)
                             3030 (Document Preprocess API)
@@ -190,25 +195,33 @@ Before installation, ensure the following are in place:
 Preferred installation method is using Docker and Docker Compose for a clean, isolated, and replicable environment.
 
 📄 Step 1: Clone the Repository
+                            
                             ![git clone https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA.git]()
+
                             ![cd ad-astra-compliance-pipeline]()
 
 📄 Step 2: Verify Environment Variables
+
 Check and configure:
+
                             .env files (if used)
                             docker-compose.yaml configurations (uploaded already)
+
                             Ensure environment variables for:
+
                                           ![MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE]()
                                           ![QDRANT_HOST, QDRANT_PORT]()
                                           ![Flask and frontend environment configurations]()
 
 
 📄 Step 3: Build and Run
+
                             docker-compose up --build
 
 This will:
 
 ✅ Pull and build:
+
                             Frontend Next.js UI
                             Flask Document Preprocessing API
                             Ollama LLM container
@@ -268,6 +281,7 @@ If you prefer running services individually for debugging and contribution:
 ✅ MySQL
 
 Run using Docker:
+
                             docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=adastra -e MYSQL_USER=adastra -e MYSQL_PASSWORD=adastrapass mysql:8.0
 
 
@@ -302,7 +316,6 @@ Test LLM processing using:
 
 Connect using a DB client with credentials:
 
-
                             host: localhost
                             user: adastra
                             password: adastrapass
@@ -317,104 +330,162 @@ Connect using a DB client with credentials:
 4.1.1 🖥️ Navigating the User Interface 🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️
 
 ✅ The frontend provides a clean dashboard displaying:
-                            Upload panel for compliance documents.
-                            Live OCR progress indicators.
-                            Status of rule extraction in real-time.
-                            Access to vector search and rule management.
+
+                            1️⃣Upload panel for compliance documents.
+
+                            2️⃣Live OCR progress indicators.
+
+                            3️⃣Status of rule extraction in real-time.
+
+                            4️⃣Access to vector search and rule management.
 
 ✅ Users log in using their credentials (integrated with the broader platform’s RBAC and authentication).
 
 ✅ The side navigation bar includes:
-                            Upload Documents
-                            Monitor Rule Extraction
-                            Search Rules
-                            View Compliance Status
-                            Manage Extracted Rules
+
+                            1️⃣Upload Documents
+
+                            2️⃣Monitor Rule Extraction
+                            
+                            3️⃣Search Rules
+                            
+                            4️⃣View Compliance Status
+                            
+                            5️⃣Manage Extracted Rules
 
 4.1.2 📂 How to Upload Compliance Documents  📂📂📂📂📂📂📂📂📂📂
 
 ✅ Step-by-step:
+
                             1️⃣ Navigate to the Upload Panel.
+
                             2️⃣ Click “Upload Document”.
+
                             3️⃣ Select the PDF, DOCX, or TXT compliance document.
+
                             4️⃣ Choose the framework type (PCI DSS, HIPAA, GDPR, etc.) from a dropdown.
+
                             5️⃣ Click “Start Ingestion”.
 
 ✅ A real-time progress bar will show OCR and chunking status.
 
 ✅ On completion, you will see:
-                            Extracted rule points summary.
-                            Ingestion confirmation with a unique document ID.
+
+                            🔹Extracted rule points summary.
+
+                            🔹Ingestion confirmation with a unique document ID.
 
 4.2 🧩 Understanding Rule Extraction and Ingestion 🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩
 
 ✅ The system:
-                            Performs OCR (if needed) on scanned documents.
-                            Chunks and tokenizes the document.
-                            Passes chunks to the Ollama LLM for rule extraction.
-                            Stores extracted structured rules in:
-                                                 Qdrant Vector Database for semantic search.
-                                                 MySQL for structured rule management.
+
+                            🔹Performs OCR (if needed) on scanned documents.
+
+                            🔹Chunks and tokenizes the document.
+
+                            🔹Passes chunks to the Ollama LLM for rule extraction.
+
+                            🔹Stores extracted structured rules in:
+
+                                                 🔹Qdrant Vector Database for semantic search.
+
+                                                 🔹MySQL for structured rule management.
 
 ✅ Users can view:
-                            Rule ID
-                            Extracted compliance requirement
-                            Related framework section
-                            Vector embeddings reference
-                            Status of validation
+
+                            🔹Rule ID
+
+                            🔹Extracted compliance requirement
+
+                            🔹Related framework section
+
+                            🔹Vector embeddings reference
+
+                            🔹Status of validation
 
 4.3 📊 Interpreting Compliance Status and Results 📊📊📊📊📊📊📊📊📊📊
 
 ✅ Once ingestion completes:
 
 Navigate to “Compliance Status”.
+
 Filter results by:
-                            Document
-                            Framework type
-                            Status (Validated, Pending Review, Error)
+
+                            🔹Document
+
+                            🔹Framework type
+
+                            🔹Status (Validated, Pending Review, Error)
 
 ✅ Color-coded indicators:
+
 🟢 Validated
+
 🟡 Pending Review
+
 🔴 Error (requires user intervention)
 
 ✅ Click any rule to:
-                            View extracted details.
-                            Manually adjust or confirm mappings.
-                            Add notes for context.
+
+                            🔹View extracted details.
+
+                            🔹Manually adjust or confirm mappings.
+
+                            🔹Add notes for context.
 
 4.4 🔎 Conducting Vector-based Searches 🔎🔎🔎🔎🔎🔎🔎🔎🔎🔎
 
 ✅ Navigate to “Search Rules”.
+
 ✅ Enter a compliance question or keyword:
+
               “What are the data retention requirements for GDPR?”
+
 ✅ The system:
-              Transforms the query into an embedding vector.
-              Searches Qdrant for semantically similar rules.
-              Displays top N results with:
+
+              🔹Transforms the query into an embedding vector.
+
+              🔹Searches Qdrant for semantically similar rules.
+
+              🔹Displays top N results with:
+
                             Matching rule
+
                             Framework reference
+
                             Similarity score
 
 ✅ Users can:
+
               Export search results.
+
               Save queries for repeated compliance checks.
+
               Use results for compliance audits or control assessments.
 
 4.5 🛠️ Managing and Updating Extracted Rules  🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️
 
 ✅ Navigate to “Manage Extracted Rules”.
+
 ✅ For each rule:
-                            View and edit extracted content.
-                            Adjust framework linkage if needed.
-                            Add additional metadata or notes.
-                            Flag rules for review or validation.
-                            Archive deprecated or irrelevant rules.
+
+                            🔹View and edit extracted content.
+
+                            🔹Adjust framework linkage if needed.
+
+                            🔹Add additional metadata or notes.
+
+                            🔹Flag rules for review or validation.
+
+                            🔹Archive deprecated or irrelevant rules.
 
 ✅ Users can batch-update rules for:
-                            Framework updates.
-                            Organizational policy changes.
-                            Post-audit compliance corrections.
+
+                            🔹Framework updates.
+
+                            🔹Organizational policy changes.
+
+                            🔹Post-audit compliance corrections.
 
 ✅ All updates are logged for audit trails.
 
@@ -425,55 +496,84 @@ Filter results by:
 5.1 🧩 Common Issues and Solutions 🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩
 
 ✅ Issue: OCR does not complete or fails midway.
+
               💡 Solution:
-                            Ensure the document is clear, high-contrast, and non-password protected.
-                            Check document_preprocess container logs for Tesseract or chunking errors.
-                            Verify sufficient memory allocation in the Docker container.
+
+                            🔹Ensure the document is clear, high-contrast, and non-password protected.
+
+                            🔹Check document_preprocess container logs for Tesseract or chunking errors.
+
+                            🔹Verify sufficient memory allocation in the Docker container.
 
 ✅ Issue: No rules are extracted after ingestion.
+
               💡 Solution:
-                            Confirm the document matches supported formats (.pdf, .docx, .txt).
-                            Check LLM integration (ollama logs) for token or request issues.
-                            Verify that the pipeline chunking does not exceed max token limits.
+              
+                            🔹Confirm the document matches supported formats (.pdf, .docx, .txt).
+
+                            🔹Check LLM integration (ollama logs) for token or request issues.
+
+                            🔹Verify that the pipeline chunking does not exceed max token limits.
 
 ✅ Issue: Vector search returns no results.
+
               💡 Solution:
-                            Ensure the qdrant container is running and healthy.
-                            Validate that embeddings were successfully generated and upserted.
-                            Re-run ingestion for the affected document.
+
+                            🔹Ensure the qdrant container is running and healthy.
+
+                            🔹Validate that embeddings were successfully generated and upserted.
+
+                            🔹Re-run ingestion for the affected document.
 
 ✅ Issue: API requests time out.
+
               💡 Solution:
-                            Check container resource allocation.
-                            Verify network connectivity between containers in the Docker network.
-                            Inspect document_preprocess logs for slow database or LLM calls.
+
+                            🔹Check container resource allocation.
+
+                            🔹Verify network connectivity between containers in the Docker network.
+
+                            🔹Inspect document_preprocess logs for slow database or LLM calls.
 
 ✅ Issue: Frontend dashboard does not reflect updated statuses.
+
               💡 Solution:
-                            Refresh frontend, clear cache if needed.
-                            Ensure WebSocket connection is active for real-time updates.
-                            Check backend API logs for payload delivery failures.
+
+                            🔹Refresh frontend, clear cache if needed.
+
+                            🔹Ensure WebSocket connection is active for real-time updates.
+
+                            🔹Check backend API logs for payload delivery failures.
 
 5.2 🛑 Diagnosing API Errors  🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑
 
 ✅ Checklist:
 
 🔸 Inspect returned HTTP codes:
-              400: Invalid request or missing parameters.
-              401: Authentication failure, check tokens and login flow.
-              500: Server error, review logs.
+
+              🔹400: Invalid request or missing parameters.
+
+              🔹401: Authentication failure, check tokens and login flow.
+
+              🔹500: Server error, review logs.
 
 🔸 Verify API endpoint availability:
-              Confirm /upload-document, /rules-status, /vector-search, and /update-rule are live.
-              Use curl or Postman for direct testing.
+
+              🔹Confirm /upload-document, /rules-status, /vector-search, and /update-rule are live.
+
+              🔹Use curl or Postman for direct testing.
 
 🔸 Check payload structure:
-              Ensure JSON body matches the API schema.
-              Use known working examples for comparison.
+
+              🔹Ensure JSON body matches the API schema.
+
+              🔹Use known working examples for comparison.
 
 ✅ Advanced Debugging:
-              Enable verbose logging in the backend temporarily for deeper inspection.
-              Cross-check docker-compose.yaml exposed ports and internal network bindings.
+
+              🔹Enable verbose logging in the backend temporarily for deeper inspection.
+
+              🔹Cross-check docker-compose.yaml exposed ports and internal network bindings.
 
 5.3 📄 Docker and Container Logs Analysis  📄📄📄📄📄📄📄📄📄📄
 
@@ -485,10 +585,14 @@ Filter results by:
                             docker-compose logs -f frontend
 
 ✅ What to look for:
-              ERROR or Traceback in Python logs (document_preprocess).
-              Connection errors between document_preprocess and qdrant or mysql.
-              LLM request timeouts in ollama.
-              Memory or CPU throttling indicators.
+
+              🔹ERROR or Traceback in Python logs (document_preprocess).
+
+              🔹Connection errors between document_preprocess and qdrant or mysql.
+              
+              🔹LLM request timeouts in ollama.
+
+              🔹Memory or CPU throttling indicators.
 
 ✅ Use docker stats to monitor container resource utilization.
 
@@ -500,23 +604,27 @@ If repeated failures occur, consider restarting containers:
 5.4 🗄️ Database Connectivity and Query Issues  🗄️🗄️🗄️🗄️🗄️🗄️🗄️🗄️🗄️🗄️🗄️
 
 ✅ MySQL Troubleshooting:
+
                             Ensure mysql service is running: docker-compose ps.
 
 
 Connect using a MySQL client to verify:
+
                             mysql -u adastra -padastrapass -h 127.0.0.1 -P 3306
 
 
 Check if the adastra database and tables exist.
+
 Inspect mysql logs for authentication failures or query errors.
 
 
 ✅ Qdrant Troubleshooting:
 
-                            Check Qdrant health at http://localhost:6333/health.
-                            Use the Qdrant HTTP API to confirm collections are present:
+                            🔹Check Qdrant health at http://localhost:6333/health.
 
-              curl http://localhost:6333/collections
+                            🔹Use the Qdrant HTTP API to confirm collections are present:
+
+                            curl http://localhost:6333/collections
 
 Confirm embeddings are stored and retrievable using collection and vector IDs.
 
@@ -524,16 +632,20 @@ Confirm embeddings are stored and retrievable using collection and vector IDs.
 5.5 🧠 Debugging LLM Integration Problems  🧠🧠🧠🧠🧠🧠🧠🧠🧠🧠
 
 ✅ If rule extraction is not functioning:
-                            Check ollama container logs for rate-limiting or request failures.
-                            Confirm model availability (ollama should have the required models pulled and ready).
-                            Validate payload size (tokens per chunk) and adjust if exceeding LLM limits.
-                            Retry ingestion with a smaller document for controlled testing.
+
+                            🔹Check ollama container logs for rate-limiting or request failures.
+
+                            🔹Confirm model availability (ollama should have the required models pulled and ready).
+
+                            🔹Validate payload size (tokens per chunk) and adjust if exceeding LLM limits.
+
+                            🔹Retry ingestion with a smaller document for controlled testing.
 
 ✅ Testing the LLM in isolation:
 
-Manually send a test chunk to the LLM endpoint to validate:
+                            🔹Manually send a test chunk to the LLM endpoint to validate:
 
-curl -X POST http://localhost:11434/your-llm-endpoint -d '{"text":"Sample compliance chunk"}'
+                            curl -X POST http://localhost:11434/your-llm-endpoint -d '{"text":"Sample compliance chunk"}'
 
 
 ❓ 6: Frequently Asked Questions (FAQs) -- Compliance Rule Ingestion Pipeline
@@ -544,69 +656,90 @@ This section consolidates common, technical, and compliance-related questions to
 
 6.1 🌍 General FAQs 🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍
 
-✅ Q: What is the purpose of the Compliance Rule Ingestion Pipeline?
-A: It automates the extraction, structuring, and vectorization of compliance rules from frameworks (e.g., PCI DSS, HIPAA) for continuous compliance monitoring, reducing manual interpretation efforts and audit preparation time.
+🔹 Q: What is the purpose of the Compliance Rule Ingestion Pipeline?
 
-✅ Q: Who can use this pipeline?
-A: Compliance teams, DevSecOps engineers, cloud security analysts, and auditors who manage regulatory frameworks across cloud environments.
+✅: It automates the extraction, structuring, and vectorization of compliance rules from frameworks (e.g., PCI DSS, HIPAA) for continuous compliance monitoring, reducing manual interpretation efforts and audit preparation time.
 
-✅ Q: What document formats are supported for ingestion?
-A: .pdf, .docx, .txt, and .md. Additional formats can be added during advanced pipeline customization.
+🔹 Q: Who can use this pipeline?
 
-✅ Q: Does this pipeline work with real-time compliance checks?
-A: Yes, ingested rules are stored in Qdrant for real-time vector similarity searches, allowing automated enforcement in CI/CD or cloud posture management.
+✅: Compliance teams, DevSecOps engineers, cloud security analysts, and auditors who manage regulatory frameworks across cloud environments.
 
-✅ Q: Can I use this system without advanced technical knowledge?
-A: Yes, with Docker setup and API/UI guidance, non-technical compliance teams can use the system with minimal support.
+🔹 Q: What document formats are supported for ingestion?
+
+✅: .pdf, .txt, and .md. Additional formats can be added during advanced pipeline customization.
+
+🔹 Q: Does this pipeline work with real-time compliance checks?
+
+✅: Yes, ingested rules are stored in Qdrant for real-time vector similarity searches, allowing automated enforcement in CI/CD or cloud posture management.
+
+🔹 Q: Can I use this system without advanced technical knowledge?
+
+✅: Yes, with Docker setup and API/UI guidance, non-technical compliance teams can use the system with minimal support.
 
 
 6.2 🛠️ Technical FAQs 🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️
 
-✅ Q: How do I check if the ingestion pipeline is running correctly?
-A: Run docker-compose ps to confirm service statuses, and docker-compose logs -f document_preprocess for live logs.
+🔹 Q: How do I check if the ingestion pipeline is running correctly?
 
-✅ Q: How can I test the API endpoints?
-A: Use Postman, curl, or your frontend interface to hit endpoints such as /upload-document and /rules-status with appropriate payloads.
+✅: Run docker-compose ps to confirm service statuses, and docker-compose logs -f document_preprocess for live logs.
 
-✅ Q: Where are the rules stored after ingestion?
-A: Extracted rules are stored:
+🔹 Q: How can I test the API endpoints?
+
+✅: Use Postman, curl, or your frontend interface to hit endpoints such as /upload-document and /rules-status with appropriate payloads.
+
+🔹 Q: Where are the rules stored after ingestion?
+
+✅: Extracted rules are stored:
+
                             As vectors in Qdrant (http://localhost:6333)
+
                             In structured relational data in MySQL (adastra database)
 
-✅ Q: What happens if an ingestion fails?
-A: The system logs the error, and the document remains unprocessed. Review container logs for document_preprocess, correct issues, and re-ingest.
+🔹 Q: What happens if an ingestion fails?
 
-✅ Q: Can I modify the pipeline to use another LLM model?
-A: Yes, update your ollama configuration or modify API calls to your preferred LLM endpoint. See Part 8: Advanced Topics for detailed steps.
+✅: The system logs the error, and the document remains unprocessed. Review container logs for document_preprocess, correct issues, and re-ingest.
 
-✅ Q: How are documents chunked for LLM processing?
-A: Documents are split into token-based chunks suitable for the LLM context window, ensuring complete rule extraction without truncation.
+🔹 Q: Can I modify the pipeline to use another LLM model?
 
-✅ Q: How do I back up my pipeline data?
-A: Backup MySQL and Qdrant volumes using:
+✅: Yes, update your ollama configuration or modify API calls to your preferred LLM endpoint. 
+
+🔹 Q: How are documents chunked for LLM processing?
+
+✅: Documents are split into token-based chunks suitable for the LLM context window, ensuring complete rule extraction without truncation.
+
+🔹 Q: How do I back up my pipeline data?
+
+✅: Backup MySQL and Qdrant volumes using:
+
                             docker cp <container_id>:/path/to/data .
 
 or leverage cloud volume snapshots for consistency.
 
 6.3 🛡️ Compliance and Security FAQs 🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️
 
-✅ Q: Is the data encrypted during storage and transit?
-A: Transit encryption is recommended via reverse proxies or VPN, and Qdrant/MySQL can be configured for at-rest encryption depending on your security posture.
+🔹 Q: Is the data encrypted during storage and transit?
 
-✅ Q: Does the pipeline store personal or sensitive information?
-A: It stores compliance rule data, which may contain policy-sensitive data but typically does not include PII unless present in the documents ingested.
+✅: Transit encryption is recommended via reverse proxies or VPN, and Qdrant/MySQL can be configured for at-rest encryption depending on your security posture.
 
-✅ Q: Can we control who accesses the ingestion pipeline?
-A: Yes, secure API endpoints with authentication (JWT, OAuth) and limit Docker host access to authorized personnel.
+🔹 Q: Does the pipeline store personal or sensitive information?
 
-✅ Q: How do we ensure compliance with internal policies?
-A: Configure retention policies on the database, ensure controlled access, and integrate the ingestion pipeline with your cloud compliance monitoring for real-time policy enforcement.
+✅: It stores compliance rule data, which may contain policy-sensitive data but typically does not include PII unless present in the documents ingested.
 
-✅ Q: What compliance frameworks are supported out of the box?
-A: PCI DSS, HIPAA, GDPR, NIST CSF, and ISO 27001 documents can be ingested. Support for others can be added via LLM prompt engineering or pipeline extension.
+🔹 Q: Can we control who accesses the ingestion pipeline?
 
-✅ Q: Can this system help with audits?
-A: Yes, by maintaining an up-to-date vectorized database of compliance requirements, your teams can rapidly respond to audit queries and track control coverage.
+✅: Yes, secure API endpoints with authentication (JWT, OAuth) and limit Docker host access to authorized personnel.
+
+🔹 Q: How do we ensure compliance with internal policies?
+
+✅: Configure retention policies on the database, ensure controlled access, and integrate the ingestion pipeline with your cloud compliance monitoring for real-time policy enforcement.
+
+🔹 Q: What compliance frameworks are supported out of the box?
+
+✅: PCI DSS, HIPAA, GDPR, NIST CSF, and ISO 27001 documents can be ingested. Support for others can be added via LLM prompt engineering or pipeline extension.
+
+🔹 Q: Can this system help with audits?
+
+✅: Yes, by maintaining an up-to-date vectorized database of compliance requirements, your teams can rapidly respond to audit queries and track control coverage.
 
 ❓ 7: Appendices
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
