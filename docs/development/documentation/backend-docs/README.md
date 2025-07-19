@@ -34,11 +34,11 @@ The scope includes installation, architecture, user workflows, troubleshooting, 
 
 The pipeline is designed to support ingestion from multiple compliance frameworks, including but not limited to:
 
-✅ PCI DSS (Payment Card Industry Data Security Standard)             ✅ ISO 27001 
+✅ PCI DSS (Payment Card Industry Data Security Standard) --------------  ✅ ISO 27001 
 
-✅ GDPR                                                               ✅ NIST 800-53 & 800-171
+✅ GDPR                                                   --------------  ✅ NIST 800-53 & 800-171
 
-✅ HIPAA (Health Insurance Portability and Accountability Act)        ✅ SOC 2
+✅ HIPAA (Health Insurance Portability and Accountability Act)  --------  ✅ SOC 2
 
 The pipeline architecture is modular, allowing the addition of new frameworks easily as your organization's compliance needs evolve.
 
@@ -49,19 +49,33 @@ The pipeline architecture is modular, allowing the addition of new frameworks ea
 🪐 2.1 High-Level Architecture Diagram  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
 
 User ➡️ Upload Document
+
           ⬇️
+
   Flask API Service (`app.py`)
+
           ⬇️
+
    LLM Extraction Service (Ollama)
+
           ⬇️
+
    JSON Structuring & Validation
+
           ⬇️
+
    Vectorization
+
           ⬇️
+
     Qdrant Vector DB
+
           ⬇️
+
   Status Updates via RabbitMQ
+
           ⬇️
+          
  Real-Time Frontend Dashboard
 
 🧬 2.2 Compliance Rule Ingestion Pipeline - UML Diagram  🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
