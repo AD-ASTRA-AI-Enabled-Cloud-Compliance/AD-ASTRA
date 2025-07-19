@@ -6,7 +6,9 @@
 The Compliance Rule Ingestion Pipeline is a core module of our AI-Driven Cloud Compliance Tool that automates the ingestion, extraction, structuring, and vectorization of compliance rules from uploaded documents (PDF/text) into a searchable, scalable, and audit-ready system.
 
 ✅ It bridges the gap between static compliance frameworks (PCI DSS, HIPAA, GDPR, NIST) and actionable enforcement in your cloud environments.
+
 ✅ The pipeline leverages LLM-powered extraction (Ollama) + Qdrant vector database + structured JSON parsing to transform complex compliance texts into machine-readable, queryable data.
+
 ✅ By automating ingestion, it reduces manual error, increases compliance visibility, and accelerates your organization's journey to continuous compliance readiness.
 
 
@@ -14,14 +16,18 @@ The Compliance Rule Ingestion Pipeline is a core module of our AI-Driven Cloud C
 
 This documentation is crafted for:
 ✅ DevOps Engineers & SREs: to deploy, operate, and monitor the pipeline.
+
 ✅ Backend & API Developers: to extend, customize, and integrate APIs.
+
 ✅ Compliance Teams & Auditors: to understand ingestion outputs for validation.
+
 ✅ AI Engineers & Data Scientists: to adapt and improve the LLM-based extraction pipeline.
+
 ✅ Technical Product Managers: to align pipeline capabilities with product goals.
 
 📌 Scope: 📌📌📌📌📌📌📌📌📌📌
 
-The scope includes installation, architecture, APIs, user workflows, troubleshooting, and advanced extension, enabling seamless onboarding and mastery of the pipeline.
+The scope includes installation, architecture, user workflows, troubleshooting, and enabling seamless onboarding and mastery of the pipeline.
 
 🛡️ 1.3 Compliance Frameworks Supported  🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️ 
 
@@ -192,17 +198,20 @@ This will:
                             MySQL
 
 ✅ Configure networking between containers
+
 ✅ Automatically expose relevant ports
 
 📄 Step 4: Verify Running Containers
-                            docker ps
+
+                                   docker ps
 
 You should see containers for:
-                            frontend
-                            document_preprocess
-                            qdrant
-                            mysql
-                            ollama
+
+                                   frontend
+                                   document_preprocess
+                                   qdrant
+                                   mysql
+                                   ollama
 
 
 3.3 🖥️ Local Development Setup  🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️
@@ -210,6 +219,7 @@ You should see containers for:
 If you prefer running services individually for debugging and contribution:
 
 ✅ Frontend (Next.js)
+
                             cd frontend
                             npm install
                             npm run dev
@@ -217,6 +227,7 @@ If you prefer running services individually for debugging and contribution:
 
 
 ✅ Flask Document Preprocess API
+
                             cd backend/document_preprocess
                             pip install -r requirements.txt
                             flask run --host=0.0.0.0 --port=3030
@@ -224,12 +235,14 @@ If you prefer running services individually for debugging and contribution:
 
 ✅ Qdrant
 
-Run using Docker:
+              Run using Docker:
+
                             docker run -p 6333:6333 -p 6334:6334 qdrant/qdrant
 
 
 ✅ Ollama LLM
-Run using Docker:
+
+       Run using Docker:
 
                             docker run -p 11434:11434 ollama/ollama
 
@@ -252,20 +265,26 @@ Verify system readiness:
 ✅ API
 
 Test Flask API health endpoint:
+
                             curl http://localhost:3030/health
                             Expect {"status": "healthy"}
 
+
 ✅ Qdrant
+
                             Visit http://localhost:6333/dashboard
 
 ✅ Ollama
 
 Test LLM processing using:
+
                             curl http://localhost:11434
 
 ✅ MySQL
 
 Connect using a DB client with credentials:
+
+
                             host: localhost
                             user: adastra
                             password: adastrapass
