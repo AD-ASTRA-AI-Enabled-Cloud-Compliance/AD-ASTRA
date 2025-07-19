@@ -353,5 +353,145 @@ If service returns non-200, restart backend with:
                         docker restart chat-service
 
 
-🔌 6.2 Disconnected Sessions 🔌🔌🔌🔌🔌🔌🔌🔌🔌🔌🔌🔌
+🔌 5.2 Disconnected Sessions 🔌🔌🔌🔌🔌🔌🔌🔌🔌🔌🔌🔌
 
+      ❌ Issue: Mid-chat, the assistant “forgets” previous messages or returns contextless answers.
+
+            📍 Possible Causes:
+
+                              🔹Inactive session timed out (by Redis or in-memory cache)
+                              🔹sessionId not persisted across requests
+                              🔹Memory context limit reached and flushed
+
+✅ Resolution:
+
+                              🔹Verify sessionId is being passed with every message
+                              🔹Check Redis (if used) for key expiry (TTL)
+                              🔹Configure session TTL via .env:
+
+                  SESSION_TTL_MINUTES=60
+
+🔁 Temporary Workaround:
+
+                              🔹Click 🔄 "Reset Chat" to reinitialize context manually.
+
+
+🧩 5.3 Message Parsing Errors 🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩
+
+      ❌ Issue: Assistant replies with [object Object], garbled markdown, or broken JSON.
+
+            📍 Possible Causes:
+
+                              🔹Invalid JSON structure in LLM response
+                              🔹Frontend markdown renderer failed
+                              🔹Line break or syntax corruption during streaming
+
+✅ Resolution:
+
+                  🔹Check response payload via Dev Tools:
+
+                        { "event": "message", "data": "{ 'text': '...' }" }
+
+      🔹Escape special characters in LLM prompts
+      🔹Sanitize server-side response before emitting:
+
+                  const cleanText = sanitize(rawLLMText);
+
+🛡️ Prevention:
+
+            🔹Always wrap streaming LLM responses with:
+
+                                          {
+                                          "type": "llm_response",
+                                          "content": "<escaped_markdown>"
+                                          }
+
+🌐 5.4 WebSocket Initialization Errors 🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐
+
+      ❌ Issue: Chat doesn't load or shows “Unable to establish connection.”
+
+            📍 Possible Causes:
+
+                              🔹Port conflict (e.g., 5055 already in use)
+                              🔹Improper client-server protocol match (ws:// vs wss://)
+                              🔹Proxy/firewall blocking WebSocket traffic
+
+✅ Resolution:
+
+                  🔹Confirm correct port is exposed:
+
+                              lsof -i :5055
+✅ In .env:
+
+                        WS_PROTOCOL=ws
+                        WS_PORT=5055
+
+✅ On NGINX reverse proxy:
+
+                        location /ws/ {
+                        proxy_pass http://localhost:5055;
+                        proxy_http_version 1.1;
+                        proxy_set_header Upgrade $http_upgrade;
+                        proxy_set_header Connection "Upgrade";
+                        }
+
+❓ 6: Frequently Asked Questions (FAQs) --  Chat & Intelligent Assistance Pipeline 
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+The Chat & Intelligent Assistance Pipeline, designed to preempt user confusion and provide sharp, professional-level answers. It is tailored uniquely to this pipeline without repeating prior pipeline FAQs.
+
+💡 6.1 General FAQs 💡💡💡💡💡💡💡💡💡💡💡
+
+🔹Q1. What AI model powers the assistant in this pipeline?
+✅    By default, the assistant is powered by an open-source LLM (LLaMA) served via Ollama. However, the system supports modular plug-and-play integration with providers such as:
+                                                      🔹🔌 OpenAI (via API Key)
+                                                      🔹🌐 Local GPU-hosted models (via Ollama)
+
+🔹Q2. How is context preserved across chat messages?
+✅    Session context is maintained via:
+                                    🔹 A unique sessionId per user, stored in memory or Redis
+                                    🔹 Message history streamed and appended with each turn
+                                    🔹 Context size trimmed using token window limits (e.g., 4096 tokens)
+                                    🔹 When session expires, a new chat is auto-initialized
+
+🔹Q3. Does this chat support multiple simultaneous users?
+✅    Yes, It is designed for multi-tenant use. Each user session is isolated and tracked using their WebSocket connection and unique identifiers. The backend leverages:
+                                    🔹 WebSocket event multiplexing
+                                    🔹 Session-based routing for message isolation
+                                    🔹 Optional Redis-based shared memory for scaling horizontally
+
+🔹Q4. Can I use this chat assistant to answer compliance-related questions?
+✅    Absolutely. It is designed with LLM-powered compliance QA in mind. You can:
+                        🔹 Ask natural language questions like “What’s the encryption requirement for PCI DSS?”
+                        🔹 Upload a compliance rulebook (from the ingestion pipeline) and get semantic responses
+                        🔹 Navigate results using smart highlighting and response summaries
+
+🔹Q5. What happens when the assistant fails to respond or gives incomplete replies?
+✅    In such cases:
+                  🔹 Check WebSocket connection health.
+                  🔹 Retry the request or reinitialize the session.
+                  🔹 Confirm that the LLM backend is not rate-limited or overloaded.
+                  🔹 Refer to the Troubleshooting Section 5 for precise diagnostics.
+
+🔹Q6. Can the assistant perform multi-step reasoning or follow-up conversations?
+✅    Yes. This pipeline supports multi-turn dialogue with memory for:
+                                                            🧠 Context preservation
+                                                            📚 Response threading
+                                                            🔁 Clarifying follow-ups
+
+🔹Q7. Is the assistant safe to use in production with sensitive data?
+✅    Out of the box, no. You must secure your deployment by:
+                              🔹 Enabling TLS on WebSocket endpoints
+                              🔹 Removing personally identifiable information (PII) before processing
+                              🔹 Running the LLM locally or through vetted cloud APIs with audit controls
+                              🔹 Adding authentication middleware on chat endpoints
+
+🔹Q8. Can I switch to a different LLM provider without changing the frontend?
+✅    Yes. The frontend communicates through a standard WebSocket event schema. As long as the backend adapter adheres to the format, you can plug in:
+                                    🔹 OpenAI GPT
+                                    🔹 Google Gemini
+                                    🔹 Open-source models via Ollama or LangChain
+
+
+🔹Q9. How do I reset the conversation manually?
+✅    Click the ♻️ Reset Chat button in the UI, or emit this payload. This clears the session memory, re-initializes the system prompt, and returns to a clean context state.
