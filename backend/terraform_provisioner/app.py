@@ -37,6 +37,19 @@ def parse_terraform_json_output(json_data):
     return resources
 
 # Endpoint for the new results page to fetch deployment data
+
+
+@app.route('/')
+def health_check():
+    return {
+        "data": {
+            "status": "ok",
+            "message": "Server is running",
+            "data": "Welcome to the TF Provisioner API"
+        }
+    }
+
+
 @app.route('/api/deployment/<run_id>', methods=['GET'])
 def get_deployment_status(run_id):
     run_dir = os.path.abspath(os.path.join(DEPLOYMENTS_DIR, run_id))

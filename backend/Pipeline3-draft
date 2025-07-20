@@ -1,0 +1,368 @@
+# This is a conceptual "blanket" Terraform configuration for Azure,
+# designed to be flexible and driven by variables provided by a client
+# through an IaC template (e.g., in a terraform.tfvars file).
+#
+# It includes modules for common security and compliance aspects,
+# such as security monitoring, data encryption, access management,
+# and disaster recovery, allowing clients to enable/disable features
+# and customize settings via input variables.
+
+# ---------------------------------------------------
+# Project Structure (Suggested):
+#
+# azure-blanket-iac/
+# ├── main.tf
+# ├── variables.tf
+# ├── outputs.tf
+# ├── modules/
+# │   ├── security-monitoring/
+# │   │   ├── main.tf
+# │   │   ├── variables.tf
+# │   │   └── outputs.tf
+# │   ├── data-encryption/
+# │   │   ├── main.tf
+# │   │   ├── variables.tf
+# │   │   └── outputs.tf
+# │   ├── access-management/
+# │   │   ├── main.tf
+# │   │   ├── variables.tf
+# │   │   └── outputs.tf
+# │   └── disaster-recovery/
+# │       ├── main.tf
+# │       ├── variables.tf
+# │       └── outputs.tf
+# └── README.md
+#
+# ---------------------------------------------------
+
+# ---------------------------------------------------
+# main.tf (Root Configuration)
+# ---------------------------------------------------
+# This file will instantiate the modules and define provider configurations.
+
+# Configure the Azure Provider
+provider "azurerm" {
+  features {}
+}
+
+# ---------------------------------------------------
+# Input Variables (defined in variables.tf)
+# ---------------------------------------------------
+
+# ---------------------------------------------------
+# Core Resource Group (common for many deployments)
+# ---------------------------------------------------
+resource "azurerm_resource_group" "main" {
+  name     = var.resource_group_name
+  location = var.location
+  tags     = var.common_tags
+}
+
+# ---------------------------------------------------
+# Module: Security Monitoring (Azure Security Center, Defender)
+# ---------------------------------------------------
+module "security_monitoring" {
+  source = "./modules/security-monitoring"
+
+  # Pass variables from root to module
+  enabled                     = var.enable_security_monitoring
+  resource_group_name         = azurerm_resource_group.main.name
+  location                    = azurerm_resource_group.main.location
+  security_center_contact_email = var.security_center_contact_email
+  enable_jit_access           = var.enable_jit_access
+  common_tags                 = var.common_tags
+
+  # Conditional deployment based on `enabled` variable
+  count = var.enable_security_monitoring ? 1 : 0
+}
+
+# ---------------------------------------------------
+# Module: Data Encryption (Key Vault, Cosmos DB encryption enforcement)
+# ---------------------------------------------------
+module "data_encryption" {
+  source = "./modules/data-encryption"
+
+  enabled              = var.enable_data_encryption
+  resource_group_name  = azurerm_resource_group.main.name
+  location             = azurerm_resource_group.main.location
+  key_vault_sku_name   = var.key_vault_sku_name
+  key_vault_soft_delete_retention_days = var.key_vault_soft_delete_retention_days
+  cosmosdb_encrypt_data_at_rest = var.cosmosdb_encrypt_data_at_rest
+  common_tags          = var.common_tags
+
+  count = var.enable_data_encryption ? 1 : 0
+}
+
+# ---------------------------------------------------
+# Module: Access Management (Azure AD roles, Key Vault access policies)
+# ---------------------------------------------------
+module "access_management" {
+  source = "./modules/access-management"
+
+  enabled             = var.enable_access_management
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  key_vault_id        = try(module.data_encryption[0].key_vault_id, null) # Reference if data_encryption module is enabled
+  admin_object_ids    = var.admin_object_ids
+  common_tags         = var.common_tags
+
+  count = var.enable_access_management ? 1 : 0
+}
+
+# ---------------------------------------------------
+# Module: Disaster Recovery (Site Recovery, App Service Backup)
+# ---------------------------------------------------
+module "disaster_recovery" {
+  source = "./modules/disaster-recovery"
+
+  enabled             = var.enable_disaster_recovery
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  recovery_vault_sku  = var.recovery_vault_sku
+  common_tags         = var.common_tags
+
+  count = var.enable_disaster_recovery ? 1 : 0
+}
+
+# ---------------------------------------------------
+# Outputs (defined in outputs.tf)
+# ---------------------------------------------------
+
+
+# ---------------------------------------------------
+# variables.tf (Root Variables)
+# ---------------------------------------------------
+# This file defines all the input variables that a client would provide.
+
+variable "resource_group_name" {
+  description = "Name for the main Azure Resource Group."
+  type        = string
+  default     = "iac-security-rg"
+}
+
+variable "location" {
+  description = "Azure region where resources will be deployed."
+  type        = string
+  default     = "East US"
+}
+
+variable "common_tags" {
+  description = "A map of common tags to apply to all resources."
+  type        = map(string)
+  default = {
+    Environment = "Dev"
+    Project     = "ClientIAC"
+    ManagedBy   = "Terraform"
+  }
+}
+
+# ---------------------------------------------------
+# Security Monitoring Variables
+# ---------------------------------------------------
+variable "enable_security_monitoring" {
+  description = "Set to true to enable Azure Security Center/Defender for Cloud features."
+  type        = bool
+  default     = true
+}
+
+variable "security_center_contact_email" {
+  description = "Email address for Azure Security Center security alerts."
+  type        = string
+  default     = "security-alerts@example.com"
+}
+
+variable "enable_jit_access" {
+  description = "Enable Just-In-Time VM access in Security Center."
+  type        = bool
+  default     = false
+}
+
+# ---------------------------------------------------
+# Data Encryption Variables
+# ---------------------------------------------------
+variable "enable_data_encryption" {
+  description = "Set to true to deploy Azure Key Vault and enforce encryption policies."
+  type        = bool
+  default     = true
+}
+
+variable "key_vault_sku_name" {
+  description = "The SKU of the Key Vault to create (standard or premium)."
+  type        = string
+  default     = "standard"
+  validation {
+    condition     = contains(["standard", "premium"], var.key_vault_sku_name)
+    error_message = "Key Vault SKU must be 'standard' or 'premium'."
+  }
+}
+
+variable "key_vault_soft_delete_retention_days" {
+  description = "The number of days that items should be retained in the soft-deleted state."
+  type        = number
+  default     = 90
+  validation {
+    condition     = var.key_vault_soft_delete_retention_days >= 7 && var.key_vault_soft_delete_retention_days <= 90
+    error_message = "Soft delete retention days must be between 7 and 90."
+  }
+}
+
+variable "cosmosdb_encrypt_data_at_rest" {
+  description = "Enforce data encryption at rest for Cosmos DB accounts. Note: Cosmos DB encrypts data at rest by default, this can be used for policy enforcement."
+  type        = bool
+  default     = true
+}
+
+# ---------------------------------------------------
+# Access Management Variables
+# ---------------------------------------------------
+variable "enable_access_management" {
+  description = "Set to true to configure access control resources (e.g., Key Vault policies)."
+  type        = bool
+  default     = true
+}
+
+variable "admin_object_ids" {
+  description = "A list of Azure AD Object IDs (users/groups) to grant administrative access (e.g., to Key Vault)."
+  type        = list(string)
+  default     = [] # Populate with actual object IDs for your admins
+}
+
+# ---------------------------------------------------
+# Disaster Recovery Variables
+# ---------------------------------------------------
+variable "enable_disaster_recovery" {
+  description = "Set to true to configure Azure Site Recovery components."
+  type        = bool
+  default     = true
+}
+
+variable "recovery_vault_sku" {
+  description = "The SKU of the Recovery Services Vault (Standard or RS0)."
+  type        = string
+  default     = "RS0"
+  validation {
+    condition     = contains(["Standard", "RS0"], var.recovery_vault_sku)
+    error_message = "Recovery Vault SKU must be 'Standard' or 'RS0'."
+  }
+}
+
+
+# ---------------------------------------------------
+# outputs.tf (Root Outputs)
+# ---------------------------------------------------
+
+output "resource_group_id" {
+  description = "The ID of the main resource group."
+  value       = azurerm_resource_group.main.id
+}
+
+output "key_vault_uri" {
+  description = "The URI of the deployed Key Vault (if enabled)."
+  value       = try(module.data_encryption[0].key_vault_uri, "Key Vault not deployed")
+}
+
+output "security_center_enabled" {
+  description = "Indicates if Azure Security Center features are enabled."
+  value       = var.enable_security_monitoring
+}
+
+output "recovery_vault_name" {
+  description = "The name of the Recovery Services Vault (if enabled)."
+  value       = try(module.disaster_recovery[0].recovery_vault_name, "Recovery Vault not deployed")
+}
+
+
+# ---------------------------------------------------
+# Example Module: modules/data-encryption/main.tf
+# ---------------------------------------------------
+# This module handles Key Vault deployment and can include logic for
+# other encryption-related settings.
+
+resource "azurerm_key_vault" "main" {
+  name                        = "${var.resource_group_name}-kv"
+  location                    = var.location
+  resource_group_name         = var.resource_group_name
+  tenant_id                   = data.azurerm_client_config.current.tenant_id
+  sku_name                    = var.key_vault_sku_name
+  soft_delete_retention_days  = var.key_vault_soft_delete_retention_days
+  enabled_for_disk_encryption = true # Common for VMs, can be a variable
+  tags                        = var.common_tags
+}
+
+# Data source for current Azure AD client configuration (needed for Key Vault tenant_id)
+data "azurerm_client_config" "current" {}
+
+# Example of enforcing Cosmos DB encryption at rest (though it's default, this shows policy intent)
+# This isn't a resource to *create* Cosmos DB, but to set a policy or check compliance.
+# For actual enforcement, you'd use Azure Policy or ensure future Cosmos DB creations adhere.
+# This block is conceptual to show how a variable could influence a compliance check or policy.
+resource "azurerm_resource_group_policy_assignment" "cosmosdb_encryption_at_rest_policy" {
+  count                = var.cosmosdb_encrypt_data_at_rest ? 1 : 0
+  name                 = "${var.resource_group_name}-cosmosdb-encryption-policy"
+  resource_group_id    = data.azurerm_resource_group.rg.id
+  policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/e542-a0b2-4d2d-9b1d-c5e3f4e2f1e2" # Example Policy ID for Cosmos DB encryption (find actual ID)
+  parameters = jsonencode({
+    effect = {
+      value = "DeployIfNotExists" # Or "Deny"
+    }
+  })
+}
+
+data "azurerm_resource_group" "rg" {
+  name = var.resource_group_name
+}
+
+
+# ---------------------------------------------------
+# Example Module: modules/data-encryption/variables.tf
+# ---------------------------------------------------
+
+variable "enabled" {
+  description = "Controls if this module should be deployed."
+  type        = bool
+}
+
+variable "resource_group_name" {
+  description = "Name of the resource group to deploy resources into."
+  type        = string
+}
+
+variable "location" {
+  description = "Azure region."
+  type        = string
+}
+
+variable "key_vault_sku_name" {
+  description = "The SKU of the Key Vault."
+  type        = string
+}
+
+variable "key_vault_soft_delete_retention_days" {
+  description = "The number of days that items should be retained in the soft-deleted state."
+  type        = number
+}
+
+variable "cosmosdb_encrypt_data_at_rest" {
+  description = "Enforce data encryption at rest for Cosmos DB accounts."
+  type        = bool
+}
+
+variable "common_tags" {
+  description = "A map of common tags."
+  type        = map(string)
+}
+
+
+# ---------------------------------------------------
+# Example Module: modules/data-encryption/outputs.tf
+# ---------------------------------------------------
+
+output "key_vault_id" {
+  description = "The ID of the deployed Key Vault."
+  value       = azurerm_key_vault.main.id
+}
+
+output "key_vault_uri" {
+  description = "The URI of the deployed Key Vault."
+  value       = azurerm_key_vault.main.vault_uri
+}

@@ -1,4 +1,5 @@
 # syntax=docker/dockerfile:experimental
+
 FROM python:3.13-slim AS builder
 
 WORKDIR /app
@@ -11,12 +12,9 @@ WORKDIR /app
 COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
 COPY . .
 
-# Add /app and /app/src to PYTHONPATH
-ENV PYTHONPATH=/app:/app/src
+EXPOSE 3010
 
-ENV FLASK_APP=app.py
-ENV FLASK_RUN_PORT=3030
+ENV FLASK_APP=main.py
+ENV FLASK_RUN_PORT=3010
 
-EXPOSE 3030
-
-CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0"]
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
