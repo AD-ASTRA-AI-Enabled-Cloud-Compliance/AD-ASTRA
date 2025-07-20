@@ -2,6 +2,9 @@
 
 # Client instance is created and terminated in each method (call) to reduce connection TTL
 
+import os
+
+from dotenv import load_dotenv
 from qdrant_client import QdrantClient
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
@@ -9,13 +12,18 @@ from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
 from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue, CollectionStatus
 
 
+load_dotenv()
+
+
 class MongoDB():
     def __init__(self):
-        host = "localhost"
-        port = 27017
-        username = "admin"
-        password = "admin"
-        self.uri = f"mongodb://{username}:{password}@{host}:{port}"
+        self.MONGO_HOST = os.getenv("MONGO_HOST", "localhost")
+        self.MONGO_PORT = os.getenv("MONGO_PORT")
+        self.MONGO_USERNAME = os.getenv("MONGO_USERNAME")
+        self.MONGO_PASSWORD = os.getenv("MONGO_PASSWORD")
+        self.MONGO_DB = os.getenv("MONGO_DB")
+        self.MONGO_COLLECTION = os.getenv("MONGO_COLLECTION")
+        self.uri = f"mongodb://{self.MONGO_USERNAME}:{self.MONGO_PASSWORD}@{self.MONGO_HOST}:{self.MONGO_PORT}"
         self.client = MongoClient(self.uri, serverSelectionTimeoutMS=3000)
 
     def healthCheck(self):
@@ -59,7 +67,12 @@ class MongoDB():
 
 class QdrantDB():
     def __init__(self):
-        self.client = QdrantClient(host="localhost", port=6333)
+        self.QDRANT_HOST = os.getenv("QDRANT_HOST", "localhost")
+        self.QDRANT_PORT = os.getenv("QDRANT_PORT", 6333)
+        self.client = QdrantClient(
+            host=self.QDRANT_HOST,
+            port=self.QDRANT_PORT
+        )
 
         pass
 
@@ -81,9 +94,9 @@ class QdrantDB():
                 "framework_rules_308": 308,
                 "framework_chunks_4544": 4544,  # ← example dimension
                 "framework_rules_4544": 4544
-                
-                
-                
+
+
+
             }
 
             counts = {}
@@ -118,9 +131,10 @@ class QdrantDB():
 
         except Exception as e:
             print(f"❌ Qdrant connection failed: {e}")
+
     def upsert(self, collection_name, points):
         """ Upsert points to a Qdrant collection. """
-        
+
         try:
             self.client.upsert(
                 collection_name=collection_name,
@@ -129,7 +143,6 @@ class QdrantDB():
             print(f"✅ Upserted {len(points)} points to '{collection_name}'")
         except Exception as e:
             print(f"❌ Upsert failed: {e}")
-            
 
     # def log_mongo_status():  # Keeping function name for compatibility
     #     try:

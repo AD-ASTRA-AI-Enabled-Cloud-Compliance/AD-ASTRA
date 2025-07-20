@@ -9,7 +9,6 @@
 import os
 import requests
 # import tiktoken
-import openai
 import dotenv
 # Load environment variables from .env file
 dotenv.load_dotenv()

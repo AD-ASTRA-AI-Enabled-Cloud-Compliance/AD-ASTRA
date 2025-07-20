@@ -2,7 +2,7 @@ interface ModelDetails {
     parent_model: string;
     format: string;
     family: string;
-    families: any;
+    families: unknown;
     parameter_size: string;
     quantization_level: string;
 }

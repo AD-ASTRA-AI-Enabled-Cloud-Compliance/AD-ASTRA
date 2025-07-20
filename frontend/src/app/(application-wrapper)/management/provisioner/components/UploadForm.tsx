@@ -4,6 +4,7 @@ import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from '../provisioner.module.css';
 import { FiUploadCloud, FiTool, FiAlertTriangle, FiLoader } from 'react-icons/fi';
+import { Button } from '@/components/ui/button';
 
 type Status = 'idle' | 'loading' | 'error';
 
@@ -57,7 +58,7 @@ export default function UploadForm() {
   };
 
   return (
-    <div className={styles.formWrapper}>
+    <div >
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.formIcon}><FiTool /></div>
         <h2>Launch Infrastructure</h2>
@@ -74,9 +75,9 @@ export default function UploadForm() {
           </label>
           <input id="variables_tf" type="file" accept=".tfvars" onChange={(e) => setVarsFile(e.target.files ? e.target.files[0] : null)} />
         </div>
-        <button type="submit" disabled={status === 'loading'} className={styles.button}>
+        <Button type="submit" disabled={status === 'loading'} >
           {status === 'loading' ? <><FiLoader className={styles.spinner}/> Deploying...</> : '🚀 Launch Infrastructure'}
-        </button>
+        </Button>
       </form>
       {status === 'error' && (
         <div className={styles.errorContainer}>
