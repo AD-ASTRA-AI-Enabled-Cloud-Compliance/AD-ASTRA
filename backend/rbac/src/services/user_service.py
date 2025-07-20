@@ -5,17 +5,16 @@ from passlib.hash import bcrypt
 from dotenv import load_dotenv
 from collections import OrderedDict
 
+from src.services.db_connection import MongoDB
+
 # ✅ Load .env once
 load_dotenv()
 
+
 class UserService:
     def __init__(self):
-        mongo_uri = os.getenv("MONGO_URI")
-        if not mongo_uri:
-            raise ValueError("MONGO_URI is not set in .env")
-
-        self.client = MongoClient(mongo_uri)
-        self.db = self.client["Skylock_Users"]
+        self.mongo = MongoDB()
+        self.db = self.mongo.client["Skylock_Users"]
         self.users = self.db["Application_Users"]
 
         # Ensure the Application_Users collection exists
@@ -23,9 +22,7 @@ class UserService:
             self.db.create_collection("Application_Users")
 
         self.users = self.db["Application_Users"]
-        
-    
-     
+
     def create_user(self, email, password, name="", role="user"):
         """
         Create a new user in the Application_Users collection
@@ -92,4 +89,5 @@ class UserService:
     def update_password(self, email, new_password):
         """Update the password for a user"""
         hashed_password = bcrypt.hash(new_password)
-        self.users.update_one({"email": email.lower().strip()}, {"$set": {"password": hashed_password}})
+        self.users.update_one({"email": email.lower().strip()}, {
+                              "$set": {"password": hashed_password}})

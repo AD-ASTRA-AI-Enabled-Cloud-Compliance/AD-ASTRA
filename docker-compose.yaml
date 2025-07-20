@@ -1,4 +1,4 @@
-version: '3.8'
+# version: '3.8'
 
 services:
 #   qdrant:
@@ -24,9 +24,31 @@ services:
   #     - mysql_data:/var/lib/mysql
   #   command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
-  document_preprocess:
+  # document_preprocess:
+  #   build:
+  #     context: ./backend/document_preprocess
+  #     dockerfile: Dockerfile
+  #   working_dir: /app
+  #   # depends_on:
+  #   #   - qdrant
+  #   #   - mysql
+  #   environment:
+  #     - FLASK_APP=app.py
+  #     # - QDRANT_HOST=qdrant
+  #     # - QDRANT_PORT=6333
+  #     # - MYSQL_HOST=mysql
+  #     # - MYSQL_PORT=3306
+  #     # - MYSQL_USER=adastra
+  #     # - MYSQL_PASSWORD=adastrapass
+  #     # - MYSQL_DATABASE=adastra
+  #   volumes:
+  #     - ./backend/document_preprocess:/app
+  #   ports:
+  #     - "3030:3030"
+
+  rbac:
     build:
-      context: ./backend/document_preprocess
+      context: ./backend/rbac
       dockerfile: Dockerfile
     working_dir: /app
     # depends_on:
@@ -34,6 +56,36 @@ services:
     #   - mysql
     environment:
       - FLASK_APP=app.py
+      - JWT_SECRET=secret
+      
+      # - MONGO_HOST=127.0.0.1
+      # - MONGO_HOST=mongo  
+      - MONGO_HOST=host.docker.internal
+      - MONGO_PORT=27017
+      - MONGO_USERNAME=admin
+      - MONGO_PASSWORD=admin
+      - MONGO_DB=Skylock_Users
+      - MONGO_COLLECTION=Application_Users
+    
+    ports:
+      - "3010:3010"
+      
+  tf_comparator:
+    build:
+      context: ./backend/templatecomparator
+      dockerfile: Dockerfile
+    working_dir: /app
+    # depends_on:
+    #   - qdrant
+    #   - mysql
+    environment:
+      - mode=development
+      
+  #     - MONGO_INITDB_ROOT_USERNAME=adastra
+  #     - MONGO_INITDB_ROOT_PASSWORD=adastrapass
+  #     - MONGO_INITDB_DATABASE=adastra
+      # - MONGO_URI=mongodb://admin:admin@127.0.0.1:27017/?authSource=admin
+      # - JWT_SECRET=secret
       # - QDRANT_HOST=qdrant
       # - QDRANT_PORT=6333
       # - MYSQL_HOST=mysql
@@ -41,21 +93,89 @@ services:
       # - MYSQL_USER=adastra
       # - MYSQL_PASSWORD=adastrapass
       # - MYSQL_DATABASE=adastra
-    volumes:
-      - ./backend/document_preprocess:/app
+    # volumes:
+    #   - ./backend/template_comparator:/app
     ports:
       - "3030:3030"
 
-  # mongodb:
-  #   image: mongo:latest
-  #   ports:
-  #     - "27017:27017"
-  #   environment:
+  tf_provisioner:
+    build:
+      context: ./backend/terraform_provisioner
+      dockerfile: Dockerfile
+    working_dir: /app
+    # depends_on:
+    #   - qdrant
+    #   - mysql
+    environment:
+      - FLASK_APP=app.py
+      
   #     - MONGO_INITDB_ROOT_USERNAME=adastra
   #     - MONGO_INITDB_ROOT_PASSWORD=adastrapass
   #     - MONGO_INITDB_DATABASE=adastra
-  #   volumes:
-  #     - mongodb_data:/data/db
+      # - MONGO_URI=mongodb://admin:admin@127.0.0.1:27017/?authSource=admin
+      # - JWT_SECRET=secret
+      # - QDRANT_HOST=qdrant
+      # - QDRANT_PORT=6333
+      # - MYSQL_HOST=mysql
+      # - MYSQL_PORT=3306
+      # - MYSQL_USER=adastra
+      # - MYSQL_PASSWORD=adastrapass
+      # - MYSQL_DATABASE=adastra
+    # volumes:
+    #   - ./backend/user_management:/app
+    ports:
+      - "5001:5001"
+      
+  mdl_ollama:
+    build:
+      context: ./backend/models/ollama
+      dockerfile: Dockerfile
+    working_dir: /app
+    # depends_on:
+    #   - qdrant
+    #   - mysql
+    environment:
+      - mode=development
+      
+      - TAVILY_API_KEY=tvly-*
+      - PORT=3001
+      - UPLOAD_FOLDER=src/storage/uploads
+      - OUTPUT_FOLDER=src/storage/cloud_outputs
+      - SUMMARY_FOLDER=src/storage/document_summary
+      - OLLAMA_API_URL=host.docker.internal:11434
+      
+      - MONGO_HOST=host.docker.internal
+      - MONGO_PORT=27017
+      - MONGO_USERNAME=admin
+      - MONGO_PASSWORD=admin
+      
+
+      - QDRANT_HOST=host.docker.internal
+      - QDRANT_PORT=6333
+      
+      - FRONTEND_URL=http://127.0.0.1
+      - FRONTEND_PORT=3000
+      - FRONTEND_WS=/api/ws 
+      - FRONTEND_WS_ENDPOINT=http://127.0.0.1:3000/api/ws
+      - STORAGE_ROOT=/documents
+
+  #     - MONGO_INITDB_ROOT_USERNAME=adastra
+  #     - MONGO_INITDB_ROOT_PASSWORD=adastrapass
+  #     - MONGO_INITDB_DATABASE=adastra
+      # - MONGO_URI=mongodb://admin:admin@127.0.0.1:27017/?authSource=admin
+      # - JWT_SECRET=secret
+      # - QDRANT_HOST=qdrant
+      # - QDRANT_PORT=6333
+      # - MYSQL_HOST=mysql
+      # - MYSQL_PORT=3306
+      # - MYSQL_USER=adastra
+      # - MYSQL_PASSWORD=adastrapass
+      # - MYSQL_DATABASE=adastra
+    # volumes:
+    #   - ./backend/models/ollama:/app
+    ports:
+      - "3001:3001"
+      
 
   # ollama:
   #   image: ollama/ollama:latest
@@ -64,17 +184,17 @@ services:
   #   volumes:
   #     - ollama_data:/root/.ollama
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    depends_on:
-      - document_preprocess
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./frontend:/app
+  #     - /app/node_modules
+    # depends_on:
+    #   - document_preprocess
       # - qdrant
       # - mysql
       # - mongodb
