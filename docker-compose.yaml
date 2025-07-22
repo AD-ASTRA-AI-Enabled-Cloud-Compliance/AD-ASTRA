@@ -97,6 +97,7 @@ services:
     #   - ./backend/template_comparator:/app
     ports:
       - "3030:3030"
+    restart: unless-stopped
 
   tf_provisioner:
     build:
@@ -125,6 +126,7 @@ services:
     #   - ./backend/user_management:/app
     ports:
       - "5001:5001"
+    restart: unless-stopped
       
   mdl_ollama:
     build:
@@ -148,6 +150,7 @@ services:
       - MONGO_PORT=27017
       - MONGO_USERNAME=admin
       - MONGO_PASSWORD=admin
+      - MONGO_DB=adastra
       
 
       - QDRANT_HOST=host.docker.internal
@@ -175,6 +178,7 @@ services:
     #   - ./backend/models/ollama:/app
     ports:
       - "3001:3001"
+    restart: unless-stopped
       
 
   # ollama:
@@ -183,6 +187,12 @@ services:
   #     - "11434:11434"
   #   volumes:
   #     - ollama_data:/root/.ollama
+  #   entrypoint: [ "sh", "-c" ]
+  #   command: >
+  #     "ollama serve & 
+  #      sleep 5 && 
+  #      ollama pull gemma:2b && 
+  #      tail -f /dev/null"
 
   # frontend:
   #   build:
@@ -200,12 +210,12 @@ services:
       # - mongodb
       # - ollama
 
-# volumes:
+volumes:
 #   qdrant_data:
 #     driver: local
 #   mysql_data:
 #     driver: local
 #   mongodb_data:
 #     driver: local
-#   ollama_data:
-#     driver: local
+  ollama_data:
+    driver: local

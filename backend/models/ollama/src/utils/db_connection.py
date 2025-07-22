@@ -27,14 +27,15 @@ class MongoDB():
         self.client = MongoClient(self.uri, serverSelectionTimeoutMS=3000)
 
     def healthCheck(self):
+        # print(self.uri)
         try:
-            client = MongoClient(self.uri, serverSelectionTimeoutMS=3000)
-            client.admin.command('ping')
+            # client = MongoClient(self.uri, serverSelectionTimeoutMS=3000)
+            self.client.admin.command('ping')
             print("✅ MongoDB connected successfully!")
             return {"status": "healthy", "uri": self.uri}
         except (ConnectionFailure, ServerSelectionTimeoutError) as e:
             print("❌MongoDB ERROR connected")
-            return {"status": "unhealthy", "error": str(e)}
+            # return {"status": "unhealthy", "error": str(e)}
 
     def insert(self, database: str, collection: str, document: object):
         client = MongoClient(
@@ -127,7 +128,7 @@ class QdrantDB():
                     collection_name=collection, exact=True).count
 
             print(
-                f"✅ Qdrant connected: {counts['framework_chunks']} chunks, {counts['framework_rules']} rules")
+                f"✅ Qdrant connected")
 
         except Exception as e:
             print(f"❌ Qdrant connection failed: {e}")

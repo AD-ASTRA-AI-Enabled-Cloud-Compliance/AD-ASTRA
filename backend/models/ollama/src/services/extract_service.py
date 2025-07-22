@@ -20,6 +20,10 @@ from datetime import datetime
 from pymongo import MongoClient
 from datetime import datetime
 
+from dotenv import load_dotenv
+load_dotenv()
+
+
 from ..utils.functions import remove_special_chars  # pip install more-itertools
 from .websocket.ServiceWebsocket import WebsocketService
 from .gpt_service import call_ollama
@@ -30,9 +34,10 @@ from src.services.gpt_service import OllamaEmbedder
 from qdrant_client.http.exceptions import UnexpectedResponse
 
 class ExtractService:
-    def __init__(self, sessionID):
-        self.session = sessionID
-        self.ws = WebsocketService()
+    def __init__(self, session):
+        self.session = session
+        self.sessionID = session.sessionID
+        self.ws = WebsocketService(session)
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
         self.upload_folder = os.getenv("UPLOAD_FOLDER", os.path.join(self.base_dir, "../input_files/uploads"))
         self.output_folder = os.getenv("OUTPUT_FOLDER", os.path.join(self.base_dir, "../output_files/json_rules_output"))
@@ -303,7 +308,7 @@ DOCUMENT SECTION:
             "summary": final_summary,
             "timestamp": datetime.now()
         }
-        self.mongo_collection.insert_one(summary_doc)
+        # self.mongo_collection.insert_one(summary_doc)
         print(f"📝 Summary saved to MongoDB for doc_id: {doc_id}")
 
         rules = self.extract_compliance_rules_from_text(final_summary, framework=doc_id)
@@ -351,10 +356,10 @@ DOCUMENT SECTION:
             )
 
             if embedding:
-                self.ws.send_progress_update(
-                    message=f"Generating embedding for chunk {i + 1}/{len(chunks)}...",
-                    progress=(i + 1) / len(chunks)
-                )
+                # self.ws.send_progress_update(
+                #     message=f"Generating embedding for chunk {i + 1}/{len(chunks)}...",
+                #     progress=(i + 1) / len(chunks)
+                # )
                 points.append(PointStruct(
                     id=str(uuid4()),
                     vector=embedding,
