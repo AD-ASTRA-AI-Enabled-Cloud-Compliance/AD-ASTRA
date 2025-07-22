@@ -194,7 +194,6 @@ services:
   #      ollama pull gemma:2b && 
   #      tail -f /dev/null"
 
-
   # frontend:
   #   build:
   #     context: ./frontend
