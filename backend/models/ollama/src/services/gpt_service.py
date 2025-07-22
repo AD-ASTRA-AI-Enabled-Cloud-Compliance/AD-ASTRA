@@ -2,15 +2,15 @@
 
 
 from typing import List
-from flask import json, request
 import requests
-from transformers import AutoTokenizer, AutoModel
-import torch
 import os
 
-from ..utils.functions import clearMemory
+from src.controllers.GlobalController import GlobalRequestGenerate
+from src.services.websocket.ServiceWebsocket import WebsocketService
 
-from ..services.websocket.ws import WebsocketService
+
+from dotenv import load_dotenv
+load_dotenv()
 
 # 🔁 Renamed for clarity: This calls Ollama running Gemma 2B
 
@@ -18,9 +18,10 @@ from ..services.websocket.ws import WebsocketService
 # Changed the temperature parameter to 0.05 for more deterministic responses
 # Updated keyword OLLAMA_API_URL to OLLAMA_API based on .env
 def call_ollama(system_prompt: str, user_prompt: str, model: str, temperature: float = 0.05) -> str:
-    ws = WebsocketService()
+    session = GlobalRequestGenerate()
+    ws = WebsocketService(session)
     prompt = f"{system_prompt.strip()}\n\n{user_prompt.strip()}"
-    OLLAMA_API = os.getenv("OLLAMA_API")
+    OLLAMA_API = os.getenv("OLLAMA_API_URL")
 
     ws.send_progress_update(
         message=f"Call made to Ollama API model {model}.",
@@ -46,7 +47,7 @@ def call_ollama(system_prompt: str, user_prompt: str, model: str, temperature: f
             raise ValueError("Ollama returned empty response.")
         
         #Uloads model from memory to save resources
-        clearMemory(model,url)
+        # clearMemory(model,url)
 
         return content
     except Exception as e:
@@ -81,8 +82,10 @@ class OllamaEmbedder:
     def __init__(self, host: str = "http://localhost:11434", model: str = "gemma:2b") -> None:
         self.host = host
         self.model = model
+        
         self.session = requests.Session()
-        self.ws = WebsocketService()
+        session = GlobalRequestGenerate()
+        self.ws = WebsocketService(session)
 
     def list_models(self) -> List[str]:
         """List available models on the Ollama server"""
@@ -120,7 +123,7 @@ class OllamaEmbedder:
             embeddings.append(response.json()["embedding"])
         
         #Uloads model from memory to save resources
-        clearMemory(self.model,url)
+        # clearMemory(self.model,url)
 
         return embeddings
 

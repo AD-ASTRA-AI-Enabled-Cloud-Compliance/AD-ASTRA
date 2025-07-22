@@ -197,6 +197,7 @@ export function RulesTable() {
                                 ))}
                             </TableHeader>
                             <TableBody>
+                                {table.getRowModel().rows?.length}
                                 {table.getRowModel().rows?.length ? (
                                     table.getRowModel().rows.map((row) => (
                                         <TableRow
