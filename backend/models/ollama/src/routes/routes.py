@@ -4,6 +4,8 @@ from flask_cors import CORS
 from flask import Blueprint, request, jsonify, send_from_directory
 import os
 
+from src.services.extract_service import ExtractService
+
 
 from ..services.websocket.ServiceWebsocket import WebsocketService
 
@@ -103,11 +105,11 @@ def download_upload(filename):
 # ONLY POST
 def upload():
     session = GlobalRequestGenerate()
-    bl = BusinessLogicController(session)
-    bl.full_pipeline(request)
-    return session.sessionID
+    # bl = BusinessLogicController(session)
+    # bl.full_pipeline(request)
+    # return session.sessionID
 
-    # return ExtractService(sessionID).process_document(request)
+    return ExtractService(session).process_document(request)
 
 
 # ------------------------------------------------------------------------

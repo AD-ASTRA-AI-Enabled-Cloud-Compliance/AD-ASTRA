@@ -105,7 +105,7 @@ export const GeneratedForm = () => {
         }
 
         try {
-            const res = await fetch("http://localhost:3001/upload", {
+            const res = await fetch("http://127.0.0.1:3001/upload", {
                 method: "POST",
                 body: uploadForm,
             })
@@ -205,7 +205,7 @@ export const GeneratedForm = () => {
 
                     {step === 0 && (
                         <Form {...form}>
-                            <form onSubmit={handleSubmit(onSubmit)} className="grid gap-y-4">
+                            <form onSubmit={handleSubmit(onSubmit)} className="grid gap-y-4" encType="multipart/form-data">
                                 <div className="flex items-center space-x-2">
 
                                     <FormField
