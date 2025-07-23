@@ -289,7 +289,7 @@ This provides a walkthrough to help users interact seamlessly with the AI assist
     Examples:
 
             ✅ “What are the remediation steps for Azure policy XYZ?”
-            
+
             ✅ “How compliant is this infrastructure with HIPAA?”
 
       Press Enter or Click Send
@@ -325,8 +325,8 @@ Users can switch modes via the ⚙️ settings icon or chat slash commands: /mod
 
       Use this if the assistant begins misinterpreting your intent:
 
-      🔹Click Reset Conversation at the top right
-      🔹Confirm prompt: “Clear session and start fresh?”
+                  🔹Click Reset Conversation at the top right
+                  🔹Confirm prompt: “Clear session and start fresh?”
 
       ✅ Resets chat context
       ✅ Closes open remediation guides
@@ -343,8 +343,11 @@ Guide to identifying, isolating, and resolving common issues across UI, backend,
 ❌ Issue: The AI stops mid-response or doesn’t reply at all.
 
 📍 Possible Causes:
+
                   🔹WebSocket connection is interrupted
+
                   🔹LLM backend rate-limited or down
+
                   🔹Payload malformed or context size exceeded
 
 ✅ Resolution:
@@ -432,6 +435,7 @@ If service returns non-200, restart backend with:
                   🔹Confirm correct port is exposed:
 
                               lsof -i :5055
+
 ✅ In .env:
 
                         WS_PROTOCOL=ws
@@ -454,55 +458,90 @@ The Chat & Intelligent Assistance Pipeline, designed to preempt user confusion a
 💡 6.1 General FAQs 💡💡💡💡💡💡💡💡💡💡💡
 
 🔹Q1. What AI model powers the assistant in this pipeline?
+
 ✅    By default, the assistant is powered by an open-source LLM (LLaMA) served via Ollama. However, the system supports modular plug-and-play integration with providers such as:
+
                                                       🔹🔌 OpenAI (via API Key)
+
                                                       🔹🌐 Local GPU-hosted models (via Ollama)
 
 🔹Q2. How is context preserved across chat messages?
+
 ✅    Session context is maintained via:
+
                                     🔹 A unique sessionId per user, stored in memory or Redis
+
                                     🔹 Message history streamed and appended with each turn
+
                                     🔹 Context size trimmed using token window limits (e.g., 4096 tokens)
+
                                     🔹 When session expires, a new chat is auto-initialized
 
 🔹Q3. Does this chat support multiple simultaneous users?
+
 ✅    Yes, It is designed for multi-tenant use. Each user session is isolated and tracked using their WebSocket connection and unique identifiers. The backend leverages:
+
                                     🔹 WebSocket event multiplexing
+
                                     🔹 Session-based routing for message isolation
+
                                     🔹 Optional Redis-based shared memory for scaling horizontally
 
 🔹Q4. Can I use this chat assistant to answer compliance-related questions?
+
 ✅    Absolutely. It is designed with LLM-powered compliance QA in mind. You can:
+
                         🔹 Ask natural language questions like “What’s the encryption requirement for PCI DSS?”
+
                         🔹 Upload a compliance rulebook (from the ingestion pipeline) and get semantic responses
+
                         🔹 Navigate results using smart highlighting and response summaries
 
 🔹Q5. What happens when the assistant fails to respond or gives incomplete replies?
+
 ✅    In such cases:
+
                   🔹 Check WebSocket connection health.
+
                   🔹 Retry the request or reinitialize the session.
+
                   🔹 Confirm that the LLM backend is not rate-limited or overloaded.
+
                   🔹 Refer to the Troubleshooting Section 5 for precise diagnostics.
 
 🔹Q6. Can the assistant perform multi-step reasoning or follow-up conversations?
+
 ✅    Yes. This pipeline supports multi-turn dialogue with memory for:
+
                                                             🧠 Context preservation
+
                                                             📚 Response threading
+
                                                             🔁 Clarifying follow-ups
 
 🔹Q7. Is the assistant safe to use in production with sensitive data?
+
 ✅    Out of the box, no. You must secure your deployment by:
+
                               🔹 Enabling TLS on WebSocket endpoints
+
                               🔹 Removing personally identifiable information (PII) before processing
+
                               🔹 Running the LLM locally or through vetted cloud APIs with audit controls
+
                               🔹 Adding authentication middleware on chat endpoints
 
 🔹Q8. Can I switch to a different LLM provider without changing the frontend?
+
 ✅    Yes. The frontend communicates through a standard WebSocket event schema. As long as the backend adapter adheres to the format, you can plug in:
+
                                     🔹 OpenAI GPT
+
                                     🔹 Google Gemini
+
                                     🔹 Open-source models via Ollama or LangChain
 
 
 🔹Q9. How do I reset the conversation manually?
+
 ✅    Click the ♻️ Reset Chat button in the UI, or emit this payload. This clears the session memory, re-initializes the system prompt, and returns to a clean context state.
