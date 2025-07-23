@@ -6,6 +6,7 @@
 The Real-Time OCR & Progress Reporting Pipeline empowers users to upload documents and track their OCR processing live, fostering transparency, user trust, and immediate insight into document digitization workflows. Unlike typical “upload and wait” systems, this pipeline streams granular progress updates, showing real-time percentage completion, current processing stages, and instant failure alerts.
 
 ✨ Benefits: 
+
                 🟢 Improved User Trust: Users see live activity instead of a spinning loader.
 
                 ⚡ Faster Feedback Loops: Users can identify stalled processes quickly.
@@ -221,8 +222,11 @@ You should see:
 
 Access the pipeline interface via http://localhost:3000 or your production URL.
 The clean, distraction-free dashboard displays:
+
                         📂 Upload Panel for document ingestion.
+
                         📊 Real-Time Progress Bar reflecting OCR parsing completion.
+
                         📝 Live Updates Panel showing processing stages.
 
 Users can drag and drop documents or select files for OCR ingestion.
@@ -495,50 +499,71 @@ The pipeline emits updates like:
 ✅ By default, documents are retained only for processing and temporary caching. You can configure auto-deletion or manual cleanup.
 
 🔹 Q2: Does OCR processing expose data to third parties?
+
 ✅ No. Processing occurs entirely within your infrastructure unless explicitly configured to sync with external systems.
 
 🔹 Q3: How is data transmitted securely between frontend and backend?
+
 ✅ The pipeline supports:
+
                         Secure WebSockets (WSS) if deployed with HTTPS.
+
                         TLS-secured REST API endpoints.
+
                         Internal container-to-container communication within Docker network isolation.
 
 🔹 Q4: How do I ensure data compliance during processing?
+
 ✅ Implement policies to:
+
                         Anonymize sensitive data post-extraction.
+
                         Use secure storage with encryption if retaining outputs.
+
                         Regularly audit and clean stored data as per your compliance framework.
 
 🌟 6.4 Performance FAQs 🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 
 🔹 Q1: Why is my OCR processing slow?
+
 ✅ Possible reasons:
 
                 Processing large files with many high-resolution pages.
+
                 Limited CPU/memory allocation to document_preprocess containers.
+
                 High concurrent processing load.
 
 Solution: Scale resources via Docker, optimize scans, and monitor container resource usage.
 
 🔹 Q2: Can the pipeline handle concurrent uploads?
+
 ✅ Yes, but concurrency limits depend on your server’s CPU/memory and configuration in your backend service.
 
 🔹 Q3: How can I optimize processing speed?
+
 ✅ Strategies:
+
                 Pre-crop and clean scans to reduce noise.
+
                 Use lower DPI where acceptable.
+
                 Allocate additional CPU cores to the backend container.
 
 ⚙️ 6.5 Integration FAQs ⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️
 
 🔹 Q1: Can I integrate the OCR outputs with compliance tools?
+
 ✅ Yes, outputs are designed to be compatible with the Compliance Rule Ingestion Pipeline for seamless pipeline chaining.
 
 🔹 Q2: Is API documentation available?
+
 ✅ A dedicated API Reference Guide exists under Part 4 of this documentation for endpoint details.
 
 🔹 Q3: Can I customize the frontend display for progress reporting?
+
 ✅ Yes, you can adapt UI components under:
+
                                     OCRProgress.tsx
                                     OCRProgressChart.tsx
                                     frontend/src/components/
