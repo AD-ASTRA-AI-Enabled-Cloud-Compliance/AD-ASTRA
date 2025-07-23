@@ -20,6 +20,7 @@ The Chat & Intelligent Assistance Pipeline acts as the human-AI interaction gate
 | 🛡️ **Role-Based Intelligence**  | Adjusts LLM responses based on user roles (DevOps, Auditors, PMs, etc.), aligning tone and content to audience. |
 
 
+
 📌 1.3 Audience and Scope 📌📌📌📌📌📌📌📌📌📌📌📌
 
 This pipeline benefits multiple technical and non-technical personas within the organization:
@@ -112,6 +113,7 @@ At its core, this Pipeline orchestrates real-time human-AI interactions, routing
 
 This diagram captures the end-to-end message flow for a user query in your LLM-powered chat system, detailing real-time semantic reasoning, token streaming, and optional compliance knowledge search.
 
+
 ![Chat & Intelligent Assistance Pipeline UML Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/timmy/docs/development/documentation/frontend-docs/intelligence_assistance_%20pipeline/diagrams/Chat%20&%20Intelligent%20Assistance%20Pipeline%20%E2%80%93%20UML%20Diagram.png)
 
 
@@ -125,8 +127,11 @@ This illustrates the entire architecture of our LLM-powered chat system, showing
 ⚡ 2.4  Chat & Intelligent Assistance Pipeline - Deployment Diagram  ⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡
 
 This diagram outlines how components are deployed and interact across client, frontend server, backend server, and external APIs in your real-time LLM-powered chat system. It shows:
+
                                     🔹 Where user queries are processed
+
                                     🔹 How context is tracked and prompts are routed
+
                                     🔹 How token streaming is managed from LLMs to the user interface
 
 
@@ -270,15 +275,21 @@ This provides a walkthrough to help users interact seamlessly with the AI assist
 🎯 This is where the user engages the assistant with prompts, questions, or remediation requests.
 
 💬 Steps to Send a Query:
+
 1️⃣ Launch the App
+
 ✅ Navigate to the web app at http://localhost:3000 or your deployed endpoint.
 
 2️⃣ Locate Chat Input Field
+
 ✅ A clearly visible input field at the bottom of the chat window is designed for user text input.
 
 3️⃣ Type the Prompt
+
     Examples:
+
             ✅ “What are the remediation steps for Azure policy XYZ?”
+            
             ✅ “How compliant is this infrastructure with HIPAA?”
 
       Press Enter or Click Send
