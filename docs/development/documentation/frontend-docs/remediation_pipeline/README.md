@@ -490,49 +490,63 @@ Section provides concise, clearly categorized answers to common questions from e
 💡 6.1 General FAQs 💡💡💡💡💡💡💡💡💡💡💡
 
 🔹 Q1: What is the core purpose of this pipeline?
+
 ✅ To continuously evaluate infrastructure and code against compliance frameworks and remediate detected violations in near real-time.
 
 🔹 Q2: Does this pipeline support multi-framework evaluation?
+
 ✅ Yes. You can run evaluations for multiple frameworks (e.g., SOC 2, HIPAA, ISO 27001) concurrently on the same resource set.
 
 🔹 Q3: Can non-technical users view results?
+
 ✅ Absolutely. The dashboard is designed with clarity in mind and includes status indicators, rule descriptions, and remediation histories in human-readable format.
 
 🔹 Q4: What’s the typical time to evaluate and remediate a single resource?
+
 ✅ Depends on infrastructure size and framework complexity, but for a single virtual machine or IAM policy, it averages under 5 seconds for evaluation and 10–30 seconds for remediation.
 
 
 🔧 6.2 Technical FAQs 🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧
 
 🔹 Q1: How are remediation actions applied?
+
 ✅ Remediations are generated as infrastructure-as-code snippets and applied via API integrations (e.g., Terraform Cloud, Ansible Playbooks, or custom shell scripts).
 
 🔹 Q2: How is remediation rollback handled?
+
 ✅ Every action is tracked, logged, and versioned. Failed actions automatically trigger rollback mechanisms using previous state snapshots.
 
 🔹 Q3: How is state maintained across sessions?
+
 ✅ The system uses persistent state storage (e.g., Redis or MySQL) to maintain remediation status and rule violations across pipeline executions.
 
 🔹 Q4: What if two remediations conflict?
+
 ✅ The conflict resolution layer detects incompatible remediation actions and halts execution with a detailed report for user intervention.
 
 🔹 Q5: How are custom compliance rules defined?
+
 ✅ Developers can define custom rules as JSON logic expressions or SQL-like policy queries. The UI supports uploading and managing custom rule sets.
 
 
 🔐 6.3 Compliance & Security FAQs 🔐🔐🔐🔐🔐🔐🔐🔐🔐🔐
 
 🔹 Q1: How is sensitive data protected?
+
 ✅ All data is encrypted at rest and in transit using industry-standard protocols (AES-256, TLS 1.3). Access to evaluation and remediation data is governed by RBAC (Role-Based Access Control).
 
 🔹 Q2: Does the system audit its actions?
+
 ✅ Yes. A comprehensive audit log records every action: who initiated it, what was changed, timestamps, and whether it succeeded or failed.
 
 🔹 Q3: Are remediation actions sandboxed?
+
 ✅ Yes. All actions are previewed in a dry-run containerized environment before being pushed to production systems, ensuring no harmful unintended changes.
 
 🔹 Q4: Can we integrate with SIEM/SOC tools?
+
 ✅ Fully supported. The pipeline exposes webhooks and structured log formats (e.g., JSON, syslog) compatible with Splunk, Datadog, and ELK Stack.
 
 🔹 Q5: Are compliance framework updates handled automatically?
+
 ✅ Yes. Frameworks can be version-pinned or subscribed to real-time updates. Notifications inform admins of any rule changes impacting their systems.
