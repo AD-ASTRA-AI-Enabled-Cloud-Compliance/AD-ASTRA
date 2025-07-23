@@ -209,7 +209,7 @@ You should see:
 
 🛡️ Monitoring:
 
-                Integrate frontend with Prometheus/Grafana for container health.
+                Integrate frontend.
 
                 Enable Next.js telemetry for frontend insights (optional).
 

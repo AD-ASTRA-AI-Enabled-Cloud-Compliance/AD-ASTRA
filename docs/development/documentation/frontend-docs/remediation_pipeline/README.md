@@ -518,7 +518,7 @@ Section provides concise, clearly categorized answers to common questions from e
 
 🔹 Q3: How is state maintained across sessions?
 
-✅ The system uses persistent state storage (e.g., Redis or MySQL) to maintain remediation status and rule violations across pipeline executions.
+✅ The system uses persistent state storage to maintain remediation status and rule violations across pipeline executions.
 
 🔹 Q4: What if two remediations conflict?
 
