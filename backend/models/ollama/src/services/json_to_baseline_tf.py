@@ -12,10 +12,11 @@ import subprocess
 from datetime import datetime
 from io import StringIO
 
-from bson import ObjectId  # ✅ Added for ObjectId serialization
+from bson import ObjectId
 from src.utils.templates import TerraformTemplateWriter
 
 INDENT = "  "
+
 
 class BaselineTerraformGenerator:
     def __init__(self, session):
@@ -26,7 +27,6 @@ class BaselineTerraformGenerator:
 
         self.mongo = session.mongo
         self.qdrant = session.qdrant
-
         self.ws = session.ws.send_progress_update
 
         self.temperature = session.temperature
@@ -35,18 +35,46 @@ class BaselineTerraformGenerator:
         self.top_k = session.top_k
         self.max_token_limit = session.max_token_limit
 
-    def generate_baseline_from_provider_json(self, json_data, tf_output_path=None, framework=None):
-        data = json_data
+        # Added: Enhanced MongoDB integration for Azure resource metadata lookup
+        # Modified: Load resource metadata from MongoDB baseline collection for better Terraform generation
+        try:
+            # Fix: self.mongo is a MongoClient, so we access it correctly
+            mongo_db = self.mongo["Skylock"]  # Get the database
+            collection = mongo_db["Cloud_JSON_Baselines"]  # Get the collection
+            
+            print(f"🔍 Accessing MongoDB: Skylock.Cloud_JSON_Baselines")
+            
+            context_doc = collection.find_one({"provider": "azure"})
+            if context_doc:
+                self.resource_comments = context_doc.get("resources", {})
+                print(f"✅ Loaded Azure context with {len(self.resource_comments)} resources")
+                
+                # Added: Debug logging for Azure resource metadata structure
+                if self.resource_comments:
+                    first_key = list(self.resource_comments.keys())[0]
+                    first_resource = self.resource_comments[first_key]
+                else:
+                    print("⚠️ Resources dictionary is empty")
+            else:
+                print("⚠️ No Azure context document found in Cloud_JSON_Baselines")
+                self.resource_comments = {}
+                
+        except Exception as e:
+            print(f"⚠️ Failed to load Azure context from MongoDB: {e}")
+            import traceback
+            print(f"🔍 Full traceback: {traceback.format_exc()}")
+            self.resource_comments = {}  # Added: Fallback to empty dict for graceful error handling
 
-        if not isinstance(data, list):
+    def generate_baseline_from_provider_json(self, json_data, tf_output_path=None, framework=None):
+        if not isinstance(json_data, list):
             raise Exception("Expected JSON to be a list of rule objects")
 
-        provider = data[0].get("provider", "azure").lower()
+        provider = json_data[0].get("provider", "azure").lower()
         resources = []
         all_variable_names = set()
         resource_counts = {}
 
-        for entry in data:
+        for entry in json_data:
             settings_dict = entry.get("settings", {})
             for resource_type, resource_settings in settings_dict.items():
                 self.collect_variable_names(resource_settings, all_variable_names)
@@ -70,7 +98,25 @@ class BaselineTerraformGenerator:
                     resource_type = res["resource_type"]
                     settings = res.get("settings", {})
                     res_name = res.get("name", resource_type)
+
+                    
+                    # Added: Enhanced metadata lookup for enriched Terraform resource comments
+                    # Modified: Use the improved metadata lookup method for better resource documentation
+                    metadata = self.get_resource_metadata(resource_type)
+                    
+                    if not metadata:
+                        print(f"⚠️ No metadata found for resource_type: {resource_type}")
+                        category = "Uncategorized"
+                        purpose = "No description available"
+                    else:
+                        category = metadata.get("category", "Uncategorized")
+                        purpose = metadata.get("description", "No description available")
+
+                    # Added: Enhanced Terraform comments with category and purpose from MongoDB metadata
+                    tf.write(f"# Category: {category}\n")
                     tf.write(f"# Resource: {resource_type}\n")
+                    tf.write(f"# Purpose: {purpose}\n")
+
                     resource_name = self.sanitize_name(res_name)
                     tf_block = TerraformTemplateWriter.render_tf_resource(
                         resource_type,
@@ -88,29 +134,21 @@ class BaselineTerraformGenerator:
             self.format_and_validate(os.path.dirname(tf_output_path))
 
             lockfile_path = os.path.join(os.path.dirname(tf_output_path), ".terraform.lock.hcl")
+            lockfile_content = ""
             if os.path.exists(lockfile_path):
                 with open(lockfile_path, "r", encoding="utf-8") as lf:
                     lockfile_content = lf.read()
-            else:
-                lockfile_content = ""
 
             with open(tf_output_path, "r", encoding="utf-8") as tf:
                 terraform_content = tf.read()
-
             with open(var_file, "r", encoding="utf-8") as vf:
                 variables_content = vf.read()
 
-            result = {
+            return {
                 "terraform": terraform_content,
                 "variables": variables_content,
                 "lockfile": lockfile_content
             }
-
-            # ✅ Convert ObjectId to string if accidentally added to result
-            if '_id' in result:
-                result['_id'] = str(result['_id'])
-
-            return result
 
         else:
             tf_buffer = StringIO()
@@ -119,7 +157,26 @@ class BaselineTerraformGenerator:
                 resource_type = res["resource_type"]
                 settings = res.get("settings", {})
                 res_name = res.get("name", resource_type)
+                
+                # Added: Enhanced metadata lookup for enriched Terraform resource comments (buffer mode)
+                # Modified: Use the improved metadata lookup method for better resource documentation
+                metadata = self.get_resource_metadata(resource_type)
+                
+                if not metadata:
+                    print(f"⚠️ No metadata found for resource_type: {resource_type}")
+                    category = "Uncategorized"
+                    purpose = "No description available"
+                else:
+                    category = metadata.get("category", "Uncategorized")
+                    purpose = metadata.get("description", "No description available")
+            
+
+                # Added: Enhanced Terraform comments with category and purpose from MongoDB metadata (buffer mode)
+                tf_buffer.write(f"# Category: {category}\n")
                 tf_buffer.write(f"# Resource: {resource_type}\n")
+                tf_buffer.write(f"# Purpose: {purpose}\n")
+                tf_buffer.write(f"# ====== {framework.upper()} Compliance Resource ======\n")
+
                 resource_name = self.sanitize_name(res_name)
                 tf_block = TerraformTemplateWriter.render_tf_resource(
                     resource_type,
@@ -145,26 +202,22 @@ class BaselineTerraformGenerator:
         elif isinstance(settings, str):
             if settings.startswith("${var.") and settings.endswith("}"):
                 var_name = settings[6:-1]
+                if var_name == "version":
+                    var_name = "resource_version"
                 variable_names.add(var_name)
 
     def format_and_validate(self, tf_directory):
         try:
-            print(f"🔍 Running terraform fmt in {tf_directory}...")
             subprocess.run(["terraform", "fmt", tf_directory], check=True)
             self.ws("✅ terraform fmt completed.")
         except subprocess.CalledProcessError as e:
             self.ws(f"⚠️ terraform fmt failed: {e}")
-
         try:
-            print(f"🔍 Running terraform init -upgrade in {tf_directory}...")
             subprocess.run(["terraform", "init", "-upgrade", "-backend=false"], cwd=tf_directory, check=True)
             self.ws("✅ terraform init completed.")
         except subprocess.CalledProcessError as e:
             self.ws(f"⚠️ terraform init failed: {e}")
-
         try:
-            print(f"🔍 Running terraform validate in {tf_directory}...")
-            self.ws("🔍 Running terraform validate...")
             subprocess.run(["terraform", "validate"], cwd=tf_directory, check=True)
             self.ws("✅ terraform validate passed.")
         except subprocess.CalledProcessError as e:
@@ -180,27 +233,51 @@ class BaselineTerraformGenerator:
 
     def write_provider_block(self, tf, provider, framework):
         if provider == "aws":
-            tf.write(f'// 🚧 Auto-generated {framework.upper()} Baseline for {provider.upper()}\n\n')
             tf.write('terraform {\n')
-            tf.write(f'{INDENT}required_version = ">= 1.1.0"\n')
+            tf.write(f'{INDENT}required_version = ">= 1.5.0"\n')
             tf.write(f'{INDENT}required_providers {{\n')
             tf.write(f'{INDENT*2}aws = {{ source = "hashicorp/aws", version = "~> 5.0" }}\n')
             tf.write(f'{INDENT}}}\n}}\n\n')
             tf.write('provider "aws" {\n  region = "us-east-1"\n}\n\n')
         elif provider == "azure":
-            tf.write(f'// 🚧 Auto-generated {framework.upper()} Baseline for {provider.upper()}\n\n')
             tf.write('terraform {\n')
-            tf.write(f'{INDENT}required_version = ">= 1.1.0"\n')
+            tf.write(f'{INDENT}required_version = ">= 1.5.0"\n')
             tf.write(f'{INDENT}required_providers {{\n')
-            tf.write(f'{INDENT*2}azurerm = {{ source = "hashicorp/azurerm", version = "~> 3.50.0" }}\n')
-            tf.write(f'{INDENT*2}azuread = {{ source = "hashicorp/azuread", version = "~> 2.0" }}\n')
+            tf.write(f'{INDENT*2}azurerm = {{ source = "hashicorp/azurerm", version = ">= 4.37.0" }}\n')
+            tf.write(f'{INDENT*2}azuread = {{ source = "hashicorp/azuread", version = ">= 2.48.0" }}\n')
             tf.write(f'{INDENT}}}\n}}\n\n')
             tf.write('provider "azurerm" {\n  features {}\n}\n\n')
         elif provider == "gcp":
-            tf.write(f'// 🚧 Auto-generated {framework.upper()} Baseline for {provider.upper()}\n\n')
             tf.write('terraform {\n')
-            tf.write(f'{INDENT}required_version = ">= 1.1.0"\n')
+            tf.write(f'{INDENT}required_version = ">= 1.5.0"\n')
             tf.write(f'{INDENT}required_providers {{\n')
             tf.write(f'{INDENT*2}google = {{ source = "hashicorp/google", version = "~> 5.0" }}\n')
             tf.write(f'{INDENT}}}\n}}\n\n')
             tf.write('provider "google" {\n  project = "<project_id>"\n  region = "us-central1"\n}\n\n')
+
+    def get_resource_metadata(self, resource_type):
+        """
+        Added: Enhanced method to get category and description for a resource type from the loaded Azure context
+        Modified: Improved metadata lookup with better error handling and fallback values
+        """
+        if not self.resource_comments:
+            return None
+        
+        # Direct lookup in the resources dictionary
+        if resource_type in self.resource_comments:
+            resource_data = self.resource_comments[resource_type]
+            
+            # Extract category and description from the resource data
+            category = resource_data.get("category", "Uncategorized")
+            description = resource_data.get("description", "No description available")
+            
+            
+            return {
+                "category": category,
+                "description": description
+            }
+        
+        # Debug: Show what keys are actually available
+        # available_keys = list(self.resource_comments.keys())[:10]
+        
+        return None
