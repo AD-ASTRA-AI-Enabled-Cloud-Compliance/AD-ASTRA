@@ -16,6 +16,7 @@ The Real-Time OCR & Progress Reporting Pipeline empowers users to upload documen
                 🖥️ Smooth UX: Visual indicators maintain user engagement during heavy OCR tasks.
 
 🧩 1.2 Audience and Scope
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This documentation is crafted for:
 
@@ -42,6 +43,7 @@ This pipeline covers the frontend orchestration layer only for real-time OCR pro
                             ✅It excludes backend OCR extraction logic, focusing instead on user interaction, UI updates, and connection management.
 
 📚 1.3 Key Concepts and Terminologies  📚📚📚📚📚📚📚📚📚📚
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
                         ✅OCR (Optical Character Recognition): Extraction of machine-readable text from images/PDFs.
 
@@ -54,6 +56,7 @@ This pipeline covers the frontend orchestration layer only for real-time OCR pro
                         ✅Event-driven UI: Frontend components update based on incoming events without polling.
 
 🛡️ 1.4 Supported Document Types  🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The pipeline supports OCR progress tracking for:
 
@@ -68,6 +71,7 @@ The pipeline supports OCR progress tracking for:
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🪐 2.1 High-Level Architecture Diagram  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 +-----------------+       WebSocket       +------------------------+
 | User Dashboard  |<--------------------->| OCR Progress Broadcaster|
@@ -96,6 +100,7 @@ The pipeline supports OCR progress tracking for:
 🟨 Progress Formatter: Converts backend updates into user-friendly, granular stages before frontend consumption.
 
 🧬 2.2 Real-Time OCR & Progress Reporting Pipeline - UML Diagram  🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This diagram shows the sequence of interactions between the user, frontend, backend services etc during the OCR document processing lifecycle, including real-time progress updates and completion notifications.
 
@@ -120,6 +125,7 @@ This diagram illustrates how our OCR pipeline is physically deployed across fron
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ⚙️ 3.1 Prerequisites ⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Before installing the Real-Time OCR & Progress Reporting Pipeline, ensure the following are available:
 
@@ -158,6 +164,7 @@ Before installing the Real-Time OCR & Progress Reporting Pipeline, ensure the fo
 
 
 🛠️ 3.2 Step-by-Step Installation Guide  🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🐳 3.2.1 Building Docker Images  🐳🐳🐳🐳🐳🐳🐳🐳🐳🐳🐳🐳
 
@@ -188,6 +195,7 @@ You should see:
 ✅ The WebSocket and frontend are now live and ready for OCR file uploads.
 
 ⚡3.3 Deployment Best Practices  ⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🔒 Security:
 
@@ -217,6 +225,7 @@ You should see:
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🪐 4.1 Getting Started 🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🚀 4.1.1 Navigating the User Interface (Frontend Integration) 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
 
@@ -248,6 +257,7 @@ Users can drag and drop documents or select files for OCR ingestion.
 ✅ Supported formats: PDF, PNG, JPEG, TIFF.
 
 🩻 4.2 Understanding Real-Time OCR & Progress 🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 📡 Once the document is uploaded:
 
@@ -272,6 +282,7 @@ Users can drag and drop documents or select files for OCR ingestion.
 
 
 🖼️ 4.3 Interpreting OCR Results  🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Once completed, the UI will display:
 
@@ -291,6 +302,7 @@ Once completed, the UI will display:
 
 
 🔎 4.4 Using the Live Progress Dashboard 🔎🔎🔎🔎🔎🔎🔎🔎🔎🔎
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Real-Time Dashboard Capabilities:
 
@@ -303,6 +315,7 @@ Real-Time Dashboard Capabilities:
 ✅ Users can stop or re-trigger OCR if needed, enabling control during batch processing.
 
 🛠️ 4.5 Managing OCR Processing and Retrying  🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 In case of OCR issues:
 
@@ -317,6 +330,7 @@ In case of OCR issues:
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🩹 5.1 Common Issues and Solutions 🩹🩹🩹🩹🩹🩹🩹🩹🩹🩹
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 | 🪐 **Issue**                 | 🩺 **Possible Cause**                                    | 🛠️ **Recommended Solution**                                                           |
 | ---------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------- |
@@ -328,6 +342,7 @@ In case of OCR issues:
 
 
 🩺 5.2 Diagnosing OCR Processing Errors 🩺🩺🩺🩺🩺🩺🩺🩺🩺🩺
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🔍 Steps:
 
@@ -354,6 +369,7 @@ In case of OCR issues:
 
 
 🧩 5.3 Debugging Live Progress Reporting 🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 If progress bars do not update:
 
@@ -369,6 +385,7 @@ If progress bars do not update:
 
 
 📜 5.4 Analyzing Logs 📜📜📜📜📜📜📜📜📜📜📜📜
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 📌 Where to find logs:
 
@@ -388,6 +405,7 @@ If progress bars do not update:
 
 
 🗂️ 5.5 Troubleshooting WebSocket Connectivity 🗂️🗂️🗂️🗂️🗂️🗂️🗂️🗂️🗂️🗂️🗂️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🧪 Symptoms:
 
@@ -410,6 +428,7 @@ If progress bars do not update:
                             docker restart document_preprocess
 
 🪛 5.6 Reprocessing Failed Documents  🪛🪛🪛🪛🪛🪛🪛🪛🪛🪛🪛
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 If OCR fails mid-processing:
 
@@ -426,6 +445,7 @@ If OCR fails mid-processing:
 Accessible FAQ section to resolve common user questions quickly, reducing support overhead while improving user confidence and pipeline adoption.
 
 🪐 6.1 General FAQs 🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🔹 Q1: What types of documents can I upload for OCR processing?
 
@@ -444,6 +464,7 @@ Accessible FAQ section to resolve common user questions quickly, reducing suppor
 ✅ The system supports real-time processing with live progress updates but can also handle batch ingestion for high-volume document processing.
 
 🔧 6.2 Technical FAQs 🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🔹 Q1: How does the real-time progress reporting work?
 
@@ -493,6 +514,7 @@ The pipeline emits updates like:
                 Optionally uploaded to your Qdrant vector database for semantic search integration.
 
 🔐 6.3 Security and Privacy FAQs  🔐🔐🔐🔐🔐🔐🔐🔐🔐🔐
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🔹 Q1: Is document data stored permanently?
 
@@ -523,6 +545,7 @@ The pipeline emits updates like:
                         Regularly audit and clean stored data as per your compliance framework.
 
 🌟 6.4 Performance FAQs 🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🔹 Q1: Why is my OCR processing slow?
 
@@ -551,6 +574,7 @@ Solution: Scale resources via Docker, optimize scans, and monitor container reso
                 Allocate additional CPU cores to the backend container.
 
 ⚙️ 6.5 Integration FAQs ⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🔹 Q1: Can I integrate the OCR outputs with compliance tools?
 
