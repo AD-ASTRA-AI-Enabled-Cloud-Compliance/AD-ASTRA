@@ -19,11 +19,12 @@ The Remediation Pipeline is engineered to automate the assessment of cloud envir
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This documentation is crafted for:
-                ✅ DevOps Engineers: Automate and enforce compliance within CI/CD.
 
                 ✅ Cloud Architects: Validate infrastructure against frameworks.
 
                 ✅ Security & Compliance Teams: Monitor posture and ensure audit readiness.
+
+                ✅ DevOps Engineers: Automate and enforce compliance within CI/CD.
 
                 ✅ CTOs & Stakeholders: Gain high-level visibility into compliance health.
 
@@ -60,9 +61,15 @@ This pipeline covers focuses on cloud infrastructure and IaC compliance evaluati
 
 The Remediation Pipeline currently supports the following frameworks, with modular extension capability:
 
-✅ PCI DSS (Payment Card Industry Data Security Standard)        -------------  ✅ NIST 800-53 & 800-171
-✅ HIPAA (Health Insurance Portability and Accountability Act)   -------------  ✅ CIS Benchmarks
-✅ GDPR (General Data Protection Regulation)
+✅ PCI DSS (Payment Card Industry Data Security Standard)     
+
+✅ NIST 800-53 & 800-171
+
+✅ HIPAA (Health Insurance Portability and Accountability Act)   
+
+✅ SOC 2
+
+✅ GDPR 
 
 🏗️ 2. System Architecture
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
