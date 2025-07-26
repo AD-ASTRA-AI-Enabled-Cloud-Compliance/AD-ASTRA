@@ -7,7 +7,7 @@ This pipeline does not merely track data—it translates platform behavior into 
 
 📦 Core Highlights: 📦📦📦📦📦📦📦📦📦📦
 
-🔄 Live metrics ingestion from microservices and pipelines via RabbitMQ and RESTful emitters.
+🔄 Live metrics ingestion from microservices and pipelines.
 
 📈 Real-time dashboards showing compliance trends, system health, remediation efficiency, and usage heatmaps.
 
@@ -65,7 +65,7 @@ Ensures infrastructure-level awareness across every service, worker, and contain
 | 🧠 `memory_consumption`  | Heap usage and memory pressure metrics.                               |
 | ⏱️ `ingestion_latency`   | Time delay from event capture to it being available in the dashboard. |
 | 🌐 `service_uptime`      | Uptime percentage of dashboard, API, and ingestion services.          |
-| 📦 `queue_backlog_depth` | Pending message count in RabbitMQ topics per pipeline.                |
+| 📦 `queue_backlog_depth` | Pending message count per pipeline.                |
 
 
 👩‍💻 2.3 User Activity Metrics 👩‍💻👩‍💻👩‍💻👩‍💻👩‍💻👩‍💻👩‍💻👩‍💻👩‍💻👩‍💻

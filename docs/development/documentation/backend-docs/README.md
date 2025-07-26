@@ -2,6 +2,7 @@
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🪐 1.1 Overview and Purpose  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The Compliance Rule Ingestion Pipeline is a core module of our AI-Driven Cloud Compliance Tool that automates the ingestion, extraction, structuring, and vectorization of compliance rules from uploaded documents (PDF/text) into a searchable, scalable, and audit-ready system.
 
@@ -12,7 +13,8 @@ The Compliance Rule Ingestion Pipeline is a core module of our AI-Driven Cloud C
 ✅ By automating ingestion, it reduces manual error, increases compliance visibility, and accelerates your organization's journey to continuous compliance readiness.
 
 
-🎯 1.2 Audience and Scope  🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯  
+🎯 1.2 Audience and Scope  🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This documentation is crafted for:
 
@@ -27,10 +29,12 @@ This documentation is crafted for:
 ✅ Technical Product Managers: to align pipeline capabilities with product goals.
 
 📌 Scope: 📌📌📌📌📌📌📌📌📌📌
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The scope includes installation, architecture, user workflows, troubleshooting, and enabling seamless onboarding and mastery of the pipeline.
 
-🛡️ 1.3 Compliance Frameworks Supported  🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️ 
+🛡️ 1.3 Compliance Frameworks Supported  🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The pipeline is designed to support ingestion from multiple compliance frameworks, including but not limited to:
 
@@ -79,6 +83,7 @@ User ➡️ Upload Document
  Real-Time Frontend Dashboard
 
 🧬 2.2 Compliance Rule Ingestion Pipeline - UML Diagram  🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This diagram shows how a compliance document (PDF/TXT) is uploaded by a user, processed to extract structured compliance rules, stored in your vector database, and status updates are published for tracking in your system.
 
@@ -86,6 +91,7 @@ This diagram shows how a compliance document (PDF/TXT) is uploaded by a user, pr
 
 
 🎯 2.3 Compliance Rule Ingestion Pipeline - Component Diagram  🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This diagram shows the architectural components and their interactions for your pipeline that ingests compliance documents, parses them, extracts structured rules, stores them, and updates the user with status.
 
@@ -93,6 +99,7 @@ This diagram shows the architectural components and their interactions for your 
 
 
 ⚡ 2.4 Compliance Rule Ingestion Pipeline - Deployment Diagram  ⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This diagram shows how our pipeline components are physically deployed and communicate, emphasizing technology, ports, and containerized structure for your compliance rule ingestion system.
 
@@ -100,6 +107,7 @@ This diagram shows how our pipeline components are physically deployed and commu
 
 
 🛠️ 2.5 Core Components   🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  
  | 🌟 Component                  |      Description                                                                   |
 | --------------------------------- | --------------------------------------------------------------------------------- |
@@ -108,11 +116,11 @@ This diagram shows how our pipeline components are physically deployed and commu
 | **JSON Structuring & Validation** | Ensures extracted rules conform to the structured JSON schema before insertion.   |
 | **Vectorization Layer**           | Transforms structured text into embeddings for semantic search.                   |
 | **Qdrant Vector Database**        | Stores embeddings and metadata, enabling high-speed, accurate semantic retrieval. |
-| **RabbitMQ (Event Bus)**          | Publishes ingestion status updates for dashboard visibility.                      |
 | **Frontend Dashboard (Next.js)**  | Displays ingestion status and progress, offering real-time transparency to users. |
 
  
 🧩 2.6 Data Flow  🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 1️⃣ Upload -:
 User uploads a compliance document via the frontend or API.
@@ -137,6 +145,7 @@ Each step's status is published to RabbitMQ, which the frontend consumes to show
 
 
 🚀 2.7 Technology Stack  🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 | 🔹 **Technology**    | **Role**                                      |
 | -------------------- | --------------------------------------------- |
@@ -149,6 +158,7 @@ Each step's status is published to RabbitMQ, which the frontend consumes to show
 
 
 ⚙️ 2.8 API & Interface Points ⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ✅ POST /upload – Accepts documents (PDF/text) for ingestion.
 
@@ -161,6 +171,7 @@ Each step's status is published to RabbitMQ, which the frontend consumes to show
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 3.1 ⚙️ Prerequisites ⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Before installation, ensure the following are in place:
 
@@ -191,6 +202,7 @@ Before installation, ensure the following are in place:
 ✅ Ability to create and manage Docker containers.
 
 3.2 🐳 Docker-Based Installation  🐳🐳🐳🐳🐳🐳🐳🐳🐳🐳
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Preferred installation method is using Docker and Docker Compose for a clean, isolated, and replicable environment.
 
@@ -246,6 +258,7 @@ You should see containers for:
 
 
 3.3 🖥️ Local Development Setup  🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 If you prefer running services individually for debugging and contribution:
 
@@ -286,6 +299,7 @@ Run using Docker:
 
 
 3.4 🚦 Checklist  🚦🚦🚦🚦🚦🚦🚦🚦🚦🚦
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Verify system readiness:
 
@@ -326,8 +340,10 @@ Connect using a DB client with credentials:
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 4.1 🚀 Getting Started  🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 4.1.1 🖥️ Navigating the User Interface 🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ✅ The frontend provides a clean dashboard displaying:
 
@@ -376,6 +392,7 @@ Connect using a DB client with credentials:
                             🔹Ingestion confirmation with a unique document ID.
 
 4.2 🧩 Understanding Rule Extraction and Ingestion 🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ✅ The system:
 
@@ -404,6 +421,7 @@ Connect using a DB client with credentials:
                             🔹Status of validation
 
 4.3 📊 Interpreting Compliance Status and Results 📊📊📊📊📊📊📊📊📊📊
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ✅ Once ingestion completes:
 
@@ -434,6 +452,7 @@ Filter results by:
                             🔹Add notes for context.
 
 4.4 🔎 Conducting Vector-based Searches 🔎🔎🔎🔎🔎🔎🔎🔎🔎🔎
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ✅ Navigate to “Search Rules”.
 
@@ -464,6 +483,7 @@ Filter results by:
               Use results for compliance audits or control assessments.
 
 4.5 🛠️ Managing and Updating Extracted Rules  🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ✅ Navigate to “Manage Extracted Rules”.
 
@@ -494,6 +514,7 @@ Filter results by:
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 5.1 🧩 Common Issues and Solutions 🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ✅ Issue: OCR does not complete or fails midway.
 
@@ -546,6 +567,7 @@ Filter results by:
                             🔹Check backend API logs for payload delivery failures.
 
 5.2 🛑 Diagnosing API Errors  🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ✅ Checklist:
 
@@ -576,6 +598,7 @@ Filter results by:
               🔹Cross-check docker-compose.yaml exposed ports and internal network bindings.
 
 5.3 📄 Docker and Container Logs Analysis  📄📄📄📄📄📄📄📄📄📄
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ✅ Use the following to review logs:
 
@@ -602,6 +625,7 @@ If repeated failures occur, consider restarting containers:
 
 
 5.4 🗄️ Database Connectivity and Query Issues  🗄️🗄️🗄️🗄️🗄️🗄️🗄️🗄️🗄️🗄️🗄️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ✅ MySQL Troubleshooting:
 
@@ -630,6 +654,7 @@ Confirm embeddings are stored and retrievable using collection and vector IDs.
 
 
 5.5 🧠 Debugging LLM Integration Problems  🧠🧠🧠🧠🧠🧠🧠🧠🧠🧠
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ✅ If rule extraction is not functioning:
 
@@ -655,6 +680,7 @@ This section consolidates common, technical, and compliance-related questions to
 
 
 6.1 🌍 General FAQs 🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🔹 Q: What is the purpose of the Compliance Rule Ingestion Pipeline?
 
@@ -678,6 +704,7 @@ This section consolidates common, technical, and compliance-related questions to
 
 
 6.2 🛠️ Technical FAQs 🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🔹 Q: How do I check if the ingestion pipeline is running correctly?
 
@@ -716,6 +743,7 @@ This section consolidates common, technical, and compliance-related questions to
 or leverage cloud volume snapshots for consistency.
 
 6.3 🛡️ Compliance and Security FAQs 🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🔹 Q: Is the data encrypted during storage and transit?
 
@@ -748,6 +776,7 @@ The appendices provide detailed supporting information to complement the Complia
 
 
 7.1 🗂️ Glossary of Terms 🗂️🗂️🗂️🗂️🗂️🗂️🗂️🗂️🗂️🗂️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 | **Term**                       | **Definition**                                                                          |
 | ------------------------------ | --------------------------------------------------------------------------------------- |
@@ -763,6 +792,7 @@ The appendices provide detailed supporting information to complement the Complia
 
 
 7.2 📚 Third-Party Libraries and Licenses 📚📚📚📚📚📚📚📚📚📚
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 | **Library/Tool**    | **Usage in Pipeline**                  | **License**                 |
 | ------------------- | -------------------------------------- | --------------------------- |
@@ -779,6 +809,7 @@ The appendices provide detailed supporting information to complement the Complia
 
 
 7.3 🔗 Useful Links and Resources 🔗🔗🔗🔗🔗🔗🔗🔗🔗🔗
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ✅ Official Project Repository: https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/tree/dev
 
