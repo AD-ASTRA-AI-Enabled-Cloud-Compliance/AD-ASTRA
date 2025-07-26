@@ -107,26 +107,35 @@ The Remediation Pipeline currently supports the following frameworks, with modul
 🖥️ 2.2.1 React Frontend & Compliance Dashboard 🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️
 
                                 ✅ Displays compliance evaluation results.
+
                                 ✅ Allows users to initiate evaluations and remediation.
+
                                 ✅ Shows status updates and progress indicators.
-                                ✅ Uses react-query and Zustand for state management.
+
+                                ✅ Uses react-query for state management.
 
 🛠️ 2.2.2 Evaluation Engine 🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️
 
                                 ✅ Core logic for validating resources against compliance rules.
+
                                 ✅ Supports event-based triggers (PR merges, deployments, schedules).
+
                                 ✅ Generates structured JSON reports with evaluation results.
 
 🪄 2.2.3 Remediation Engine 🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄
 
                                 ✅ Generates IaC patches.
+
                                 ✅ Can execute direct API calls for remediation.
+
                                 ✅ Supports approval gates before auto-remediation.
 
 🔔 2.2.4 Notification and Logging 🔔🔔🔔🔔🔔🔔🔔🔔🔔🔔
 
                         ✅ Slack, Teams, or Email notifications on compliance changes.
+
                         ✅ Logs status updates for audit trails.
+
                         ✅ Integrates with Metrics & Reporting Pipeline for historical trend analysis.
 
 
@@ -170,7 +179,7 @@ Before installation, ensure the following dependencies are pre-installed on your
 | Git                     | `>= 2.x`        | Version control                            |
 | .env File               | Custom          | Environment variables setup (see below)    |
 
-💡 Optional: Use nvm to manage multiple Node versions seamlessly.
+💡 Use nvm to manage multiple Node versions seamlessly.
 
 
 🌍 3.1.2 Environment Variables 🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍
@@ -200,18 +209,18 @@ Create a .env file at the root of your frontend folder. Below are the required v
 
 2️⃣ Install Frontend Dependencies
 
-                        yarn install
+                                yarn install
 
 
 🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄
 🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄 OR IF USING NPM 🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄
-🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄
+🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄🪄
 
-                        npm install
+                                npm install
 
 3️⃣ Start Frontend Server
 
-                        yarn start
+                                yarn start
 
 
 🚦 3.3 Checklist  🚦🚦🚦🚦🚦🚦🚦🚦🚦🚦
@@ -220,9 +229,13 @@ Create a .env file at the root of your frontend folder. Below are the required v
 After startup, verify the following:
 
                 ✅ Dashboard Loads: Ensure the Compliance Dashboard UI renders without crash.
+
                 ✅ API Connectivity: Test endpoint /fetch-compliance-status via browser or Postman.
+
                 ✅ Status Auto Refresh: Real-time progress bar updates based on backend polling.
+
                 ✅ Trigger Button Active: “Initiate Remediation” button should appear once results load.
+
                 ✅ Console Logs: Should show Evaluating compliance rules... during fetch cycle.
 
 🚀 3.4 Dockerized Launnch 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
@@ -282,21 +295,26 @@ Once evaluation is triggered (automatically or manually), the UI populates with 
 Clicking any rule expands a modal with:
 
                         ✅ Rule ID & Description
+
                         ✅ Associated Framework Clause
+
                         ✅ Compliance Evidence (e.g., screenshot, log file)
-                        ✅ Suggested Remediation Actions (if applicable)
+
+                        ✅ Suggested Remediation Actions
 
 🩻 4.3 Initiating Remediation 🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    Once the system identifies violations, you can initiate remediation in two ways:
+            Once the system identifies violations, you can initiate remediation in two ways:
 
 Option 1: ✨ Single-Click Remediation (Recommended) ✨✨✨✨✨
 
-    Click the "Initiate Remediation" button at the top-right corner. This triggers:
+            Click the "Initiate Remediation" button at the top-right corner. This triggers:
 
                                                                 ✅ Immediate backend remediation workflows
+
                                                                 ✅ UI modal for progress visibility
+
                                                                 ✅ Real-time updates via WebSockets or polling
 
 Option 2: 🛎️ Manual Rule-by-Rule Remediation 🛎️🛎️🛎️🛎️
@@ -308,7 +326,9 @@ Option 2: 🛎️ Manual Rule-by-Rule Remediation 🛎️🛎️🛎️🛎️
     🧩 Behind the Scenes:
 
                         ✅ React dispatches a POST /remediate call
+
                         ✅ Backend queues the action
+
                         ✅ UI updates status on success/failure
 
 
@@ -327,7 +347,9 @@ Once remediation begins, the Progress Timeline section activates:
             Users can:
 
                                     ✅ Click to view execution logs
+
                                     ✅ Re-run failed steps
+
                                     ✅ Export remediation results as JSON or PDF
 
 
@@ -337,12 +359,15 @@ Once remediation begins, the Progress Timeline section activates:
             From the top menu, users can:
 
                                     🧾 Download Evaluation Report (CSV, JSON, PDF)
+
                                     📬 Email Results to predefined stakeholders
-                                    🔐 Send to Audit Logs via API integration (if configured)
+
+                                    🔐 Send to Audit Logs via API integration
 
 
 🔐 4.6 Role-Based Access 🔐🔐🔐🔐🔐🔐🔐🔐🔐🔐
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 | Role         | Permissions                                                  |
 | ------------ | ------------------------------------------------------------ |
@@ -352,12 +377,12 @@ Once remediation begins, the Progress Timeline section activates:
 
 🛡️ Security Note: All user actions are logged and timestamped for audit traceability.
 
-Following this guide, users will be able to interpret evaluation results, launch automated fixes, monitor progress visually, and generate compliance artifacts effortlessly — all via a thoughtfully designed and highly responsive frontend experience.
+Following this guide, users will be able to interpret evaluation results, launch automated fixes, monitor progress visually, and generate compliance artifacts effortlessly; all via a thoughtfully designed and highly responsive frontend experience.
 
 
 🛠️ 5: Troubleshooting Guide --- Remediation Pipeline
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Technical compass for resolving operational hiccups, ensuring smooth usage of the evaluation and remediation interface. From UI stalling issues to deeper API or remediation failures, each category below provides actionable guidance with clear visuals, expert logic, and tested recovery steps.
+Technical compass for resolving operational challenges, ensuring smooth usage of the evaluation and remediation interface. From UI stalling issues to deeper API or remediation failures, each category below provides actionable guidance with clear visuals, expert logic, and tested recovery steps.
 
 
 🖼️ 5.1 UI Not Updating on Status Change 🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️
@@ -367,10 +392,12 @@ Technical compass for resolving operational hiccups, ensuring smooth usage of th
 
         📦 Possible Causes:
 
-                        ✅ Lost WebSocket connection or polling timeout
-                        ✅ React state mutation error
-                        ✅ Frontend failed to receive updated evaluation result from backend
+                        ✅ Lost WebSocket connection or polling timeout.
 
+                        ✅ React state mutation error.
+
+                        ✅ Frontend failed to receive updated evaluation result from backend.
+                        
 🛠 Recommended Steps: 🛠🛠🛠🛠🛠🛠🛠🛠🛠🛠
 
 1️⃣ 🔁 Manual Refresh: Hit Ctrl + R to force refresh the app state.
@@ -378,11 +405,13 @@ Technical compass for resolving operational hiccups, ensuring smooth usage of th
 2️⃣ 🔍 Inspect Console Logs:
 
                         ✅ Check browser dev tools for WebSocket disconnects.
+
                         ✅ Verify if React errors are raised during useEffect() triggers.
 
 3️⃣ 🧪 Trigger Diagnostics:
 
                         ✅ Run local test script npm run test:state-sync to verify frontend state sync.
+
 
 ✅ Fix: Ensure socket.emit and socket.on("status_update") are connected, and that Redux/Context is updating the UI appropriately.
 
@@ -394,8 +423,10 @@ Technical compass for resolving operational hiccups, ensuring smooth usage of th
 
         📦 Possible Causes:
 
-                        ✅ IAM misconfiguration (example., insufficient permissions)
+                        ✅ IAM misconfiguration (eg., insufficient permissions).
+
                         ✅ Invalid resource references in generated Terraform/YAML
+
                         ✅ API timeout or rate limiting from cloud provider
 
 🛠 Recommended Steps: 🛠🛠🛠🛠🛠🛠🛠🛠🛠🛠
@@ -425,7 +456,9 @@ Technical compass for resolving operational hiccups, ensuring smooth usage of th
         📦 Possible Causes:
 
                         ✅ Backend API container not running or unreachable
+
                         ✅ Port mismatch between .env config and frontend .env.local
+
                         ✅ CORS misconfiguration during frontend build
 
 🛠 Recommended Steps: 🛠🛠🛠🛠🛠🛠🛠🛠🛠🛠
@@ -449,6 +482,7 @@ Technical compass for resolving operational hiccups, ensuring smooth usage of th
 3️⃣ 🧪 Run Connectivity Test:
 
                             ping backend-api
+
                             docker inspect backend-api --format '{{.NetworkSettings.IPAddress}}'
 
 ✅ Fix: Rebuild both services and use docker-compose up --build to restore stable linkage.
@@ -461,8 +495,10 @@ Technical compass for resolving operational hiccups, ensuring smooth usage of th
 
                 📦 Possible Causes:
 
-                            ✅ Malformed or unsupported JSON rule structures
-                            ✅ Inconsistent mapping between compliance framework and evaluation logic
+                            ✅ Malformed or unsupported JSON rule structures.
+
+                            ✅ Inconsistent mapping between compliance framework and evaluation logic.
+
                             ✅ Memory issues when processing large rule sets
 
 🛠 Recommended Steps: 🛠🛠🛠🛠🛠🛠🛠🛠🛠🛠
@@ -514,8 +550,7 @@ If the response isn't 200 OK, log the failure with a timestamp and auto-retry re
 
 ❓ 6: Frequently Asked Questions (FAQs) --  Remediation Pipeline 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-Section provides concise, clearly categorized answers to common questions from engineers, analysts, security leads, and DevOps professionals. It ensures fast resolution of doubts and accelerates onboarding and effective pipeline use.
+This section provides, clearly categorized answers to common questions from engineers, analysts, security leads, and DevOps professionals. It ensures fast resolution of doubts and accelerates onboarding and effective pipeline use.
 
 
 💡 6.1 General FAQs 💡💡💡💡💡💡💡💡💡💡💡
@@ -543,7 +578,7 @@ Section provides concise, clearly categorized answers to common questions from e
 
 🔹 Q1: How are remediation actions applied?
 
-✅ Remediations are generated as infrastructure-as-code snippets and applied via API integrations (e.g., Terraform Cloud, Ansible Playbooks, or custom shell scripts).
+✅ Remediations are generated as infrastructure-as-code snippets and applied via API integrations (e.g., Terraform).
 
 🔹 Q2: How is remediation rollback handled?
 
@@ -559,7 +594,7 @@ Section provides concise, clearly categorized answers to common questions from e
 
 🔹 Q5: How are custom compliance rules defined?
 
-✅ Developers can define custom rules as JSON logic expressions or SQL-like policy queries. The UI supports uploading and managing custom rule sets.
+✅ Developers can define custom rules as JSON logic expressions. The UI supports uploading and managing custom rule sets.
 
 
 🔐 6.3 Compliance & Security FAQs 🔐🔐🔐🔐🔐🔐🔐🔐🔐🔐
@@ -579,7 +614,7 @@ Section provides concise, clearly categorized answers to common questions from e
 
 🔹 Q4: Can we integrate with SIEM/SOC tools?
 
-✅ Fully supported. The pipeline exposes webhooks and structured log formats (e.g., JSON, syslog) compatible with Splunk, Datadog, and ELK Stack.
+✅ Fully supported. The pipeline exposes webhooks and structured log formats (e.g., JSON) compatible with Splunk, Datadog, and ELK Stack.
 
 🔹 Q5: Are compliance framework updates handled automatically?
 
