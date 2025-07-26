@@ -38,11 +38,17 @@ The scope includes installation, architecture, user workflows, troubleshooting, 
 
 The pipeline is designed to support ingestion from multiple compliance frameworks, including but not limited to:
 
-✅ PCI DSS (Payment Card Industry Data Security Standard) --------------  ✅ ISO 27001 
+✅ PCI DSS (Payment Card Industry Data Security Standard) 
 
-✅ GDPR                                                   --------------  ✅ NIST 800-53 & 800-171
+✅ ISO 27001 
 
-✅ HIPAA (Health Insurance Portability and Accountability Act)  --------  ✅ SOC 2
+✅ GDPR                                                   
+
+✅ NIST 800-53 & 800-171
+
+✅ HIPAA (Health Insurance Portability and Accountability Act)  
+
+✅ SOC 2
 
 The pipeline architecture is modular, allowing the addition of new frameworks easily as your organization's compliance needs evolve.
 
@@ -85,12 +91,12 @@ User ➡️ Upload Document
 🧬 2.2 Compliance Rule Ingestion Pipeline - UML Diagram  🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-This diagram shows how a compliance document (PDF/TXT) is uploaded by a user, processed to extract structured compliance rules, stored in your vector database, and status updates are published for tracking in your system.
+This diagram shows how a compliance document is uploaded by a user, processed to extract structured compliance rules, stored in your vector database, and status updates are published for tracking in your system.
 
 ![Compliance Rule Ingestion Pipeline UML Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/62017cfc2cbdf9a7eb6f06c5edf05bdf636a29c8/docs/development/documentation/backend-docs/diagrams/Compliance%20Rule%20Ingestion%20Pipeline%20-%20UML%20Diagram.png)
 
 
-🎯 2.3 Compliance Rule Ingestion Pipeline - Component Diagram  🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯
+🎯 2.3 Compliance Rule Ingestion Pipeline - Component Diagram  🎯🎯🎯🎯🎯🎯🎯🎯
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This diagram shows the architectural components and their interactions for your pipeline that ingests compliance documents, parses them, extracts structured rules, stores them, and updates the user with status.
