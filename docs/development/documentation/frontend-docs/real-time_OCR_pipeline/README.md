@@ -53,7 +53,7 @@ This pipeline covers the frontend orchestration layer only for real-time OCR pro
 
                         ✅Event-driven UI: Frontend components update based on incoming events without polling.
 
-🛡️ 1.4 Supported Document Types  🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️
+🛡️ 1.4 Supported Document Types  🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️
 
 The pipeline supports OCR progress tracking for:
 

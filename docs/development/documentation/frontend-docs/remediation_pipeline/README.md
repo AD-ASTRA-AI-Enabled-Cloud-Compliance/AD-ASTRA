@@ -2,6 +2,7 @@
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🪐 1.1 Purpose and Benefits  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The Remediation Pipeline is engineered to automate the assessment of cloud environments against compliance frameworks while enabling immediate remediation of detected violations.
 
@@ -15,6 +16,7 @@ The Remediation Pipeline is engineered to automate the assessment of cloud envir
 
                 
 🧩 1.2 Audience and Scope 🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This documentation is crafted for:
                 ✅ DevOps Engineers: Automate and enforce compliance within CI/CD.
@@ -37,6 +39,7 @@ This pipeline covers focuses on cloud infrastructure and IaC compliance evaluati
 
 
 📚 1.3 Key Concepts and Terminologies  📚📚📚📚📚📚📚📚📚📚
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
                 ✅ Compliance Evaluation: Process of comparing environment configurations and resources against regulatory or organizational policies.
 
@@ -53,6 +56,7 @@ This pipeline covers focuses on cloud infrastructure and IaC compliance evaluati
                 ✅ Status Artifacts: JSON or YAML output files representing the results of compliance scans for traceability and audits.
 
 🛡️ 1.4 Compliance Frameworks Supported  🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️ 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The Remediation Pipeline currently supports the following frameworks, with modular extension capability:
 
@@ -64,6 +68,7 @@ The Remediation Pipeline currently supports the following frameworks, with modul
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🪐 2.1 High-Level Architecture Diagram  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 +---------------------------+
 |      User Interface       |
@@ -90,6 +95,7 @@ The Remediation Pipeline currently supports the following frameworks, with modul
 +---------------------------+
 
 ✨ 2.2 Components Breakdown ✨✨✨✨✨✨✨✨✨✨✨✨
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🖥️ 2.2.1 React Frontend & Compliance Dashboard 🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️
 
@@ -118,6 +124,7 @@ The Remediation Pipeline currently supports the following frameworks, with modul
 
 
 🧬 2.3 Remediation Pipeline - UML Diagram  🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This diagram models the end-to-end sequence flow from a user viewing compliance status to triggering automated remediation. It shows interactions between user, API gateway, evaluation and remediation services, and backend components.
 
@@ -125,6 +132,7 @@ This diagram models the end-to-end sequence flow from a user viewing compliance 
 
 
 🎯 2.4 Remediation Pipeline  - Component Diagram  🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This diagram maps out the key components, services, databases, and external systems involved in your end-to-end compliance evaluation and remediation pipeline, highlighting data flow, interactions, and communication patterns across backend, frontend, and external layers.
 
@@ -132,6 +140,7 @@ This diagram maps out the key components, services, databases, and external syst
 
 
 ⚡ 2.5 Remediation Pipeline - Deployment Diagram  ⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This diagram presents how the remediation system is physically structured and deployed in a containerized cloud environment, with an emphasis on real-time infrastructure scanning, policy enforcement, and user interaction.
 
@@ -142,6 +151,7 @@ This diagram presents how the remediation system is physically structured and de
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ⚙️ 3.1 Prerequisites ⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Before installation, ensure the following dependencies are pre-installed on your local or cloud environment:
 
@@ -174,6 +184,7 @@ Create a .env file at the root of your frontend folder. Below are the required v
 
 
 🚀 3.2 Launching Locally 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 1️⃣ Clone the Repository
 
@@ -197,6 +208,7 @@ Create a .env file at the root of your frontend folder. Below are the required v
 
 
 🚦 3.3 Checklist  🚦🚦🚦🚦🚦🚦🚦🚦🚦🚦
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 After startup, verify the following:
 
@@ -207,6 +219,7 @@ After startup, verify the following:
                 ✅ Console Logs: Should show Evaluating compliance rules... during fetch cycle.
 
 🚀 3.4 Dockerized Launnch 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
                 docker-compose -f docker-compose.eval.yaml up --build
 
@@ -230,6 +243,7 @@ After completing these steps, the pieline should be ready to use real-time remed
 This provides a complete walkthrough for interacting with the Remediation Pipeline’s frontend dashboard. From accessing evaluation results to launching automated remediation flows, this guide ensures that both technical and non-technical users can navigate the system efficiently with confidence
 
 🪐 4.1 Getting Started 🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🚀 4.1.1 Navigating the Dashboard 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
 
@@ -246,6 +260,7 @@ Upon visiting the app’s main route http://localhost:3000, you’ll land on the
 
 
 🖼️ 4.2 Interpreting Compliance Results 🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Once evaluation is triggered (automatically or manually), the UI populates with structured, color-coded results:
 
@@ -265,6 +280,7 @@ Clicking any rule expands a modal with:
                         ✅ Suggested Remediation Actions (if applicable)
 
 🩻 4.3 Initiating Remediation 🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     Once the system identifies violations, you can initiate remediation in two ways:
 
@@ -290,6 +306,7 @@ Option 2: 🛎️ Manual Rule-by-Rule Remediation 🛎️🛎️🛎️🛎️
 
 
 📡 4.4 Tracking Remediation Status 📡📡📡📡📡📡📡📡📡📡
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Once remediation begins, the Progress Timeline section activates:
 
@@ -308,6 +325,7 @@ Once remediation begins, the Progress Timeline section activates:
 
 
 📤 4.5 Exporting Results & Reports 📤📤📤📤📤📤📤📤📤📤
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
             From the top menu, users can:
 
@@ -317,6 +335,7 @@ Once remediation begins, the Progress Timeline section activates:
 
 
 🔐 4.6 Role-Based Access 🔐🔐🔐🔐🔐🔐🔐🔐🔐🔐
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 | Role         | Permissions                                                  |
 | ------------ | ------------------------------------------------------------ |
@@ -335,6 +354,7 @@ Technical compass for resolving operational hiccups, ensuring smooth usage of th
 
 
 🖼️ 5.1 UI Not Updating on Status Change 🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️🖼️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🔍 Symptom: After triggering remediation or compliance evaluation, the UI shows no visible change.
 
@@ -361,6 +381,7 @@ Technical compass for resolving operational hiccups, ensuring smooth usage of th
 
 
 ❌ 5.2 Remediation Errors ❌❌❌❌❌❌❌❌❌❌
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🔍 Symptom: Remediation fails partially or completely for selected rules.
 
@@ -390,6 +411,7 @@ Technical compass for resolving operational hiccups, ensuring smooth usage of th
 ✅ Fix: Validate generated infra changes before applying and ensure all dependent resources are correctly addressed.
 
 🛜 5.3 API Connection Failures 🛜🛜🛜🛜🛜🛜🛜🛜🛜🛜
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🔍 Symptom: React app shows "Unable to fetch compliance status" or "Backend not reachable".
 
@@ -426,6 +448,7 @@ Technical compass for resolving operational hiccups, ensuring smooth usage of th
 
 
 🧩 5.4 Rule Evaluation Fails Intermittently 🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🔍 Symptom: Evaluation works on some documents but fails on others unpredictably.
 
@@ -463,6 +486,7 @@ Temporarily enable verbose mode in the backend:
 ✅ Fix: Ensure all rules are pre-validated during upload and frameworks include complete mappings.
 
 📄 5.5 Troubleshooting Cheatsheet Summary 📄📄📄📄📄📄📄📄📄📄📄📄
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 | Issue                            | Root Cause Example            | Resolution                             |
 | -------------------------------- | ----------------------------- | -------------------------------------- |
@@ -488,6 +512,7 @@ Section provides concise, clearly categorized answers to common questions from e
 
 
 💡 6.1 General FAQs 💡💡💡💡💡💡💡💡💡💡💡
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🔹 Q1: What is the core purpose of this pipeline?
 
@@ -507,6 +532,7 @@ Section provides concise, clearly categorized answers to common questions from e
 
 
 🔧 6.2 Technical FAQs 🔧🔧🔧🔧🔧🔧🔧🔧🔧🔧
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🔹 Q1: How are remediation actions applied?
 
@@ -530,6 +556,7 @@ Section provides concise, clearly categorized answers to common questions from e
 
 
 🔐 6.3 Compliance & Security FAQs 🔐🔐🔐🔐🔐🔐🔐🔐🔐🔐
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🔹 Q1: How is sensitive data protected?
 
