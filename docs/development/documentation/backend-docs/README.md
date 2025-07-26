@@ -82,7 +82,7 @@ User ➡️ Upload Document
 
           ⬇️
           
-  Status Updates via RabbitMQ
+     Status Updates
   
           ⬇️
 
