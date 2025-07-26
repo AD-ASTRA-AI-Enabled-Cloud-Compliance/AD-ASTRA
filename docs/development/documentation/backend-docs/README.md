@@ -104,7 +104,7 @@ This diagram shows the architectural components and their interactions for your 
 ![Compliance Rule Ingestion Pipeline Component Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/62017cfc2cbdf9a7eb6f06c5edf05bdf636a29c8/docs/development/documentation/backend-docs/diagrams/Compliance%20Rule%20Ingestion%20Pipeline%20-%20Component%20Diagram.png)
 
 
-⚡ 2.4 Compliance Rule Ingestion Pipeline - Deployment Diagram  ⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡
+⚡ 2.4 Compliance Rule Ingestion Pipeline - Deployment Diagram  ⚡⚡⚡⚡⚡⚡
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This diagram shows how our pipeline components are physically deployed and communicate, emphasizing technology, ports, and containerized structure for your compliance rule ingestion system.
@@ -147,7 +147,7 @@ Extracted rules are converted into embeddings using the Ollama model, preparing 
 Embeddings and metadata are upserted into Qdrant, organized under relevant collections and partitions.
 
 7️⃣ Status Updates -:
-Each step's status is published to RabbitMQ, which the frontend consumes to show live ingestion progress.
+Each step's status is published, which the frontend consumes to show live ingestion progress.
 
 
 🚀 2.7 Technology Stack  🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
@@ -158,7 +158,6 @@ Each step's status is published to RabbitMQ, which the frontend consumes to show
 | **Python (Flask)**   | Backend ingestion and orchestration           |
 | **Ollama**           | LLM-powered rule extraction and vectorization |
 | **Qdrant**           | Vector database for semantic retrieval        |
-| **RabbitMQ**         | Real-time event streaming                     |
 | **Next.js (React)**  | Frontend ingestion UI                         |
 | **Docker & Compose** | Containerized, consistent deployment          |
 
@@ -170,7 +169,7 @@ Each step's status is published to RabbitMQ, which the frontend consumes to show
 
 ✅ GET /status/<document_id> – Retrieves ingestion progress for a specific document.
 
-✅ WebSocket via RabbitMQ – Streams real-time ingestion status to subscribed frontend clients.
+✅ WebSocket – Streams real-time ingestion status to subscribed frontend clients.
 
 
 🌿 3 Installation and Setup
@@ -349,7 +348,7 @@ Connect using a DB client with credentials:
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 4.1.1 🖥️ Navigating the User Interface 🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 ✅ The frontend provides a clean dashboard displaying:
 
@@ -383,7 +382,7 @@ Connect using a DB client with credentials:
 
                             2️⃣ Click “Upload Document”.
 
-                            3️⃣ Select the PDF, DOCX, or TXT compliance document.
+                            3️⃣ Select the PDF or TXT compliance document.
 
                             4️⃣ Choose the framework type (PCI DSS, HIPAA, GDPR, etc.) from a dropdown.
 
@@ -426,7 +425,7 @@ Connect using a DB client with credentials:
 
                             🔹Status of validation
 
-4.3 📊 Interpreting Compliance Status and Results 📊📊📊📊📊📊📊📊📊📊
+4.3 📊 Interpreting Compliance Status and Results 📊📊📊📊📊📊📊📊
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ✅ Once ingestion completes:
@@ -443,19 +442,19 @@ Filter results by:
 
 ✅ Color-coded indicators:
 
-🟢 Validated
+                     🟢 Validated
 
-🟡 Pending Review
+                     🟡 Pending Review
 
-🔴 Error (requires user intervention)
+                     🔴 Error (requires user intervention)
 
-✅ Click any rule to:
+                     ✅ Click any rule to:
 
-                            🔹View extracted details.
+                                                 🔹View extracted details.
 
-                            🔹Manually adjust or confirm mappings.
+                                                 🔹Manually adjust or confirm mappings.
 
-                            🔹Add notes for context.
+                                                 🔹Add notes for context.
 
 4.4 🔎 Conducting Vector-based Searches 🔎🔎🔎🔎🔎🔎🔎🔎🔎🔎
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -528,7 +527,7 @@ Filter results by:
 
                             🔹Ensure the document is clear, high-contrast, and non-password protected.
 
-                            🔹Check document_preprocess container logs for Tesseract or chunking errors.
+                            🔹Check document_preprocess container logs for chunking errors.
 
                             🔹Verify sufficient memory allocation in the Docker container.
 
@@ -536,7 +535,7 @@ Filter results by:
 
               💡 Solution:
               
-                            🔹Confirm the document matches supported formats (.pdf, .docx, .txt).
+                            🔹Confirm the document matches supported formats.
 
                             🔹Check LLM integration (ollama logs) for token or request issues.
 
@@ -630,7 +629,7 @@ If repeated failures occur, consider restarting containers:
                             docker-compose restart document_preprocess
 
 
-5.4 🗄️ Database Connectivity and Query Issues  🗄️🗄️🗄️🗄️🗄️🗄️🗄️🗄️🗄️🗄️🗄️
+5.4 🗄️ Database Connectivity and Query Issues  🗄️🗄️🗄️🗄️🗄️🗄️🗄️🗄️🗄️
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ✅ MySQL Troubleshooting:
@@ -650,11 +649,11 @@ Inspect mysql logs for authentication failures or query errors.
 
 ✅ Qdrant Troubleshooting:
 
-                            🔹Check Qdrant health at http://localhost:6333/health.
+                                   🔹Check Qdrant health at http://localhost:6333/health.
 
-                            🔹Use the Qdrant HTTP API to confirm collections are present:
+                                   🔹Use the Qdrant HTTP API to confirm collections are present:
 
-                            curl http://localhost:6333/collections
+                     curl http://localhost:6333/collections
 
 Confirm embeddings are stored and retrievable using collection and vector IDs.
 
@@ -674,9 +673,9 @@ Confirm embeddings are stored and retrievable using collection and vector IDs.
 
 ✅ Testing the LLM in isolation:
 
-                            🔹Manually send a test chunk to the LLM endpoint to validate:
+                                   🔹Manually send a test chunk to the LLM endpoint to validate:
 
-                            curl -X POST http://localhost:11434/your-llm-endpoint -d '{"text":"Sample compliance chunk"}'
+                     curl -X POST http://localhost:11434/your-llm-endpoint -d '{"text":"Sample compliance chunk"}'
 
 
 ❓ 6: Frequently Asked Questions (FAQs) -- Compliance Rule Ingestion Pipeline
@@ -769,7 +768,7 @@ or leverage cloud volume snapshots for consistency.
 
 🔹 Q: What compliance frameworks are supported out of the box?
 
-✅: PCI DSS, HIPAA, GDPR, NIST CSF, and ISO 27001 documents can be ingested. Support for others can be added via LLM prompt engineering or pipeline extension.
+✅: PCI DSS, HIPAA, GDPR, NIST, and ISO 27001 documents can be ingested. Support for others can be added via LLM prompt engineering or pipeline extension.
 
 🔹 Q: Can this system help with audits?
 
