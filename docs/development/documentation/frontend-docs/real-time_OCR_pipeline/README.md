@@ -3,7 +3,7 @@
 
 🪐 1.1 Purpose and Benefits  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
 
-The Real-Time OCR & Progress Reporting Pipeline empowers users to upload documents and track their OCR processing live, fostering transparency, user trust, and immediate insight into document digitization workflows. Unlike typical “upload and wait” systems, this pipeline streams granular progress updates, showing real-time percentage completion, current processing stages, and instant failure alerts.
+The pipeline empowers users to upload documents and track their OCR processing live, fostering transparency, user trust, and immediate insight into document digitization workflows. Unlike typical “upload and wait” systems, this pipeline streams granular progress updates, showing real-time percentage completion, current processing stages, and instant failure alerts.
 
 ✨ Benefits: 
 
@@ -45,7 +45,7 @@ This pipeline covers the frontend orchestration layer only for real-time OCR pro
 📚 1.3 Key Concepts and Terminologies  📚📚📚📚📚📚📚📚📚📚
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-                        ✅OCR (Optical Character Recognition): Extraction of machine-readable text from images/PDFs.
+                        ✅OCR : Extraction of machine-readable text from uploads.
 
                         ✅Progress Events: Structured real-time updates indicating current OCR stage and % completed.
 
@@ -99,7 +99,7 @@ The pipeline supports OCR progress tracking for:
 
 🟨 Progress Formatter: Converts backend updates into user-friendly, granular stages before frontend consumption.
 
-🧬 2.2 Real-Time OCR & Progress Reporting Pipeline - UML Diagram  🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
+🧬 2.2 Real-Time OCR & Progress Reporting Pipeline - UML Diagram  🧬🧬🧬🧬🧬🧬
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This diagram shows the sequence of interactions between the user, frontend, backend services etc during the OCR document processing lifecycle, including real-time progress updates and completion notifications.
@@ -108,6 +108,7 @@ This diagram shows the sequence of interactions between the user, frontend, back
 
 
 🎯 2.3 Real-Time OCR & Progress Reporting Pipeline  - Component Diagram  🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This diagram shows how our pipeline processes document/image uploads with OCR, enriches them optionally with LLM analysis, stores extracted data, and streams real-time progress and status updates to users.
 
@@ -115,6 +116,7 @@ This diagram shows how our pipeline processes document/image uploads with OCR, e
 
 
 ⚡ 2.4 Real-Time OCR & Progress Reporting Pipeline - Deployment Diagram  ⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This diagram illustrates how our OCR pipeline is physically deployed across frontend, backend, and WebSocket servers, emphasizing live progress updates and vector/metadata storage in your real-time OCR processing system.
 
@@ -129,9 +131,9 @@ This diagram illustrates how our OCR pipeline is physically deployed across fron
 
 Before installing the Real-Time OCR & Progress Reporting Pipeline, ensure the following are available:
 
-✅ Docker & Docker Compose --- Already Installed
+✅ Docker & Docker Compose 
 
-✅ Node.js 19+ for frontend build and hot reload  --- --- Already Installed
+✅ Node.js 19+ for frontend build and hot reload  
 
 ✅ Backend API endpoint (OCR processing endpoint) reachable within your environment
 
@@ -142,10 +144,12 @@ Before installing the Real-Time OCR & Progress Reporting Pipeline, ensure the fo
 🐳 3.1.1 Docker & Docker Compose Setup   🐳🐳🐳🐳🐳🐳🐳🐳🐳🐳 
 
 1️⃣ Verify Docker Installation:
+
                     docker --version
                     docker-compose --version
 
 2️⃣ Clone your repository:
+
                     git clone https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA.git
                     cd ad-adastra-cloud-compliance
 
@@ -205,7 +209,7 @@ You should see:
 
 🚦 Scalability:
 
-                Use a reverse proxy (Nginx, Traefik) to handle WebSocket upgrades.
+                Use a reverse proxy (Nginx) to handle WebSocket upgrades.
 
                 Deploy OCR services separately in microservices if scaling demand.
 
@@ -242,7 +246,7 @@ Users can drag and drop documents or select files for OCR ingestion.
 
 4.1.2 📂 How to Upload Compliance Documents  📂📂📂📂📂📂📂📂📂📂
 
-            1️⃣ Click on the Upload Document button or drag your PDF/image into the upload area.
+            1️⃣ Click on the Upload Document button or drag your PDF into the upload area.
 
             2️⃣ The UI will immediately:
 
@@ -276,8 +280,6 @@ Users can drag and drop documents or select files for OCR ingestion.
 
                             Status messages like:
 
-                                        "Extracting text from page 3/12"
-
                                         "OCR Complete. Generating structured JSON output."
 
 
@@ -285,8 +287,6 @@ Users can drag and drop documents or select files for OCR ingestion.
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Once completed, the UI will display:
-
-                ✅ Text preview of OCR output.
 
                 ✅ Download button for structured JSON output.
 
@@ -350,7 +350,7 @@ In case of OCR issues:
 
                 2️⃣ Use docker logs document_preprocess to capture runtime logs:
 
-                                                        Check for Tesseract or OCR engine errors.
+                                                        Check for OCR engine errors.
 
                                                         Review logs for MemoryError or TimeoutError.
 
@@ -499,10 +499,10 @@ Accessible FAQ section to resolve common user questions quickly, reducing suppor
 
 The pipeline emits updates like:
                                 json
-                                {
-                                "progress": 47,
-                                "message": "Processing page 7 of 15"
-                                }
+                                        {
+                                        "progress": 47,
+                                        "message": "Processing page 7 of 15"
+                                        }
 
 
 🔹 Q5: Where are OCR outputs stored?
@@ -511,7 +511,7 @@ The pipeline emits updates like:
 
                 Locally within /processed_docs inside the container.
 
-                Optionally uploaded to your Qdrant vector database for semantic search integration.
+                Uploaded to your Qdrant vector database for semantic search integration.
 
 🔐 6.3 Security and Privacy FAQs  🔐🔐🔐🔐🔐🔐🔐🔐🔐🔐
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
