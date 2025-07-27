@@ -203,27 +203,25 @@ You should see:
 
 🔒 Security:
 
-                Use HTTPS and WSS in production.
+                🔹Use HTTPS and WSS in production.
 
-                Ensure WebSocket connections are authenticated via tokens or session cookies.
+                🔹Ensure WebSocket connections are authenticated via tokens or session cookies.
 
 🚦 Scalability:
 
-                Use a reverse proxy (Nginx) to handle WebSocket upgrades.
-
-                Deploy OCR services separately in microservices if scaling demand.
+                🔹Deploy OCR services separately in microservices if scaling demand.
 
 📈 Performance:
 
-                Enable caching of partial OCR results for large PDFs.
+                🔹Enable caching of partial OCR results for large PDFs.
 
-                Use GPU-based OCR for high-volume document ingestion.
+                🔹Use GPU-based OCR for high-volume document ingestion.
 
 🛡️ Monitoring:
 
-                Integrate frontend.
+                🔹Integrate frontend.
 
-                Enable Next.js telemetry for frontend insights (optional).
+                🔹Enable Next.js telemetry for frontend insights.
 
 🧭 4 User Guide – Real-Time OCR & Progress Reporting Pipeline
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -234,6 +232,7 @@ You should see:
 🚀 4.1.1 Navigating the User Interface (Frontend Integration) 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
 
 Access the pipeline interface via http://localhost:3000 or your production URL.
+
 The clean, distraction-free dashboard displays:
 
                         📂 Upload Panel for document ingestion.
@@ -250,13 +249,13 @@ Users can drag and drop documents or select files for OCR ingestion.
 
             2️⃣ The UI will immediately:
 
-                        Trigger backend OCR processing.
+                        🔹Trigger backend OCR processing.
 
-                        Open a progress modal displaying:
+                        🔹Open a progress modal displaying:
 
-                                            Upload progress.
+                                                🔹Upload progress.
 
-                                            Current processing status (Queued, Processing, Completed).
+                                                🔹Current processing status (Queued, Processing, Completed).
 
 ✅ Supported formats: PDF, PNG, JPEG, TIFF.
 
@@ -267,18 +266,18 @@ Users can drag and drop documents or select files for OCR ingestion.
 
             ✅The OCR processing pipeline:
 
-                            Splits documents into pages.
+                            🔹Splits documents into pages.
 
-                            Parses text using the chosen OCR model.
+                            🔹Parses text using the chosen OCR model.
 
-                            Sends incremental updates via WebSocket to the frontend.
+                            🔹Sends incremental updates via WebSocket to the frontend.
 
             ⚡ Live updates:
 
 
-                            Processing percentage displayed dynamically.
+                            🔹Processing percentage displayed dynamically.
 
-                            Status messages like:
+                            🔹Status messages like:
 
                                         "OCR Complete. Generating structured JSON output."
 
@@ -292,11 +291,11 @@ Once completed, the UI will display:
 
                 ✅ Summary panel showing:
 
-                                Total pages processed.
+                                🔹Total pages processed.
 
-                                Time taken.
+                                🔹Time taken.
 
-                                Number of characters extracted.
+                                🔹Number of characters extracted.
 
 ✅ Users can review and validate OCR output before further compliance ingestion.
 
@@ -306,11 +305,11 @@ Once completed, the UI will display:
 
 Real-Time Dashboard Capabilities:
 
-                    Visual progress indicator (circular/linear progress bar).
+                    🔹Visual progress indicator.
 
-                    Log view of OCR steps for each page.
+                    🔹Log view of OCR steps for each page.
 
-                    Visual alerts if OCR errors or skips occur (e.g., unreadable pages).
+                    🔹Visual alerts if OCR errors or skips occur.
 
 ✅ Users can stop or re-trigger OCR if needed, enabling control during batch processing.
 
@@ -350,19 +349,19 @@ In case of OCR issues:
 
                 2️⃣ Use docker logs document_preprocess to capture runtime logs:
 
-                                                        Check for OCR engine errors.
+                                                        🔹Check for OCR engine errors.
 
-                                                        Review logs for MemoryError or TimeoutError.
+                                                        🔹Review logs for MemoryError or TimeoutError.
 
                 3️⃣ Inspect the WebSocket log flow:
 
-                                                        Check for repeated disconnections.
+                                                        🔹Check for repeated disconnections.
 
-                                                        Validate socket.io connectivity in the browser console.
+                                                        🔹Validate socket.io connectivity in the browser console.
 
                 4️⃣ Check CPU/Memory consumption using:
 
-                                                    docker stats
+                                                        🔹docker stats
 
 
 ✅ To identify if container throttling is occurring during heavy OCR processing.
@@ -375,13 +374,13 @@ If progress bars do not update:
 
 ✅ Confirm WebSocket connection:
 
-                Look for Connected successfully in frontend console.
+                🔹Look for Connected successfully in frontend console.
 
-                Test with a small sample file.
+                🔹Test with a small sample file.
 
 ✅ Ensure lastMessage updates in React state (OCRProgress component).
 
-✅ Confirm backend emits progress via socket.emit('ws', { progress: xx }).
+✅ Confirm backend emits progress via socket.
 
 
 📜 5.4 Analyzing Logs 📜📜📜📜📜📜📜📜📜📜📜📜
@@ -391,15 +390,15 @@ If progress bars do not update:
 
                 Frontend:
 
-                        Browser DevTools Console.
+                        🔹Browser DevTools Console.
 
-                        Network > WS tab for WebSocket frame activity.
+                        🔹Network > WS tab for WebSocket frame activity.
 
                 Backend:
 
                         Run:
 
-                            docker logs document_preprocess
+                        🔹docker logs document_preprocess
                             
 ✅ View logs with timestamps, progress updates, OCR completion signals.
 
@@ -409,23 +408,23 @@ If progress bars do not update:
 
 🧪 Symptoms:
 
-                Real-time progress does not display.
+                🔹Real-time progress does not display.
 
-                Dashboard remains static during processing.
+                🔹Dashboard remains static during processing.
 
 🛠️ Actions:
 
-                Confirm correct WebSocket path in frontend (/api/socketio).
+                🔹Confirm correct WebSocket path in frontend (/api/socketio).
 
-                Ensure ports (3000, 3030) are open and not blocked.
+                🔹Ensure ports (3000, 3030) are open and not blocked.
 
                 Restart the frontend:
 
-                            docker restart frontend
+                            🔹docker restart frontend
 
                 Restart OCR backend:
 
-                            docker restart document_preprocess
+                            🔹docker restart document_preprocess
 
 🪛 5.6 Reprocessing Failed Documents  🪛🪛🪛🪛🪛🪛🪛🪛🪛🪛🪛
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -455,11 +454,7 @@ Accessible FAQ section to resolve common user questions quickly, reducing suppor
 
 ✅ By default, the maximum upload size is 50 MB per file, configurable in your frontend and document_preprocess container settings.
 
-🔹 Q3: Can I use this pipeline offline?
-
-✅ The pipeline is designed for local deployments using Docker, making it usable offline within your secure infrastructure.
-
-🔹 Q4: Is the OCR processing real-time or batch?
+🔹 Q3: Is the OCR processing real-time or batch?
 
 ✅ The system supports real-time processing with live progress updates but can also handle batch ingestion for high-volume document processing.
 
@@ -478,40 +473,23 @@ Accessible FAQ section to resolve common user questions quickly, reducing suppor
 
 ✅ Yes. You can modify OCR configuration within the backend:
 
-                                        Language models
+                                        🔹Language models
 
-                                        DPI thresholds
+                                        🔹DPI thresholds
 
-                                        Preprocessing filters
+                                        🔹Preprocessing filters
 
-                                        Document this under document_preprocess/config/ocr_config.json.
-
-
-🔹 Q4: How are progress percentages calculated?
-
-✅ Based on:
-
-                        Total pages detected
-
-                        Pages completed
-
-                        Processing stages (preprocessing, text extraction, post-processing)
-
-The pipeline emits updates like:
-                                json
-                                        {
-                                        "progress": 47,
-                                        "message": "Processing page 7 of 15"
-                                        }
+                                        🔹Document this under document_preprocess/config/ocr_config.json.
 
 
-🔹 Q5: Where are OCR outputs stored?
+
+🔹 Q4: Where are OCR outputs stored?
 
 ✅ Outputs are stored:
 
-                Locally within /processed_docs inside the container.
+                🔹Locally within /processed_docs inside the container.
 
-                Uploaded to your Qdrant vector database for semantic search integration.
+                🔹Uploaded to your Qdrant vector database for semantic search integration.
 
 🔐 6.3 Security and Privacy FAQs  🔐🔐🔐🔐🔐🔐🔐🔐🔐🔐
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -528,21 +506,21 @@ The pipeline emits updates like:
 
 ✅ The pipeline supports:
 
-                        Secure WebSockets (WSS) if deployed with HTTPS.
+                        🔹Secure WebSockets (WSS) if deployed with HTTPS.
 
-                        TLS-secured REST API endpoints.
+                        🔹TLS-secured REST API endpoints.
 
-                        Internal container-to-container communication within Docker network isolation.
+                        🔹Internal container-to-container communication within Docker network isolation.
 
 🔹 Q4: How do I ensure data compliance during processing?
 
 ✅ Implement policies to:
 
-                        Anonymize sensitive data post-extraction.
+                        🔹Anonymize sensitive data post-extraction.
 
-                        Use secure storage with encryption if retaining outputs.
+                        🔹Use secure storage with encryption if retaining outputs.
 
-                        Regularly audit and clean stored data as per your compliance framework.
+                        🔹Regularly audit and clean stored data as per your compliance framework.
 
 🌟 6.4 Performance FAQs 🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -551,11 +529,11 @@ The pipeline emits updates like:
 
 ✅ Possible reasons:
 
-                Processing large files with many high-resolution pages.
+                🔹Processing large files with many high-resolution pages.
 
-                Limited CPU/memory allocation to document_preprocess containers.
+                🔹Limited CPU/memory allocation to document_preprocess containers.
 
-                High concurrent processing load.
+                🔹High concurrent processing load.
 
 Solution: Scale resources via Docker, optimize scans, and monitor container resource usage.
 
@@ -567,11 +545,11 @@ Solution: Scale resources via Docker, optimize scans, and monitor container reso
 
 ✅ Strategies:
 
-                Pre-crop and clean scans to reduce noise.
+                🔹Pre-crop and clean scans to reduce noise.
 
-                Use lower DPI where acceptable.
+                🔹Use lower DPI where acceptable.
 
-                Allocate additional CPU cores to the backend container.
+                🔹Allocate additional CPU cores to the backend container.
 
 ⚙️ 6.5 Integration FAQs ⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -580,11 +558,7 @@ Solution: Scale resources via Docker, optimize scans, and monitor container reso
 
 ✅ Yes, outputs are designed to be compatible with the Compliance Rule Ingestion Pipeline for seamless pipeline chaining.
 
-🔹 Q2: Is API documentation available?
-
-✅ A dedicated API Reference Guide exists under Part 4 of this documentation for endpoint details.
-
-🔹 Q3: Can I customize the frontend display for progress reporting?
+🔹 Q2: Can I customize the frontend display for progress reporting?
 
 ✅ Yes, you can adapt UI components under:
 

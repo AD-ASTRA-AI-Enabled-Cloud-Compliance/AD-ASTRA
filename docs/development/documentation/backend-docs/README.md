@@ -202,7 +202,7 @@ Before installation, ensure the following are in place:
                             3030 (Document Preprocess API)
                             11434 (Ollama LLM)
                             6333, 6334 (Qdrant)
-                            3306 (MySQL)
+
 
 ✅ Ability to create and manage Docker containers.
 
@@ -225,8 +225,7 @@ Check and configure:
                             docker-compose.yaml configurations (uploaded already)
 
                             Ensure environment variables for:
-
-                                          ![MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE]()
+                                          
                                           ![QDRANT_HOST, QDRANT_PORT]()
                                           ![Flask and frontend environment configurations]()
 
@@ -243,7 +242,7 @@ This will:
                             Flask Document Preprocessing API
                             Ollama LLM container
                             Qdrant Vector DB
-                            MySQL
+
 
 ✅ Configure networking between containers
 
@@ -258,9 +257,7 @@ You should see containers for:
                                    frontend
                                    document_preprocess
                                    qdrant
-                                   mysql
                                    ollama
-
 
 3.3 🖥️ Local Development Setup  🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️🖥️
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -296,11 +293,6 @@ If you prefer running services individually for debugging and contribution:
                             docker run -p 11434:11434 ollama/ollama
 
 
-✅ MySQL
-
-Run using Docker:
-
-                            docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD=rootpassword -e MYSQL_DATABASE=adastra -e MYSQL_USER=adastra -e MYSQL_PASSWORD=adastrapass mysql:8.0
 
 
 3.4 🚦 Checklist  🚦🚦🚦🚦🚦🚦🚦🚦🚦🚦
@@ -331,14 +323,6 @@ Test LLM processing using:
 
                             curl http://localhost:11434
 
-✅ MySQL
-
-Connect using a DB client with credentials:
-
-                            host: localhost
-                            user: adastra
-                            password: adastrapass
-                            db: adastra
 
 
 ✨ 4: User Guide  --- Compliance Rule Ingestion Pipeline
@@ -411,7 +395,6 @@ Connect using a DB client with credentials:
 
                                                  🔹Qdrant Vector Database for semantic search.
 
-                                                 🔹MySQL for structured rule management.
 
 ✅ Users can view:
 
@@ -616,7 +599,7 @@ Filter results by:
 
               🔹ERROR or Traceback in Python logs (document_preprocess).
 
-              🔹Connection errors between document_preprocess and qdrant or mysql.
+              🔹Connection errors between document_preprocess and qdrant.
               
               🔹LLM request timeouts in ollama.
 
@@ -631,21 +614,6 @@ If repeated failures occur, consider restarting containers:
 
 5.4 🗄️ Database Connectivity and Query Issues  🗄️🗄️🗄️🗄️🗄️🗄️🗄️🗄️🗄️
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-✅ MySQL Troubleshooting:
-
-                            Ensure mysql service is running: docker-compose ps.
-
-
-Connect using a MySQL client to verify:
-
-                            mysql -u adastra -padastrapass -h 127.0.0.1 -P 3306
-
-
-Check if the adastra database and tables exist.
-
-Inspect mysql logs for authentication failures or query errors.
-
 
 ✅ Qdrant Troubleshooting:
 
@@ -725,7 +693,7 @@ This section consolidates common, technical, and compliance-related questions to
 
                             As vectors in Qdrant (http://localhost:6333)
 
-                            In structured relational data in MySQL (adastra database)
+                            In structured relational data in database
 
 🔹 Q: What happens if an ingestion fails?
 
@@ -741,7 +709,7 @@ This section consolidates common, technical, and compliance-related questions to
 
 🔹 Q: How do I back up my pipeline data?
 
-✅: Backup MySQL and Qdrant volumes using:
+✅: Backup Qdrant volumes using:
 
                             docker cp <container_id>:/path/to/data .
 
@@ -752,7 +720,7 @@ or leverage cloud volume snapshots for consistency.
 
 🔹 Q: Is the data encrypted during storage and transit?
 
-✅: Transit encryption is recommended via reverse proxies or VPN, and Qdrant/MySQL can be configured for at-rest encryption depending on your security posture.
+✅: Transit encryption is recommended via reverse proxies or VPN, and Qdrant can be configured for at-rest encryption depending on your security posture.
 
 🔹 Q: Does the pipeline store personal or sensitive information?
 
@@ -803,7 +771,6 @@ The appendices provide detailed supporting information to complement the Complia
 | ------------------- | -------------------------------------- | --------------------------- |
 | `Qdrant`            | Vector database for compliance rules   | Apache 2.0                  |
 | `Ollama`            | LLM-based document processing          | Varies (Self-hosted or API) |
-| `MySQL`             | Relational storage for structured data | GPL v2                      |
 | `Docker`            | Containerization and orchestration     | Apache 2.0                  |
 | `Socket.IO`         | WebSocket real-time updates            | MIT                         |
 | `React`, `Next.js`  | Frontend architecture                  | MIT                         |

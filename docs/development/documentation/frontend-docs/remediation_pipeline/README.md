@@ -9,9 +9,13 @@ The Remediation Pipeline is engineered to automate the assessment of cloud envir
 ✨ Benefits: 
 
                 🟢 Continuous Compliance: Automates evaluations, reducing risks of drifting from standards.
+
                 ⚡ Accelerated Remediation: Enforces compliance at the pace of development, reducing audit failures.
+                
                 📈 Operational Efficiency: Frees engineers from repetitive remediation tasks.
+                
                 🌟 Trust and Visibility: Builds a transparent compliance posture with clear, actionable insights.
+                
                 📌 Framework Flexibility: Adaptable to NIST, CIS Benchmarks, PCI DSS, HIPAA, and organizational policies.
 
                 
@@ -35,8 +39,6 @@ This pipeline covers focuses on cloud infrastructure and IaC compliance evaluati
                         ✅ Automates remediation steps post evaluation.
 
                         ✅ Designed to integrate with existing CI/CD pipelines, dashboards, and reporting tools.
-
-                        ✅ Supports multi-cloud environments (AWS, Azure, GCP)
 
 
 📚 1.3 Key Concepts and Terminologies  📚📚📚📚📚📚📚📚📚📚
