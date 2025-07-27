@@ -2,11 +2,12 @@
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🪐 1.1 Purpose and Benefits  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Pipeline acts as the human-AI interaction gateway for the entire Compliance System. It delivers a dynamic, context-aware communication layer powered by LLMs (Large Language Models) and integrated vector-based semantic search, enabling real-time user support, regulation explanation etc. Whether end-users are seeking clarification on a compliance rule, or engineers are troubleshooting infrastructure misconfigurations, this pipeline translates natural language questions into structured insight—with traceability to underlying policies, historical decisions, and real-time environment state.
 
 ✨ 1.2 Core Features at a Glance ✨✨✨✨✨✨✨✨✨✨
-
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 | Feature                          | Description                                                                                                     |
 | -------------------------------- | --------------------------------------------------------------------------------------------------------------- |
@@ -20,6 +21,8 @@ Pipeline acts as the human-AI interaction gateway for the entire Compliance Syst
 
 
 📌 1.3 Audience and Scope 📌📌📌📌📌📌📌📌📌📌📌📌
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 This pipeline benefits multiple technical and non-technical personas within the organization:
 
@@ -32,6 +35,8 @@ This pipeline benefits multiple technical and non-technical personas within the 
 
 
 📚 1.4 Supported Use Cases 📚📚📚📚📚📚📚📚📚📚
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 ✅ Example Use Cases Fully Supported:
 
@@ -44,6 +49,8 @@ This pipeline benefits multiple technical and non-technical personas within the 
 
 
 🧬 1.5 Alignment with Platform Philosophy 🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 This pipeline is not just a chat interface, but an intelligent assistant embedded into the compliance lifecycle, enabling:
 
@@ -54,6 +61,8 @@ This pipeline is not just a chat interface, but an intelligent assistant embedde
 
 
 🏗️ 1.6 Strategic Differentiators 🏗️🏗️🏗️🏗️🏗️🏗️🏗️🏗️🏗️🏗️🏗️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 
 | Advantage                      | Description                                                                            |
@@ -71,6 +80,8 @@ The Pipeline brings proactive compliance intelligence to life. It transforms rig
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🪐 2.1 High-Level Architecture Diagram  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 [ React Chat UI ]
       |
@@ -108,6 +119,7 @@ At its core, this Pipeline orchestrates real-time human-AI interactions, routing
             🔹 🎛️ Client Renderer (React): UI layer with token-by-token rendering, loading indicators, retry logic, and chat memory visualizer.
 
 🧬 2.2 Chat & Intelligent Assistance Pipeline - UML Diagram  🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This diagram captures the end-to-end message flow for a user query in your LLM-powered chat system, detailing real-time semantic reasoning, token streaming, and optional compliance knowledge search.
 
@@ -116,6 +128,8 @@ This diagram captures the end-to-end message flow for a user query in your LLM-p
 
 
 🎯 2.3 Chat & Intelligent Assistance Pipeline - Component Diagram  🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 This illustrates the entire architecture of our LLM-powered chat system, showing how the frontend, backend services, and intelligence layer work together to deliver real-time, semantically enriched responses, including compliance knowledge lookups.
 
@@ -123,6 +137,8 @@ This illustrates the entire architecture of our LLM-powered chat system, showing
 
 
 ⚡ 2.4  Chat & Intelligent Assistance Pipeline - Deployment Diagram  ⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 This diagram outlines how components are deployed and interact across client, frontend server, backend server, and external APIs in your real-time LLM-powered chat system. It shows:
 
@@ -137,6 +153,8 @@ This diagram outlines how components are deployed and interact across client, fr
 
 
 ✨ 2.5 Components Breakdown ✨✨✨✨✨✨✨✨✨✨✨✨
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 Each component is modular, pluggable, and clearly delineated:
 
@@ -150,6 +168,8 @@ Each component is modular, pluggable, and clearly delineated:
 | **Session Engine**    | Stores multi-turn conversation data, response cache, and follow-up query references.                        |
 
 🔁 2.6 State Management Strategy 🔁🔁🔁🔁🔁🔁🔁🔁🔁🔁
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 This pipeline requires advanced client-side and server-side state synchronization:
 
@@ -162,6 +182,8 @@ This pipeline requires advanced client-side and server-side state synchronizatio
 
 
 🧬 2.7 WebSocket & Streaming Mechanics 🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 This real-time pipeline uses WebSockets for ultra-low-latency interaction. Below is a simplified flow of a message session:
 
@@ -188,6 +210,8 @@ This real-time pipeline uses WebSockets for ultra-low-latency interaction. Below
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ⚙️ 3.1 Prerequisites ⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️⚙️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 | Requirement         | Version/Details                                 |
 | ------------------- | ----------------------------------------------- |
@@ -223,6 +247,8 @@ Create a .env file in both your frontend and backend root directories to securel
 
 
 🚀 3.2 Launching Locally 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 1️⃣ 🖥️ Backend Setup (FastAPI + WebSocket)
 
@@ -254,6 +280,8 @@ Create a .env file in both your frontend and backend root directories to securel
 
 
 🚦 3.3 Checklist  🚦🚦🚦🚦🚦🚦🚦🚦🚦🚦
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 | ✅ Step                  | Tool/Path                              | Status |
 | ----------------------- | -------------------------------------- | ------ |
@@ -269,6 +297,8 @@ Create a .env file in both your frontend and backend root directories to securel
 This provides a walkthrough to help users interact seamlessly with the AI assistant interface, interpret responses, and navigate advanced conversation flows.
 
 🟢 4.1 Sending Queries 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 🎯 This is where the user engages the assistant with prompts, questions, or remediation requests.
 
@@ -295,6 +325,8 @@ This provides a walkthrough to help users interact seamlessly with the AI assist
 
 
 💡 4.2 Viewing AI Responses 💡💡💡💡💡💡💡💡💡💡💡
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 🧠 The LLM responds in a structured and intuitive manner, depending on the context of the query.
 
@@ -308,6 +340,8 @@ This provides a walkthrough to help users interact seamlessly with the AI assist
 
 
 🧪 4.3 Chat Modes 🧪🧪🧪🧪🧪🧪🧪🧪🧪🧪
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 | Mode Name          | Behavior                              |
 | ------------------ | ------------------------------------- |
@@ -320,6 +354,8 @@ Users can switch modes via the ⚙️ settings icon or chat slash commands: /mod
 
 
 🧼 4.4 Resetting the Chat 🧼🧼🧼🧼🧼🧼🧼🧼🧼🧼
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
       Use this if the assistant begins misinterpreting your intent:
 
@@ -337,6 +373,8 @@ Users can switch modes via the ⚙️ settings icon or chat slash commands: /mod
 Guide to identifying, isolating, and resolving common issues across UI, backend, streaming events, and assistant misbehavior.
 
 🔁 5.1 Streaming Response Failures 🔁🔁🔁🔁🔁🔁🔁🔁🔁🔁
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 ❌ Issue: The AI stops mid-response or doesn’t reply at all.
 
@@ -366,6 +404,8 @@ If service returns non-200, restart backend with:
 
 
 🔌 5.2 Disconnected Sessions 🔌🔌🔌🔌🔌🔌🔌🔌🔌🔌🔌🔌
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
       ❌ Issue: Mid-chat, the assistant “forgets” previous messages or returns contextless answers.
 
@@ -389,6 +429,8 @@ If service returns non-200, restart backend with:
 
 
 🧩 5.3 Message Parsing Errors 🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩🧩
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
       ❌ Issue: Assistant replies with [object Object], garbled markdown, or broken JSON.
 
@@ -419,6 +461,8 @@ If service returns non-200, restart backend with:
                                           }
 
 🌐 5.4 WebSocket Initialization Errors 🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
       ❌ Issue: Chat doesn't load or shows “Unable to establish connection.”
 
@@ -454,6 +498,8 @@ If service returns non-200, restart backend with:
 The Chat & Intelligent Assistance Pipeline, designed to preempt user confusion and provide sharp, professional-level answers. It is tailored uniquely to this pipeline without repeating prior pipeline FAQs.
 
 💡 6.1 General FAQs 💡💡💡💡💡💡💡💡💡💡💡
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 🔹Q1. What AI model powers the assistant in this pipeline?
 
