@@ -138,7 +138,7 @@ This diagram captures the end-to-end message flow for a user query in your LLM-p
 ![Chat & Intelligent Assistance Pipeline UML Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/timmy/docs/development/documentation/frontend-docs/intelligence_assistance_%20pipeline/diagrams/Chat%20&%20Intelligent%20Assistance%20Pipeline%20%E2%80%93%20UML%20Diagram.png)
 
 
-🎯 2.3 Chat & Intelligent Assistance Pipeline - Component Diagram  🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯
+🎯 2.3 Chat & Intelligent Assistance Pipeline - Component Diagram  🎯🎯🎯🎯🎯🎯🎯
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -147,7 +147,7 @@ This illustrates the entire architecture of our LLM-powered chat system, showing
 ![Chat & Intelligent Assistance Pipeline Component Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/timmy/docs/development/documentation/frontend-docs/intelligence_assistance_%20pipeline/diagrams/Chat%20&%20Intelligent%20Assistance%20Pipeline%20-%20Component%20Diagram.png)
 
 
-⚡ 2.4  Chat & Intelligent Assistance Pipeline - Deployment Diagram  ⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡
+⚡2.4  Chat & Intelligent Assistance Pipeline - Deployment Diagram ⚡⚡⚡
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -207,7 +207,7 @@ Below is a simplified flow of a message session:
                         Server receives and:
                               →     Queries Qdrant for vector matches
                               →     Builds prompt with contextual knowledge
-                              → S   ends to LLM
+                              →     Sends to LLM
                                     ↓
                         LLM streams response token-by-token
                                     ↓
@@ -313,7 +313,7 @@ This provides a walkthrough to help users interact seamlessly with the AI assist
 
                   ✅ “How compliant is this infrastructure with HIPAA?”
 
-      Click Send
+            🔹Click Send
 
                   ✅ A loading spinner appears and the system begins streaming the AI’s response in real-time.
 
@@ -324,17 +324,17 @@ This provides a walkthrough to help users interact seamlessly with the AI assist
 
 🧠 The LLM responds in a structured and intuitive manner, depending on the context of the query.
 
-📌 Response Features:
+      📌 Response Features:
 
-            ✅ Streamed Line-by-Line Output – Makes large answers more digestible.
+                  ✅ Streamed Line-by-Line Output – Makes large answers more digestible.
 
-            📄 Markdown Formatting Support – Tables, lists, and code blocks are styled cleanly.
+                  📄 Markdown Formatting Support – Tables, lists, and code blocks are styled cleanly.
 
-            🧩 Clickable Remediation Suggestions – If the assistant returns compliance actions, they are embedded as clickable buttons.
+                  🧩 Clickable Remediation Suggestions – If the assistant returns compliance actions, they are embedded as clickable buttons.
 
-            🕓 Timestamped Entries – Each message shows its generation time.
+                  🕓 Timestamped Entries – Each message shows its generation time.
 
-            🧠 Memory Awareness – The assistant references earlier parts of the conversation.
+                  🧠 Memory Awareness – The assistant references earlier parts of the conversation.
 
 
 🧪 4.3 Chat Modes 🧪🧪🧪🧪🧪🧪🧪🧪🧪🧪
@@ -357,15 +357,15 @@ Users can switch modes via the ⚙️ settings icon.
 
       Use this if the assistant begins misinterpreting your intent:
 
-                  🔹Click Reset Conversation at the top right
+                        🔹Click Reset Conversation at the top right
 
-                  🔹Confirm prompt: “Clear session and start fresh?”
+                        🔹Confirm prompt: “Clear session and start fresh?”
 
-      ✅ Resets chat context.
+            ✅ Resets chat context.
 
-      ✅ Closes open remediation guides.
+            ✅ Closes open remediation guides.
 
-      ✅ Flushes AI memory of current session.
+            ✅ Flushes AI memory of current session.
 
 
 🛠️ 5: Troubleshooting Guide --- Chat & Intelligent Assistance Pipeline 
@@ -422,7 +422,7 @@ Guide to identifying, isolating, and resolving common issues across UI, backend,
                         🔹Memory context limit reached and flushed.
 
 
-✅ Resolution:
+      ✅ Resolution:
 
                               🔹Verify sessionId is being passed with every message.
 
@@ -432,7 +432,7 @@ Guide to identifying, isolating, and resolving common issues across UI, backend,
 
                   SESSION_TTL_MINUTES=60
 
-🔁 Temporary Workaround:
+      🔁 Temporary Workaround:
 
                               🔹Click 🔄 "Reset Chat" to reinitialize context manually.
 
@@ -450,59 +450,53 @@ Guide to identifying, isolating, and resolving common issues across UI, backend,
                         🔹Frontend markdown renderer failed.
 
                         🔹Line break or syntax corruption during streaming.
-                        
 
-✅ Resolution:
 
-                  🔹Check response payload via Dev Tools:
+      ✅ Resolution:
 
-                        { "event": "message", "data": "{ 'text': '...' }" }
+                        🔹Check response payload via Dev Tools:
 
-      🔹Escape special characters in LLM prompts
-      🔹Sanitize server-side response before emitting:
+                              { "event": "message", "data": "{ 'text': '...' }" }
 
-                  const cleanText = sanitize(rawLLMText);
+                  🔹Escape special characters in LLM prompts.
 
-🛡️ Prevention:
+                  🔹Sanitize server-side response before emitting:
 
-            🔹Always wrap streaming LLM responses with:
+                                          const cleanText = sanitize(rawLLMText);
 
-                                          {
-                                          "type": "llm_response",
-                                          "content": "<escaped_markdown>"
-                                          }
+      🛡️ Prevention:
+
+                  🔹Always wrap streaming LLM responses with:
+
+                                                            {
+                                                            "type": "llm_response",
+                                                            "content": "<escaped_markdown>"
+                                                            }
 
 🌐 5.4 WebSocket Initialization Errors 🌐🌐🌐🌐🌐🌐🌐🌐🌐🌐
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+❌ Issue: Chat doesn't load or shows “Unable to establish connection.”
 
-      ❌ Issue: Chat doesn't load or shows “Unable to establish connection.”
+      📍 Possible Causes:
 
-            📍 Possible Causes:
+                              🔹Port conflict (e.g., 5055 already in use).
 
-                              🔹Port conflict (e.g., 5055 already in use)
-                              🔹Improper client-server protocol match (ws:// vs wss://)
+                              🔹Improper client-server protocol match (ws:// vs wss://).
+
                               🔹Proxy/firewall blocking WebSocket traffic
 
-✅ Resolution:
+      ✅ Resolution:
 
-                  🔹Confirm correct port is exposed:
+                              🔹Confirm correct port is exposed:
 
-                              lsof -i :5055
+                                                      lsof -i :5055
 
-✅ In .env:
+      ✅ In .env:
 
-                        WS_PROTOCOL=ws
-                        WS_PORT=5055
+                              🔹WS_PROTOCOL=ws
+                              🔹WS_PORT=5055
 
-✅ On NGINX reverse proxy:
-
-                        location /ws/ {
-                        proxy_pass http://localhost:5055;
-                        proxy_http_version 1.1;
-                        proxy_set_header Upgrade $http_upgrade;
-                        proxy_set_header Connection "Upgrade";
-                        }
 
 ❓ 6: Frequently Asked Questions (FAQs) --  Chat & Intelligent Assistance Pipeline 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -525,13 +519,13 @@ The Chat & Intelligent Assistance Pipeline, designed to preempt user confusion a
 
 ✅    Session context is maintained via:
 
-                                    🔹 A unique sessionId per user, stored in memory or Redis
+                                    🔹 A unique sessionId per user, stored in memory.
 
-                                    🔹 Message history streamed and appended with each turn
+                                    🔹 Message history streamed and appended with each turn.
 
-                                    🔹 Context size trimmed using token window limits (e.g., 4096 tokens)
+                                    🔹 Context size trimmed using token window limits (e.g., 4096 tokens).
 
-                                    🔹 When session expires, a new chat is auto-initialized
+                                    🔹 When session expires, a new chat is auto-initialized.
 
 🔹Q3. Does this chat support multiple simultaneous users?
 
@@ -541,7 +535,6 @@ The Chat & Intelligent Assistance Pipeline, designed to preempt user confusion a
 
                                     🔹 Session-based routing for message isolation
 
-                                    🔹 Optional Redis-based shared memory for scaling horizontally
 
 🔹Q4. Can I use this chat assistant to answer compliance-related questions?
 
@@ -557,47 +550,46 @@ The Chat & Intelligent Assistance Pipeline, designed to preempt user confusion a
 
 ✅    In such cases:
 
-                  🔹 Check WebSocket connection health.
+                        🔹 Check WebSocket connection health.
 
-                  🔹 Retry the request or reinitialize the session.
+                        🔹 Retry the request or reinitialize the session.
 
-                  🔹 Confirm that the LLM backend is not rate-limited or overloaded.
+                        🔹 Confirm that the LLM backend is not rate-limited or overloaded.
 
-                  🔹 Refer to the Troubleshooting Section 5 for precise diagnostics.
 
 🔹Q6. Can the assistant perform multi-step reasoning or follow-up conversations?
 
 ✅    Yes. This pipeline supports multi-turn dialogue with memory for:
 
-                                                            🧠 Context preservation
+                                                                  🧠 Context preservation
 
-                                                            📚 Response threading
+                                                                  📚 Response threading
 
-                                                            🔁 Clarifying follow-ups
+                                                                  🔁 Clarifying follow-ups
 
 🔹Q7. Is the assistant safe to use in production with sensitive data?
 
 ✅    Out of the box, no. You must secure your deployment by:
 
-                              🔹 Enabling TLS on WebSocket endpoints
+                              🔹 Enabling TLS on WebSocket endpoints.
 
-                              🔹 Removing personally identifiable information (PII) before processing
+                              🔹 Removing personally identifiable information (PII) before processing.
 
-                              🔹 Running the LLM locally or through vetted cloud APIs with audit controls
+                              🔹 Running the LLM locally or through vetted cloud APIs with audit controls.
 
-                              🔹 Adding authentication middleware on chat endpoints
+                              🔹 Adding authentication middleware on chat endpoints.
 
 🔹Q8. Can I switch to a different LLM provider without changing the frontend?
 
 ✅    Yes. The frontend communicates through a standard WebSocket event schema. As long as the backend adapter adheres to the format, you can plug in:
 
-                                    🔹 OpenAI GPT
+                                                🔹 OpenAI GPT
 
-                                    🔹 Google Gemini
+                                                🔹 Google Gemini
 
-                                    🔹 Open-source models via Ollama or LangChain
+                                                🔹 Open-source models via Ollama or LangChain
 
 
 🔹Q9. How do I reset the conversation manually?
 
-✅    Click the ♻️ Reset Chat button in the UI, or emit this payload. This clears the session memory, re-initializes the system prompt, and returns to a clean context state.
+✅    Click the ♻️ Reset Chat button in the UI. This clears the session memory, re-initializes the system prompt, and returns to a clean context state.
