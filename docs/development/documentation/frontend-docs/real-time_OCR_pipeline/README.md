@@ -15,7 +15,7 @@ The pipeline empowers users to upload documents and track their OCR processing l
 
                 🖥️ Smooth UX: Visual indicators maintain user engagement during heavy OCR tasks.
 
-🧩 1.2 Audience and Scope
+🧩 1.2 Audience and Scope 🧩🧩🧩🧩🧩🧩🧩🧩
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This documentation is crafted for:
@@ -107,7 +107,7 @@ This diagram shows the sequence of interactions between the user, frontend, back
 ![Real-Time OCR & Progress Reporting Pipeline UML Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/375795006b313fbb753cf84939354551cfee49e3/docs/development/documentation/frontend-docs/real-time_OCR_pipeline/diagrams/Real-Time%20OCR%20&%20Progress%20Reporting%20Pipeline%20-%20UML%20Diagram.png)
 
 
-🎯 2.3 Real-Time OCR & Progress Reporting Pipeline  - Component Diagram  🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯
+🎯 2.3 Real-Time OCR & Progress Reporting Pipeline  - Component Diagram 🎯🎯🎯🎯
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This diagram shows how our pipeline processes document/image uploads with OCR, enriches them optionally with LLM analysis, stores extracted data, and streams real-time progress and status updates to users.
@@ -115,7 +115,7 @@ This diagram shows how our pipeline processes document/image uploads with OCR, e
 ![Real-Time OCR & Progress Reporting Pipeline Component Diagram](https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA/blob/375795006b313fbb753cf84939354551cfee49e3/docs/development/documentation/frontend-docs/real-time_OCR_pipeline/diagrams/Real-Time%20OCR%20&%20Progress%20Reporting%20Pipeline%20--%20component.png)
 
 
-⚡ 2.4 Real-Time OCR & Progress Reporting Pipeline - Deployment Diagram  ⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡
+⚡ 2.4 Real-Time OCR & Progress Reporting Pipeline - Deployment Diagram ⚡⚡
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This diagram illustrates how our OCR pipeline is physically deployed across frontend, backend, and WebSocket servers, emphasizing live progress updates and vector/metadata storage in your real-time OCR processing system.
@@ -141,7 +141,7 @@ Before installing the Real-Time OCR & Progress Reporting Pipeline, ensure the fo
 
 ✅ Recommended: Local GPU acceleration if using advanced OCR models 
 
-🐳 3.1.1 Docker & Docker Compose Setup   🐳🐳🐳🐳🐳🐳🐳🐳🐳🐳 
+🐳 3.1.1 Docker & Docker Compose Setup 
 
 1️⃣ Verify Docker Installation:
 
@@ -154,7 +154,7 @@ Before installing the Real-Time OCR & Progress Reporting Pipeline, ensure the fo
                     cd ad-adastra-cloud-compliance
 
 
-🌍  3.1.2 Environment Variables 🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍
+🌍  3.1.2 Environment Variables 
 
 1️⃣ Navigate to:
 
@@ -170,7 +170,7 @@ Before installing the Real-Time OCR & Progress Reporting Pipeline, ensure the fo
 🛠️ 3.2 Step-by-Step Installation Guide  🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️🛠️
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-🐳 3.2.1 Building Docker Images  🐳🐳🐳🐳🐳🐳🐳🐳🐳🐳🐳🐳
+🐳 3.2.1 Building Docker Images  
 
 In the root directory:
                     docker-compose build frontend
@@ -182,7 +182,7 @@ This will:
 
                     ✅ Prepare for serving via next start in standalone mode
 
-🌿 3.2.2 Launching the Real-Time OCR Pipeline 🌿🌿🌿🌿🌿🌿🌿🌿🌿🌿🌿
+🌿 3.2.2 Launching the Real-Time OCR Pipeline 
 
 Start the pipeline with:
 
@@ -229,7 +229,7 @@ You should see:
 🪐 4.1 Getting Started 🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-🚀 4.1.1 Navigating the User Interface (Frontend Integration) 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
+🚀 4.1.1 Navigating the User Interface (Frontend Integration) 
 
 Access the pipeline interface via http://localhost:3000 or your production URL.
 
@@ -243,7 +243,7 @@ The clean, distraction-free dashboard displays:
 
 Users can drag and drop documents or select files for OCR ingestion.
 
-4.1.2 📂 How to Upload Compliance Documents  📂📂📂📂📂📂📂📂📂📂
+4.1.2 📂 How to Upload Compliance Documents 
 
             1️⃣ Click on the Upload Document button or drag your PDF into the upload area.
 
