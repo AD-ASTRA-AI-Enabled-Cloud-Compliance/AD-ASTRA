@@ -4,7 +4,7 @@
 🪐 1.1 Purpose and Benefits  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Pipeline acts as the human-AI interaction gateway for the entire Compliance System. It delivers a dynamic, context-aware communication layer powered by LLMs (Large Language Models) and integrated vector-based semantic search, enabling real-time user support, regulation explanation etc. Whether end-users are seeking clarification on a compliance rule, or engineers are troubleshooting infrastructure misconfigurations, this pipeline translates natural language questions into structured insight—with traceability to underlying policies, historical decisions, and real-time environment state.
+Pipeline acts as the human-AI interaction gateway for the entire Compliance System. It delivers a dynamic, context-aware communication layer powered by LLMs (Large Language Models) and integrated vector-based semantic search, enabling real-time user support, regulation explanation etc. Whether end-users are seeking clarification on a compliance rule, or engineers are troubleshooting infrastructure misconfigurations, this pipeline translates natural language questions into structured insight, with traceability to underlying policies, historical decisions, and real-time environment state.
 
 ✨ 1.2 Core Features at a Glance ✨✨✨✨✨✨✨✨✨✨
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -12,8 +12,8 @@ Pipeline acts as the human-AI interaction gateway for the entire Compliance Syst
 | Feature                          | Description                                                                                                     |
 | -------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | 🗣️ **Natural Language Chat**    | Accepts user prompts, follow-ups, and context-rich queries via a live chat interface.                           |
-| 🧠 **LLM-Driven Understanding**  | Translates chat into actionable queries using models like **Gemma**, **Mixtral**, or other pluggable AI agents. |
-| 🔎 **Semantic Rule Search**      | Integrates with **Qdrant Vector DB** for rule/embedding lookup and similarity matching.                         |
+| 🧠 **LLM-Driven Understanding**  | Translates chat into actionable queries using models like **Gemma 2b**, **Gemma 7b**, **Gemma 13b** agents. |
+| 🔎 **Semantic Rule Search**      | Integrates with **Qdrant DB** for rule/embedding lookup and similarity matching.                         |
 | 📜 **Multi-Turn Dialogue State** | Maintains memory across multi-turn user conversations, tracking compliance context per session.                 |
 | 🚦 **Live Session Feedback**     | Provides streamed, token-by-token responses using **WebSocket connections** for interactive AI assistance.      |
 | 🛡️ **Role-Based Intelligence**  | Adjusts LLM responses based on user roles (DevOps, Auditors, PMs, etc.), aligning tone and content to audience. |
@@ -24,7 +24,7 @@ Pipeline acts as the human-AI interaction gateway for the entire Compliance Syst
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-This pipeline benefits multiple technical and non-technical personas within the organization:
+This pipeline benefits multiple technical and non-technical professionals within the organization:
 
 | Persona                    | Role                                                                                           |
 | -------------------------- | ---------------------------------------------------------------------------------------------- |
@@ -37,27 +37,33 @@ This pipeline benefits multiple technical and non-technical personas within the 
 📚 1.4 Supported Use Cases 📚📚📚📚📚📚📚📚📚📚
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
-✅ Example Use Cases Fully Supported:
+✅ Example of various Use Cases fully Supported:
 
                             🔍 “What PCI DSS rules am I currently violating on my S3 buckets?”
+
                             🔄 “How do I remediate NIST CSF PR.AC-1 violations automatically?”
+
                             📖 “Explain HIPAA 164.308(a)(1)(ii)(A) in simple terms.”
+
                             🧭 “What’s the difference between security group and NACL violations?”
+
                             🧩 “Suggest an IAM policy update for principle of least privilege for function XYZ.”
+
                             🎯 “Which rules most frequently triggered failures in the past 3 months?”
 
 
 🧬 1.5 Alignment with Platform Philosophy 🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+Pipeline is not just a chat interface, but an intelligent assistant embedded into the compliance lifecycle, enabling:
 
-This pipeline is not just a chat interface, but an intelligent assistant embedded into the compliance lifecycle, enabling:
+                                          🔄 Conversational compliance debugging.
 
-                                                        🔄 Conversational compliance debugging
-                                                        🚀 Accelerated onboarding for non-technical users
-                                                        🧘 Reduction of knowledge silos across teams
-                                                        🔐 Faster mitigation through guided, explainable AI
+                                          🚀 Accelerated onboarding for non-technical users.
+
+                                          🧘 Reduction of knowledge silos across teams.
+
+                                          🔐 Faster mitigation through guided, explainable AI
 
 
 🏗️ 1.6 Strategic Differentiators 🏗️🏗️🏗️🏗️🏗️🏗️🏗️🏗️🏗️🏗️🏗️
@@ -68,12 +74,12 @@ This pipeline is not just a chat interface, but an intelligent assistant embedde
 | Advantage                      | Description                                                                            |
 | ------------------------------ | -------------------------------------------------------------------------------------- |
 | 💡 Contextual Understanding    | Learns and adapts to ongoing compliance evaluations and remediations.                  |
-| 🔌 Modular AI Support          | Pluggable architecture for using open-source or closed LLMs (Gemma, OpenRouter, etc.). |
+| 🔌 Modular AI Support          | Pluggable architecture for using open-soure LLMs etc |
 | 🔒 Secure Session Isolation    | Per-user chat sandboxing for tenant and session-level privacy.                         |
-| 📡 Real-Time Interactivity     | Full-duplex WebSocket implementation enables low-latency, token-streamed replies.      |
+| 📡 Real-Time Interactivity     | WebSocket implementation enables low-latency, token-streamed replies.      |
 | 🧠 Embedded Search + Reasoning | Combines vector database retrieval with reasoning for fact-based answers.              |
 
-The Pipeline brings proactive compliance intelligence to life. It transforms rigid documentation and cryptic rule sets into an interactive, AI-guided experience. It is the voice of the compliance platform—context-aware, infrastructure-informed, and user-personalized.
+Pipeline brings compliance intelligence to life. It transforms rigid documentation and rule sets into an interactive, AI-guided experience. It is the voice of the compliance platform—context-aware, infrastructure-informed, and user-personalized.
 
 
 🏗️ 2. System Architecture
@@ -112,10 +118,15 @@ At its core, this Pipeline orchestrates real-time human-AI interactions, routing
 📡 Key Components:
 
             🔹 ✉️ WebSocket Gateway: Bi-directional, low-latency channel for streaming user queries and AI responses.
+
             🔹 🧠 Prompt Engine & LLM Adapter: Dynamically constructs prompts based on user roles, compliance context, and query type.
+
             🔹 📚 Embedding Retrieval Layer: Matches user input against semantically indexed compliance rules stored in Qdrant Vector DB.
-            🔹 ⚙️ LLM Executor: Forwards enriched prompt to a selected LLM (Gemma, Mixtral, Claude, etc.) and streams output.
+
+            🔹 ⚙️ LLM Executor: Forwards enriched prompt to a Gemma and streams output.
+
             🔹 🧾 Chat Session Store: Maintains conversation history, states, and contextually linked results for multi-turn continuity.
+
             🔹 🎛️ Client Renderer (React): UI layer with token-by-token rendering, loading indicators, retry logic, and chat memory visualizer.
 
 🧬 2.2 Chat & Intelligent Assistance Pipeline - UML Diagram  🧬🧬🧬🧬🧬🧬🧬🧬🧬🧬
@@ -164,7 +175,7 @@ Each component is modular, pluggable, and clearly delineated:
 | **WebSocket Gateway** | Lightweight gateway for live message exchange; emits tokens as they are generated by the LLM.               |
 | **Prompt Builder**    | Enriches user input with session metadata, past messages, compliance rule matches, and user role templates. |
 | **Vector DB Search**  | Sends embedding of user query to Qdrant to fetch top `k` semantically similar compliance entries.           |
-| **LLM Adapter**       | Handles model-specific input/output transformations, abstracts provider complexity (Mixtral, Claude, etc.). |
+| **LLM Adapter**       | Handles model-specific input/output transformations, abstracts provider complexity (Gemma). |
 | **Session Engine**    | Stores multi-turn conversation data, response cache, and follow-up query references.                        |
 
 🔁 2.6 State Management Strategy 🔁🔁🔁🔁🔁🔁🔁🔁🔁🔁
@@ -176,7 +187,7 @@ This pipeline requires advanced client-side and server-side state synchronizatio
 | 🧠 State Domain      | 📌 Strategy                                                                                                |
 | -------------------- | ---------------------------------------------------------------------------------------------------------- |
 | **Chat Memory**      | Maintained in `Redux` + synchronized with a local `IndexedDB` fallback for resiliency.                     |
-| **Streaming Buffer** | Token accumulation streamed via WebSocket → stored in local buffer → flushed into UI with debounce.        |
+| **Streaming Buffer** | Token accumulation streamed via WebSocket → stored in local buffer → flushed into UI.        |
 | **Session Context**  | Session ID and user role passed with every request; used to personalize prompts and filter vector matches. |
 | **Error State**      | Resolved using `useReducer` pattern with retry strategies, fallbacks, and real-time feedback.              |
 
@@ -185,25 +196,27 @@ This pipeline requires advanced client-side and server-side state synchronizatio
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-This real-time pipeline uses WebSockets for ultra-low-latency interaction. Below is a simplified flow of a message session:
+This real-time pipeline uses WebSockets for ultra-low-latency interaction. 
 
-            Client connects via wss://chat-api/ws
-                ↓
-            Client sends {"prompt": "What is NIST AC-2?", "sessionId": "abc123"}
-                ↓
-            Server receives and:
-            → Queries Qdrant for vector matches
-            → Builds prompt with contextual knowledge
-            → Sends to LLM
-                ↓
-            LLM streams response token-by-token
-                ↓
-            Server emits {"token": "AC-2", "stream": true}
-                    ... {"token": " is about account control", "stream": true}
-                ↓
-            Client UI renders tokens progressively
-                ↓
-            Final message emitted with {"done": true}
+Below is a simplified flow of a message session:
+
+                        Client connects via wss://chat-api/ws
+                                    ↓
+                        Client sends {"prompt": "What is NIST AC-2?", "sessionId": "abc123"}
+                                    ↓
+                        Server receives and:
+                              →     Queries Qdrant for vector matches
+                              →     Builds prompt with contextual knowledge
+                              → S   ends to LLM
+                                    ↓
+                        LLM streams response token-by-token
+                                    ↓
+                        Server emits {"token": "AC-2", "stream": true}
+                              ... {"token": " is about account control", "stream": true}
+                                    ↓
+                        Client UI renders tokens progressively
+                                    ↓
+                        Final message emitted with {"done": true}
 
 
 🌿 3 Installation and Setup
@@ -217,7 +230,7 @@ This real-time pipeline uses WebSockets for ultra-low-latency interaction. Below
 | ------------------- | ----------------------------------------------- |
 | 🐍 Python           | `>= 3.10`                                       |
 | 🧱 Node.js + npm    | `Node >= 18.x`, `npm >= 9.x`                    |
-| 🧪 OpenAI SDK       | `openai >= 1.x` or LLM-compatible API SDK       |
+| 🧪 OpenSource LLM   | `Gemma`                                         |
 | 🔌 WebSocket Server | Python `websockets`, Flask-SocketIO, or FastAPI |
 | 🌐 React Frontend   | `React >= 18.x` with Vite or Next.js            |
 | 🔐 Redis (optional) | For caching chat context (optional)             |
@@ -226,35 +239,15 @@ This real-time pipeline uses WebSockets for ultra-low-latency interaction. Below
 💡 Install system dependencies using your package manager (apt, brew, choco, etc.) before proceeding.
 
 
-🌍 3.1.2 Environment Variables 🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍🌍
-
-Create a .env file in both your frontend and backend root directories to securely manage configurations.
-
-📁 Backend .env
-
-                        OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxx
-                        LLM_PROVIDER=openai
-                        MODEL=gpt-4
-                        CHAT_CONTEXT_TTL=3600
-                        ENABLE_LOGGING=true
-                        ALLOWED_ORIGINS=http://localhost:3000
-
-📁 Frontend .env
-
-                        VITE_SOCKET_URL=ws://localhost:8000/ws
-                        VITE_API_BASE=http://localhost:8000/api
-                        VITE_MAX_HISTORY=6
-
-
 🚀 3.2 Launching Locally 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 1️⃣ 🖥️ Backend Setup (FastAPI + WebSocket)
 
-                              # Clone the repo and navigate to backend folder
-                              git clone https://github.com/your-org/cloud-compliance-suite.git
-                              cd backend/chat-assistance
+                              # Clone the repo and navigate to folder                             
+                              git clone https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA
+                              cd frontend/intelligence_assistance_pipeline
 
                               # Create a virtual environment
                               python -m venv venv
@@ -291,7 +284,7 @@ Create a .env file in both your frontend and backend root directories to securel
 | Chat Context Streaming  | Confirm streaming response visible     | 🟢     |
 
 
-🧭 4 User Guide – Remediation Pipeline
+🧭 4 User Guide – Chat & Intelligent Assistance Pipeline
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This provides a walkthrough to help users interact seamlessly with the AI assistant interface, interpret responses, and navigate advanced conversation flows.
@@ -304,24 +297,25 @@ This provides a walkthrough to help users interact seamlessly with the AI assist
 
 💬 Steps to Send a Query:
 
-1️⃣ Launch the App
+      1️⃣ Launch the App
 
-✅ Navigate to the web app at http://localhost:3000 or your deployed endpoint.
+            ✅ Navigate to the web app at http://localhost:3000 or your deployed endpoint.
 
-2️⃣ Locate Chat Input Field
+      2️⃣ Locate Chat Input Field
 
-✅ A clearly visible input field at the bottom of the chat window is designed for user text input.
+            ✅ A clearly visible input field at the bottom of the chat window is designed for user text input.
 
-3️⃣ Type the Prompt
+      3️⃣ Type the Prompt
 
-    Examples:
+            Examples:
 
-            ✅ “What are the remediation steps for Azure policy XYZ?”
+                  ✅ “What are the remediation steps for Azure policy XYZ?”
 
-            ✅ “How compliant is this infrastructure with HIPAA?”
+                  ✅ “How compliant is this infrastructure with HIPAA?”
 
-      Press Enter or Click Send
-      A loading spinner appears and the system begins streaming the AI’s response in real-time.
+      Click Send
+
+                  ✅ A loading spinner appears and the system begins streaming the AI’s response in real-time.
 
 
 💡 4.2 Viewing AI Responses 💡💡💡💡💡💡💡💡💡💡💡
@@ -333,10 +327,14 @@ This provides a walkthrough to help users interact seamlessly with the AI assist
 📌 Response Features:
 
             ✅ Streamed Line-by-Line Output – Makes large answers more digestible.
+
             📄 Markdown Formatting Support – Tables, lists, and code blocks are styled cleanly.
-            🧩 Clickable Remediation Suggestions – If the assistant returns compliance actions, they are embedded as clickable buttons or collapsible sections.
+
+            🧩 Clickable Remediation Suggestions – If the assistant returns compliance actions, they are embedded as clickable buttons.
+
             🕓 Timestamped Entries – Each message shows its generation time.
-            🧠 Memory Awareness (if enabled) – The assistant references earlier parts of the conversation.
+
+            🧠 Memory Awareness – The assistant references earlier parts of the conversation.
 
 
 🧪 4.3 Chat Modes 🧪🧪🧪🧪🧪🧪🧪🧪🧪🧪
@@ -350,7 +348,7 @@ This provides a walkthrough to help users interact seamlessly with the AI assist
 | ⚡ **FastDraft**    | Minimal delay, less context awareness |
 | 🧩 **Remediation** | Focused on generating code + patches  |
 
-Users can switch modes via the ⚙️ settings icon or chat slash commands: /mode remediation.
+Users can switch modes via the ⚙️ settings icon.
 
 
 🧼 4.4 Resetting the Chat 🧼🧼🧼🧼🧼🧼🧼🧼🧼🧼
@@ -360,11 +358,14 @@ Users can switch modes via the ⚙️ settings icon or chat slash commands: /mod
       Use this if the assistant begins misinterpreting your intent:
 
                   🔹Click Reset Conversation at the top right
+
                   🔹Confirm prompt: “Clear session and start fresh?”
 
-      ✅ Resets chat context
-      ✅ Closes open remediation guides
-      ✅ Flushes AI memory of current session
+      ✅ Resets chat context.
+
+      ✅ Closes open remediation guides.
+
+      ✅ Flushes AI memory of current session.
 
 
 🛠️ 5: Troubleshooting Guide --- Chat & Intelligent Assistance Pipeline 
@@ -378,47 +379,55 @@ Guide to identifying, isolating, and resolving common issues across UI, backend,
 
 ❌ Issue: The AI stops mid-response or doesn’t reply at all.
 
-📍 Possible Causes:
+      📍 Possible Causes:
 
-                  🔹WebSocket connection is interrupted
+                        🔹WebSocket connection is interrupted
 
-                  🔹LLM backend rate-limited or down
+                        🔹LLM backend rate-limited or down
 
-                  🔹Payload malformed or context size exceeded
+                        🔹Payload malformed or context size exceeded
 
-✅ Resolution:
+      ✅ Resolution:
 
-            ✅ Check WebSocket status in the browser dev tools.
-            ✅ Restart the WebSocket client via UI or refresh the page.
-            ✅ Inspect backend logs for StreamingError, TokenLimitExceeded, or LLMTimeoutException.
-            ✅ Ensure API server and LLM service are running.
+                        ✅ Check WebSocket status in the browser dev tools.
+
+                        ✅ Restart the WebSocket client via UI or refresh the page.
+
+                        ✅ Inspect backend logs for StreamingError, TokenLimitExceeded, or LLMTimeoutException.
+
+                        ✅ Ensure API server and LLM service are running.
 
 
-🧪 Quick Diagnostic:
+      🧪 Quick Diagnostic:
 
-                        curl -N http://localhost:5055/health
+                              curl -N http://localhost:5055/health
 
-If service returns non-200, restart backend with:
+      If service returns non-200, restart backend with:
 
-                        docker restart chat-service
+                              docker restart chat-service
 
 
 🔌 5.2 Disconnected Sessions 🔌🔌🔌🔌🔌🔌🔌🔌🔌🔌🔌🔌
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-      ❌ Issue: Mid-chat, the assistant “forgets” previous messages or returns contextless answers.
+❌ Issue: Mid-chat, the assistant “forgets” previous messages or returns contextless answers.
 
-            📍 Possible Causes:
+      📍 Possible Causes:
 
-                              🔹Inactive session timed out (by Redis or in-memory cache)
-                              🔹sessionId not persisted across requests
-                              🔹Memory context limit reached and flushed
+                        🔹Inactive session timed out.
+
+                        🔹sessionId not persisted across requests.
+
+                        🔹Memory context limit reached and flushed.
+
 
 ✅ Resolution:
 
-                              🔹Verify sessionId is being passed with every message
-                              🔹Check Redis (if used) for key expiry (TTL)
+                              🔹Verify sessionId is being passed with every message.
+
+                              🔹Check Redis (if used) for key expiry (TTL).
+
                               🔹Configure session TTL via .env:
 
                   SESSION_TTL_MINUTES=60
@@ -432,13 +441,16 @@ If service returns non-200, restart backend with:
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-      ❌ Issue: Assistant replies with [object Object], garbled markdown, or broken JSON.
+❌ Issue: Assistant replies with [object Object], garbled markdown, or broken JSON.
 
-            📍 Possible Causes:
+      📍 Possible Causes:
 
-                              🔹Invalid JSON structure in LLM response
-                              🔹Frontend markdown renderer failed
-                              🔹Line break or syntax corruption during streaming
+                        🔹Invalid JSON structure in LLM response.
+
+                        🔹Frontend markdown renderer failed.
+
+                        🔹Line break or syntax corruption during streaming.
+                        
 
 ✅ Resolution:
 
