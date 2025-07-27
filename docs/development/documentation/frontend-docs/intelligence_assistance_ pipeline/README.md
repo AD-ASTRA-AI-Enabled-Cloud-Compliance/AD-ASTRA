@@ -3,9 +3,7 @@
 
 🪐 1.1 Purpose and Benefits  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
 
-The Chat & Intelligent Assistance Pipeline acts as the human-AI interaction gateway for the entire Cloud Compliance System. It delivers a dynamic, context-aware communication layer powered by LLMs (Large Language Models) and integrated vector-based semantic search, enabling real-time user support, regulation explanation, and infrastructure-aware Q&A.
-
-🔍 Whether end-users are seeking clarification on a compliance rule, or engineers are troubleshooting infrastructure misconfigurations, this pipeline translates natural language questions into structured insight—with traceability to underlying policies, historical decisions, and real-time environment state.
+Pipeline acts as the human-AI interaction gateway for the entire Compliance System. It delivers a dynamic, context-aware communication layer powered by LLMs (Large Language Models) and integrated vector-based semantic search, enabling real-time user support, regulation explanation etc. Whether end-users are seeking clarification on a compliance rule, or engineers are troubleshooting infrastructure misconfigurations, this pipeline translates natural language questions into structured insight—with traceability to underlying policies, historical decisions, and real-time environment state.
 
 ✨ 1.2 Core Features at a Glance ✨✨✨✨✨✨✨✨✨✨
 

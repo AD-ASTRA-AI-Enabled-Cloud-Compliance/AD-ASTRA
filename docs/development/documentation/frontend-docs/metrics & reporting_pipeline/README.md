@@ -16,6 +16,7 @@ This pipeline does not merely track data—it translates platform behavior into 
 🗃️ Exportable audit reports, customized analytics, and team activity logs.
 
 🪐 1.1 Purpose and Impacts  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 This pipeline plays a mission-critical role in operational transparency, enabling strategic oversight and continuous improvement. It empowers engineering, security, DevOps, and leadership teams with measurable proof of platform performance and policy alignment.
 
@@ -43,6 +44,7 @@ This pipeline plays a mission-critical role in operational transparency, enablin
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🧠 2.1 Compliance Intelligence Metrics 🧠🧠🧠🧠🧠🧠🧠🧠🧠🧠
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 These metrics track how well the infrastructure aligns with regulatory frameworks and how effectively it responds to policy changes.
 
@@ -56,6 +58,7 @@ These metrics track how well the infrastructure aligns with regulatory framework
 
 
 🧰 2.2 System Health & Pipeline Metrics 🧰🧰🧰🧰🧰🧰🧰🧰🧰🧰
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Ensures infrastructure-level awareness across every service, worker, and container.
 
@@ -69,6 +72,7 @@ Ensures infrastructure-level awareness across every service, worker, and contain
 
 
 👩‍💻 2.3 User Activity Metrics 👩‍💻👩‍💻👩‍💻👩‍💻👩‍💻👩‍💻👩‍💻👩‍💻👩‍💻👩‍💻
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Useful for behavioral insights, feature usage analytics, and adoption monitoring.
 
@@ -82,6 +86,7 @@ Useful for behavioral insights, feature usage analytics, and adoption monitoring
 
 
 🔄 2.4 Remediation & Lifecycle Metrics 🔄🔄🔄🔄🔄🔄🔄🔄🔄🔄
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 These metrics give full visibility into how remediations are suggested, applied, and monitored.
 
@@ -95,6 +100,7 @@ These metrics give full visibility into how remediations are suggested, applied,
 
 
 📦 2.5 Data Export & Reporting Metrics
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Tracks usage of reporting tools and data export activity for audit and analytics workflows.
 
@@ -119,6 +125,7 @@ Tracks usage of reporting tools and data export activity for audit and analytics
 🚀 Get your observability layer up and running in minutes—with powerful real-time dashboards and rich API telemetry for instant insights.
 
 📁 4.1 Prerequisites
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Before deploying the Metrics, Analytics, & Reporting Pipeline, ensure your system meets the following requirements:
 
@@ -138,6 +145,7 @@ Before deploying the Metrics, Analytics, & Reporting Pipeline, ensure your syste
 🎯 Command center for observability—an intuitive walkthrough of the live analytics interface, chart behaviors, and report generation features.
 
 🪐 5.1 Navigating the Metrics Dashboard 🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The main dashboard is structured using React + Tailwind, enhanced with Recharts components for responsive, interactive charting.
 
@@ -165,6 +173,7 @@ The main dashboard is structured using React + Tailwind, enhanced with Recharts 
 
 
 📈 5.2 Interpreting Graphs and Charts 📈📈📈📈📈📈📈📈📈📈
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 📊 Metric Types Visualized
@@ -178,6 +187,7 @@ The main dashboard is structured using React + Tailwind, enhanced with Recharts 
                         🔹Score Distribution → Categorizes gaps (critical, warning, info).
 
 🧾 5.3 Exporting Reports 🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 💾 Export Features:
 

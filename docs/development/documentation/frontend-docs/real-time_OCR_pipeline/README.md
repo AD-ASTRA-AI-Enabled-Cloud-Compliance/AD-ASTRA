@@ -2,6 +2,7 @@
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🪐 1.1 Purpose and Benefits  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The pipeline empowers users to upload documents and track their OCR processing live, fostering transparency, user trust, and immediate insight into document digitization workflows. Unlike typical “upload and wait” systems, this pipeline streams granular progress updates, showing real-time percentage completion, current processing stages, and instant failure alerts.
 
