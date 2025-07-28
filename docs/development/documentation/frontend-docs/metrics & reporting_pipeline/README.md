@@ -1,24 +1,20 @@
-🌟 Metrics, Analytics, & Reporting Pipeline
+🌟 Metrics & Reporting Pipeline
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-The Metrics, Analytics, & Reporting Pipeline is the core observability layer of the Cloud Security Compliance Platform. It transforms raw system activities and compliance signals into clear, actionable insights. Through dynamic dashboards, real-time monitoring, and visual reporting, this pipeline enables teams to make informed decisions, detect issues early, and demonstrate value to both technical and executive stakeholders.
+This Pipeline is the core observability layer of the Cloud Security Compliance Platform. It transforms raw system activities and compliance signals into clear, actionable insights. Through dynamic dashboards, real-time monitoring, and visual reporting, this pipeline enables teams to make informed decisions, detect issues early, and demonstrate value to both users. This pipeline does not merely track data; it translates platform behavior into clarity and confidence.
 
-This pipeline does not merely track data—it translates platform behavior into clarity and confidence.
+📦 Core Highlights:
 
-📦 Core Highlights: 📦📦📦📦📦📦📦📦📦📦
+            🔄 Live metrics ingestion from microservices and pipelines.
 
-🔄 Live metrics ingestion from microservices and pipelines.
+            📈 Real-time dashboards showing compliance trends, system health, remediation efficiency etc.
 
-📈 Real-time dashboards showing compliance trends, system health, remediation efficiency, and usage heatmaps.
+            🧠 AI-assisted anomaly detection modules for predicting drift and detecting bottlenecks.
 
-🧠 AI-assisted anomaly detection modules for predicting drift and detecting bottlenecks.
+            🗃️ Exportable audit reports, customized analytics, and team activity logs.
 
-🗃️ Exportable audit reports, customized analytics, and team activity logs.
-
-🪐 1.1 Purpose and Impacts  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
+🪐 1.1 Purpose and Audience  🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-This pipeline plays a mission-critical role in operational transparency, enabling strategic oversight and continuous improvement. It empowers engineering, security, DevOps, and leadership teams with measurable proof of platform performance and policy alignment.
 
 ✅ Key Purposes:
 
@@ -26,11 +22,10 @@ This pipeline plays a mission-critical role in operational transparency, enablin
 | ----------------------------------- | ------------------------------------------------------------------------- |
 | 🔧 System Health Metrics            | Detect slowdowns, memory pressure, and service disruptions.               |
 | 🧠 Compliance Drift Indicators      | Visualize divergence from policy baselines in real-time.                  |
-| 📉 Remediation Effectiveness Scores | Show before/after impact of automated remediation steps.                  |
+| 📉 Remediation Effectiveness Scores | Show before and after impact of automated remediation steps.                  |
 | 📊 User Engagement Metrics          | Track queries, usage volume, dashboard navigation, and session durations. |
 | 📂 Audit and Export Logs            | Provide compliance auditors and CISOs with evidentiary data on demand.    |
 
-💥 Impact Across the Organization 💥💥💥💥💥💥💥💥💥💥
 
 | 👤 Stakeholder        | 📌 Benefit                                                              |
 | --------------------- | ----------------------------------------------------------------------- |
@@ -45,8 +40,8 @@ This pipeline plays a mission-critical role in operational transparency, enablin
 
 🧠 2.1 Compliance Intelligence Metrics 🧠🧠🧠🧠🧠🧠🧠🧠🧠🧠
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 These metrics track how well the infrastructure aligns with regulatory frameworks and how effectively it responds to policy changes.
+
 
 | 📌 Metric Name              | 📝 Description                                                    |
 | --------------------------- | ----------------------------------------------------------------- |
@@ -99,7 +94,7 @@ These metrics give full visibility into how remediations are suggested, applied,
 | ❌ `rollback_events_count`   | Total rollbacks due to failed or undesired remediation outcomes.     |
 
 
-📦 2.5 Data Export & Reporting Metrics
+📦 2.5 Data Export & Reporting Metrics 📦📦📦📦📦📦📦📦📦📦
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Tracks usage of reporting tools and data export activity for audit and analytics workflows.
@@ -122,9 +117,7 @@ Tracks usage of reporting tools and data export activity for audit and analytics
 ⚙️ 4. Installation & Configuration
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-🚀 Get your observability layer up and running in minutes—with powerful real-time dashboards and rich API telemetry for instant insights.
-
-📁 4.1 Prerequisites
+📁 4.1 Prerequisites 📁📁📁📁📁📁📁📁📁📁📁
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Before deploying the Metrics, Analytics, & Reporting Pipeline, ensure your system meets the following requirements:
@@ -134,7 +127,6 @@ Before deploying the Metrics, Analytics, & Reporting Pipeline, ensure your syste
 | 🐍 Python           | `>= 3.10` — Required for the dashboard backend services (FastAPI or Flask-based)        |
 | 🐳 Docker + Compose | For containerized deployment of services |
 | 🧪 Node.js          | `>= 18.x` — Required for dashboard frontend build with Vite + Tailwind                  |
-| 🧬 PostgreSQL       | Installed locally or containerized as TimescaleDB for storing time-series metrics       |
 | 🕵️‍♂️ Git          | To clone repositories and manage infrastructure-as-code setup                           |
 | 🔐 API Tokens       | Required if integrating with third-party APIs (e.g., OpenAI, Elastic, Google Charts)    |
 
@@ -142,22 +134,22 @@ Before deploying the Metrics, Analytics, & Reporting Pipeline, ensure your syste
 🧭 5 User Guide – Metrics, Analytics, & Reporting Pipeline
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-🎯 Command center for observability—an intuitive walkthrough of the live analytics interface, chart behaviors, and report generation features.
+🎯 Command center for observability, an intuitive walkthrough of the live analytics interface, chart behaviors, and report generation features.
 
 🪐 5.1 Navigating the Metrics Dashboard 🪐🪐🪐🪐🪐🪐🪐🪐🪐🪐
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The main dashboard is structured using React + Tailwind, enhanced with Recharts components for responsive, interactive charting.
 
-✅ Top Navigation Tabs:
+✅ Navigation Tabs:
 
                   🔹Overview: Shows total compliance rate, active projects, alerts.
 
                   🔹Trend Analysis: Visualizes compliance drift over time.
 
-                  🔹Module Drilldown: Enables filtering by specific pipeline (OCR, Chat, Evaluation, Ingestion).
+                  🔹Module Drilldown: Enables filtering by specific pipeline.
 
-🔹 Sidebar Filters:
+✅ Sidebar Filters:
 
                   🔹Date range selector (with presets like Today, Custom Range)
 
@@ -193,39 +185,104 @@ The main dashboard is structured using React + Tailwind, enhanced with Recharts 
 
       📤 CSV Export:
 
-            🔹Click “Export Metrics” → Select Date Range → Choose Format
+                  🔹Click “Export Metrics” → Select Date Range → Choose Format
 
-            🔹Available fields: timestamp, rule violated, project, severity, remediation status.
+                  🔹Available fields: timestamp, rule violated, project, severity, remediation status.
 
       📄 PDF Snapshot:
 
-            🔹Ideal for management or audit reviews.
+                  🔹Ideal for management or audit reviews.
 
-            🔹Converts entire visual dashboard into printable sections.
+                  🔹Converts entire visual dashboard into printable sections.
 
       🔁 Scheduled Exports:
 
-            🔹Users can schedule weekly reports to be auto-emailed as PDF attachments.
+                  🔹Users can schedule weekly reports to be auto-emailed as PDF attachments.
 
-            🔹Controlled via settings panel under User > Notifications.
+                  🔹Controlled via settings panel under User > Notifications.
 
 🔐 Access Control:
-Exports are governed by role-based access (RBAC). Only users with compliance.report.view permission can generate exports.
+
+                  🔹Exports are governed by role-based access (RBAC). 
+
+                  🔹Only users with compliance.report.view permission can generate exports.
 
 
 🛠️ 6: Troubleshooting Guide --- Metrics, Analytics, & Reporting Pipeline
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+To guide engineers and end users through identifying and resolving common issues that may arise during real-time analytics display, metric data fetching, or chart rendering.
+
+
+⚠️ 6.1 Data Not Refreshing ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+🔍 Symptom:
+
+            🔹Metrics on the dashboard remain static even after the system has run new evaluations.
+
+            🔹Live data widgets show outdated timestamps.
+
+🧪 Causes & Resolution:
+
+| Cause                   | Description                                               | Resolution                                                                           |
+| ----------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| 🧭 **WebSocket Desync** | Browser lost connection to the live metrics event stream. | Refresh page. If issue persists, verify `metrics.ws.endpoint` in `.env`.             |
+| ⏱️ **Cron Job Delay**   | Scheduled data ingestion has stalled.                     | Check if `pipeline` is running via `docker ps`. Restart container if needed. |
+| 🧩 **Backend Caching**  | Outdated cache layer returning stale metrics.             | Invalidate cache using `FLUSHDB` or restart metrics API container.             |
+
+
+📉 6.2 Chart Rendering Errors 📉📉📉📉📉📉📉📉📉📉
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+🔍 Symptom
+
+            🔹Charts are missing or show blank space.
+
+            🔹JavaScript console throws Cannot read properties of undefined or Invalid chart config.
+
+
+🧪 Causes & Resolution
+
+| Cause                           | Description                                                  | Resolution                                                                                     |
+| ------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| ⚙️ **Corrupt API Payload**      | Frontend failed to parse malformed metrics JSON.             | Inspect `/api/v1/metrics` response via Postman or cURL. Check for nulls or unexpected nesting. |
+| 🎨 **Component Version Drift**  | Dashboard deployed with mismatched Recharts versions.        | Sync version between frontend `package.json` and Git tag. Rebuild frontend using `pnpm build`. |
+| 📦 **Missing Chart Dependency** | A required visualization lib failed to install during build. | Re-run: `pnpm install` → `pnpm build` to confirm all dependencies are resolved.                |
+
+
+🚫 6.3 API Rate Limits
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+🔍 Symptom:
+
+            🔹Frequent ``429 Too Many Requests`` errors when exporting reports or rapidly switching dashboards.
+
+🧪 Causes & Resolution:
+
+| Cause                         | Description                                               | Resolution                                                                                   |
+| ----------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| 🔁 **Excessive Polling**      | Custom widgets or embedded tools polling too frequently.  | Reduce interval in settings or enforce debounce in frontend code.                            |
+| 📈 **Burst Report Downloads** | Users initiating bulk report exports in short succession. | Limit download concurrency.               |
+| 🧱 **Rate Limiting Config**   | Reverse proxy (e.g., NGINX) or API Gateway is throttling. | Check NGINX config: `limit_req_zone` and `limit_req` values. Adjust to handle expected load. |
 
 
 
 
 
-❓ 7: Frequently Asked Questions (FAQs)  -- Metrics, Analytics, & Reporting Pipeline
+
+
+
+
+
+
+
+
+❓ 7: Frequently Asked Questions (FAQs)  -- Metrics & Reporting Pipeline
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-🔹 What types of analytics does this pipeline support?
+🔹 Q1 What types of analytics does this pipeline support?
 
 ✅ Progress updates are streamed via WebSockets, emitting JSON updates from the backend to the frontend using socket.io.
 
