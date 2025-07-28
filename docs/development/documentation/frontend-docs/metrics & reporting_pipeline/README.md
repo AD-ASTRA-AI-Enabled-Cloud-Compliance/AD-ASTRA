@@ -251,7 +251,7 @@ To guide engineers and end users through identifying and resolving common issues
 | 📦 **Missing Chart Dependency** | A required visualization lib failed to install during build. | Re-run: `pnpm install` → `pnpm build` to confirm all dependencies are resolved.                |
 
 
-🚫 6.3 API Rate Limits
+🚫 6.3 API Rate Limits 🚫🚫🚫🚫🚫🚫🚫🚫🚫🚫
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 🔍 Symptom:
@@ -267,14 +267,26 @@ To guide engineers and end users through identifying and resolving common issues
 | 🧱 **Rate Limiting Config**   | Reverse proxy (e.g., NGINX) or API Gateway is throttling. | Check NGINX config: `limit_req_zone` and `limit_req` values. Adjust to handle expected load. |
 
 
+🧰 6.4 Miscellaneous Fixes 🧰🧰🧰🧰🧰🧰🧰🧰🧰🧰
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+🟨 Dashboard Loads Blank on First Visit:
 
+                              🔹 Clear browser cache.
 
+                              🔹 Ensure correct .env variables are loaded in the frontend build.
 
+🔒 403 Errors When Exporting Reports
 
+                              🔹Ensure the user has the role analytics.report.view.
 
+                              🔹Check token expiration or RBAC middleware for misconfigured permissions.
 
+🧊 Freezing Charts on Hover
 
+                              🔹Disable hardware acceleration in browser.
+
+                              🔹Update Recharts and dependencies if older than 12 months.
 
 
 
