@@ -180,7 +180,6 @@ class BaselineTerraformGenerator:
 
     def write_provider_block(self, tf, provider, framework):
         if provider == "aws":
-            tf.write(f'// 🚧 Auto-generated {framework.upper()} Baseline for {provider.upper()}\n\n')
             tf.write('terraform {\n')
             tf.write(f'{INDENT}required_version = ">= 1.1.0"\n')
             tf.write(f'{INDENT}required_providers {{\n')
@@ -188,7 +187,6 @@ class BaselineTerraformGenerator:
             tf.write(f'{INDENT}}}\n}}\n\n')
             tf.write('provider "aws" {\n  region = "us-east-1"\n}\n\n')
         elif provider == "azure":
-            tf.write(f'// 🚧 Auto-generated {framework.upper()} Baseline for {provider.upper()}\n\n')
             tf.write('terraform {\n')
             tf.write(f'{INDENT}required_version = ">= 1.1.0"\n')
             tf.write(f'{INDENT}required_providers {{\n')
@@ -197,7 +195,6 @@ class BaselineTerraformGenerator:
             tf.write(f'{INDENT}}}\n}}\n\n')
             tf.write('provider "azurerm" {\n  features {}\n}\n\n')
         elif provider == "gcp":
-            tf.write(f'// 🚧 Auto-generated {framework.upper()} Baseline for {provider.upper()}\n\n')
             tf.write('terraform {\n')
             tf.write(f'{INDENT}required_version = ">= 1.1.0"\n')
             tf.write(f'{INDENT}required_providers {{\n')

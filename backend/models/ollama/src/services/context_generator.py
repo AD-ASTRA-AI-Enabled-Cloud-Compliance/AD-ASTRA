@@ -50,7 +50,7 @@ class CloudContextGenerator:
         all_rules = []
         for fw in selected_frameworks:
             hits, _ = self.qdrant.scroll(
-                collection_name="framework_rules_gemma2b",
+                collection_name="framework_rules",
                 scroll_filter={
                     "must": [
                         {"key": "framework", "match": {"value": fw.upper()}}
