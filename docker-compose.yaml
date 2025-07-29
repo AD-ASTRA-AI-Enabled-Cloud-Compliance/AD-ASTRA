@@ -1,15 +1,15 @@
 # version: '3.8'
 
 services:
-#   qdrant:
-#     image: qdrant/qdrant:latest
-#     ports:
-#       - "6333:6333"
-#       - "6334:6334"
-#     volumes:
-#       - qdrant_data:/qdrant/storage
-#     environment:
-#       - QDRANT_ALLOW_CORS=true
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    environment:
+      - QDRANT_ALLOW_CORS=true
 
   # mysql:
   #   image: mysql:8.0
@@ -46,29 +46,31 @@ services:
   #   ports:
   #     - "3030:3030"
 
-  rbac:
-    build:
-      context: ./backend/rbac
-      dockerfile: Dockerfile
-    working_dir: /app
-    # depends_on:
-    #   - qdrant
-    #   - mysql
-    environment:
-      - FLASK_APP=app.py
-      - JWT_SECRET=secret
+  # rbac:
+  #   build:
+  #     context: ./backend/rbac
+  #     dockerfile: Dockerfile
+  #   working_dir: /app
+  #   # depends_on:
+  #   #   - qdrant
+  #   #   - mysql
+  #   environment:
+  #     - FLASK_APP=app.py
+  #     - JWT_SECRET=secret
       
-      # - MONGO_HOST=127.0.0.1
-      # - MONGO_HOST=mongo  
-      - MONGO_HOST=host.docker.internal
-      - MONGO_PORT=27017
-      - MONGO_USERNAME=admin
-      - MONGO_PASSWORD=admin
-      - MONGO_DB=Skylock_Users
-      - MONGO_COLLECTION=Application_Users
+  #     # - MONGO_HOST=127.0.0.1
+  #     # - MONGO_HOST=mongo  
+  #     - MONGO_HOST=host.docker.internal
+  #     - MONGO_PORT=27017
+  #     - MONGO_USERNAME=admin
+  #     - MONGO_PASSWORD=admin
+  #     - MONGO_DB=Skylock_Users
+  #     - MONGO_COLLECTION=Application_Users
     
-    ports:
-      - "3010:3010"
+  #   ports:
+  #     - "3010:3010"
+  #   depends_on:
+  #     - qdrant
       
   tf_comparator:
     build:
@@ -98,6 +100,8 @@ services:
     ports:
       - "3030:3030"
     restart: unless-stopped
+    depends_on:
+      - qdrant
 
   tf_provisioner:
     build:
@@ -122,11 +126,14 @@ services:
       # - MYSQL_USER=adastra
       # - MYSQL_PASSWORD=adastrapass
       # - MYSQL_DATABASE=adastra
+      
     # volumes:
     #   - ./backend/user_management:/app
     ports:
       - "5001:5001"
     restart: unless-stopped
+    depends_on:
+      - qdrant
       
   mdl_ollama:
     build:
@@ -144,7 +151,9 @@ services:
       - UPLOAD_FOLDER=src/storage/uploads
       - OUTPUT_FOLDER=src/storage/cloud_outputs
       - SUMMARY_FOLDER=src/storage/document_summary
-      - OLLAMA_API_URL=host.docker.internal:11434
+  
+      - OLLAMA_API_URL=host.docker.internal
+      - OLLAMA_API_PORT=11434
       
       - MONGO_HOST=host.docker.internal
       - MONGO_PORT=27017
@@ -179,6 +188,8 @@ services:
     ports:
       - "3001:3001"
     restart: unless-stopped
+    depends_on:
+      - qdrant
       
 
   # ollama:
@@ -204,15 +215,15 @@ services:
   #     - ./frontend:/app
   #     - /app/node_modules
     # depends_on:
-    #   - document_preprocess
       # - qdrant
+    #   - document_preprocess
       # - mysql
       # - mongodb
       # - ollama
 
 volumes:
-#   qdrant_data:
-#     driver: local
+  qdrant_data:
+    driver: local
 #   mysql_data:
 #     driver: local
 #   mongodb_data:

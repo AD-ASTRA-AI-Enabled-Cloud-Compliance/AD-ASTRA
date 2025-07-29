@@ -2,6 +2,7 @@
 __pycache__/
 *.pyc
 
+.vscode
 local/
 land/
 .env
@@ -9,6 +10,8 @@ land/
 frontend/src/app/management/resource_evalautor/*.json
 frontend/src/app/management/resource_evalautor/*.txt
 
+backend/templatecomparator/output/
+backend/templatecomparator/uploads/
 
 # macOS system files
 .DS_Store
