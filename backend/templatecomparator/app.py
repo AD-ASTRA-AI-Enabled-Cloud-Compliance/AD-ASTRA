@@ -4,12 +4,16 @@ import json
 import os
 import sys
 
+
+from src.utils.utils import apply_variables_to_patch_text, parse_tfvars_file
+from src.services.GlobalController import GlobalRequestGenerate
+from src.utils.db_connection import MongoDB
 from src.comparator import find_resource_gaps
 from src.patcher import generate_patch_file, merge_patch_into_actual
-from src.tf_parser import load_terraform_file
-from src.utils import apply_variables_to_patch_text, parse_tfvars_file
+from src.tf_parser import load_terraform_file, parse_terraform_from_string
+from src.services.websocket.ServiceWebsocket import WebsocketService
 
-sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
@@ -17,7 +21,6 @@ from datetime import datetime
 
 
 
-from mongo import collection  # MongoDB connection
 
 
 
@@ -58,17 +61,23 @@ def index():
 
 @app.route('/upload_files', methods=['POST'])
 def upload_files():
+    session = GlobalRequestGenerate()
+    ws = WebsocketService(session)
     """
     Endpoint to upload baseline, actual, and optional tfvars files.
     It processes files to find gaps and calculates initial compliance score.
     """
-    baseline_file = request.files.get('baseline_file')
+    # baseline_file = request.files.get('baseline_file')
     actual_file = request.files.get('actual_file')
     tfvars_file = request.files.get('tfvars_file')  # Optional
+    
+    ws.send_progress_update(
+        message=" Uploading files..."
+    )
 
     # Validate required files presence
-    if not baseline_file or not actual_file:
-        return jsonify({"error": "Baseline and actual files are required"}), 400
+    # if not baseline_file or not actual_file:
+    #     return jsonify({"error": "Baseline and actual files are required"}), 400
 
     # Define local file paths for saving uploads
     baseline_path = os.path.join(UPLOAD_FOLDER, 'baseline.tf')
@@ -76,14 +85,22 @@ def upload_files():
     tfvars_path = os.path.join(UPLOAD_FOLDER, 'vars.tfvars') if tfvars_file else None
 
     # Save uploaded files to disk
-    baseline_file.save(baseline_path)
+    # baseline_file.save(baseline_path)
     actual_file.save(actual_path)
     if tfvars_file:
         tfvars_file.save(tfvars_path)
 
     # Parse Terraform files into structured dicts
-    baseline_data = load_terraform_file(baseline_path)
+    # baseline_data = load_terraform_file(baseline_path)
+    ws.send_progress_update(
+        message=" Validation Start TF file..."
+    )
+    baseline_data = parse_terraform_from_string("terraform_hipaa_azure_20250710_204619.tf")
     actual_data = load_terraform_file(actual_path)
+
+    ws.send_progress_update(
+        message=" Evaluationg TF file..."
+    )
 
     # Find gaps between baseline and actual infrastructure resources
     gaps = find_resource_gaps(baseline_data, actual_data)
@@ -152,12 +169,12 @@ def generate_patch():
     score = round((len(selected) / total) * 100) if total else 0
 
     # Save record in MongoDB
-    collection.insert_one({
-        "selected_resources": selected,
-        "patch_text": merged_content,
-        "score": score,
-        "timestamp": datetime.utcnow()
-    })
+    # collection.insert_one({
+    #     "selected_resources": selected,
+    #     "patch_text": merged_content,
+    #     "score": score,
+    #     "timestamp": datetime.utcnow()
+    # })
 
     # Return merged content and updated compliance score for frontend display
     return jsonify({
@@ -167,4 +184,7 @@ def generate_patch():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    
+    MongoDB().healthCheck()
+    app.run(debug=True,
+            port=3030)

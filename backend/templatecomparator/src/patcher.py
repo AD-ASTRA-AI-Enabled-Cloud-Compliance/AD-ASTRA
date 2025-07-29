@@ -1,5 +1,5 @@
 import os
-from .utils import hcl_safe, apply_variables_to_patch
+from .utils.utils import hcl_safe, apply_variables_to_patch
 
 
 def render_hcl_block(resource_type, resource_name, properties):

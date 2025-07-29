@@ -78,5 +78,5 @@ def apply_variables_to_patch_text(patch_text, variables):
             return str(val)
     
     result = pattern.sub(replacer, patch_text)
-    print("Result after substitution:\n", result[:500])  # print first 500 chars
+    # print("Result after substitution:\n", result[:500])  # print first 500 chars
     return result

@@ -50,10 +50,10 @@ export  function TerraformForm() {
       <h1>Upload Terraform Files</h1>
 
       <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
-        <div>
+        {/* <div>
           <label>PCI Baseline (.tf)</label><br />
           <input type="file" {...register('pci_file', { required: true })} />
-        </div>
+        </div> */}
 
         <div>
           <label>Actual Infra File (.tf)</label><br />
