@@ -87,6 +87,10 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
     {
       title: "Validate Terraform",
       url: "/terraform_comparison",
+    },
+    {
+      title: "Deployments",
+      url: "/provisioner",
     }
   ];
 

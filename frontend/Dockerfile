@@ -9,8 +9,10 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
+RUN --mount=type=cache,target=/root/.cache/npm \
+    npm ci --legacy-peer-deps
 
-RUN npm ci --legacy-peer-deps
+# RUN npm ci --legacy-peer-deps
 
 # Rebuild the source code only when needed
 FROM base AS builder

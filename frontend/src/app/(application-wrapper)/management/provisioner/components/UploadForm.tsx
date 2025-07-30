@@ -4,6 +4,10 @@ import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from '../provisioner.module.css';
 import { FiUploadCloud, FiTool, FiAlertTriangle, FiLoader } from 'react-icons/fi';
+<<<<<<< HEAD
+=======
+import { Button } from '@/components/ui/button';
+>>>>>>> origin/dev
 
 type Status = 'idle' | 'loading' | 'error';
 
@@ -57,7 +61,11 @@ export default function UploadForm() {
   };
 
   return (
+<<<<<<< HEAD
     <div className={styles.formWrapper}>
+=======
+    <div >
+>>>>>>> origin/dev
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.formIcon}><FiTool /></div>
         <h2>Launch Infrastructure</h2>
@@ -77,6 +85,9 @@ export default function UploadForm() {
         <button type="submit" disabled={status === 'loading'} className={styles.button}>
           {status === 'loading' ? <><FiLoader className={styles.spinner}/> Deploying...</> : '🚀 Launch Infrastructure'}
         </button>
+        <Button type="submit" disabled={status === 'loading'} >
+          {status === 'loading' ? <><FiLoader className={styles.spinner}/> Deploying...</> : '🚀 Launch Infrastructure'}
+        </Button>
       </form>
       {status === 'error' && (
         <div className={styles.errorContainer}>

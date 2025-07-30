@@ -12,7 +12,7 @@ export const theme = extendTheme(
       useSystemColorMode: false,
     },
     styles: {
-      global: (props: any) => ({
+      global: () => ({
         body: {
           color: 'gray.900',
           bg: 'white',

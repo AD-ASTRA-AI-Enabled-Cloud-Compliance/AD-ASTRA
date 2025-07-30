@@ -12,7 +12,7 @@ export const useRulesData = () => {
       setLoading(true);
       setError(false);
 
-      const response = await fetch("http://localhost:3001/explore/rules");
+      const response = await fetch("http://127.0.0.1:3001/explore/rules");
       if (!response.ok) throw new Error("Bad response");
 
       const res = await response.json();

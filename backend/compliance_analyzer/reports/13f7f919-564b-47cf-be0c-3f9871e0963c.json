@@ -1,0 +1,46 @@
+{
+  "compliant": [],
+  "non_compliant": [],
+  "unmanaged": [
+    {
+      "name": "minvm-pip",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "reason": "Resource exists but is not defined in the baseline."
+    },
+    {
+      "name": "minvm-vnet",
+      "type": "Microsoft.Network/virtualNetworks",
+      "reason": "Resource exists but is not defined in the baseline."
+    },
+    {
+      "name": "minvm-nic",
+      "type": "Microsoft.Network/networkInterfaces",
+      "reason": "Resource exists but is not defined in the baseline."
+    },
+    {
+      "name": "minvm-vm",
+      "type": "Microsoft.Compute/virtualMachines",
+      "reason": "Resource exists but is not defined in the baseline."
+    },
+    {
+      "name": "minvm-osdisk",
+      "type": "Microsoft.Compute/disks",
+      "reason": "Resource exists but is not defined in the baseline."
+    },
+    {
+      "name": "NetworkWatcher_canadacentral",
+      "type": "Microsoft.Network/networkWatchers",
+      "reason": "Resource exists but is not defined in the baseline."
+    },
+    {
+      "name": "NetworkWatcher_eastus2",
+      "type": "Microsoft.Network/networkWatchers",
+      "reason": "Resource exists but is not defined in the baseline."
+    },
+    {
+      "name": "NetworkWatcher_eastus",
+      "type": "Microsoft.Network/networkWatchers",
+      "reason": "Resource exists but is not defined in the baseline."
+    }
+  ]
+}

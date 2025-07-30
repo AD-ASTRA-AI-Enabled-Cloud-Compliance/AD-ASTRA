@@ -1,4 +1,3 @@
-// ⬅️ No changes at the top
 "use client"
 
 import { useState } from "react"
@@ -23,6 +22,23 @@ export function LoginForm({
     e.preventDefault()
     setIsLoading(true)
     setError("")
+
+    // Validation checks
+    if (!email.trim() || !password.trim()) {
+      setError("All fields are required.")
+      setIsLoading(false)
+      return
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Please enter a valid email address.")
+      setIsLoading(false)
+      return
+    }
+    if (password.length < 5) {
+      setError("Password must be at least 5 characters long.")
+      setIsLoading(false)
+      return
+    }
 
     try {
       // const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:3010"
@@ -64,7 +80,7 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden p-0">
+      <Card className="overflow-hidden p-0 backdrop-blur-sm bg-white/80 dark:bg-black/30 shadow-xl border border-neutral-200 dark:border-white/20">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form className="p-6 md:p-8" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
@@ -96,7 +112,7 @@ export function LoginForm({
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                   <a
-                    href="#"
+                    href="/forgot-password"
                     className="ml-auto text-sm underline-offset-2 hover:underline"
                   >
                     Forgot your password?
@@ -116,23 +132,30 @@ export function LoginForm({
             
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <a href="#" className="underline underline-offset-4">
+                <a href="/signup" className="underline underline-offset-4">
                   Sign up
                 </a>
               </div>
             </div>
           </form>
-          <div className="bg-muted relative hidden md:block">
+          <div className="relative hidden md:flex items-center justify-center bg-white/80 dark:bg-white/10 backdrop-blur-sm p-6 rounded-r-xl">
             <img
               src="/sky_lock_logo.png"
               alt="Skylock Logo"
-              className="absolute inset-0 h-full w-full object-contain p-8"
+              className="max-h-60 object-contain transition-all duration-300"
             />
           </div>
         </CardContent>
       </Card>
       <div className="text-muted-foreground text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+        By clicking continue, you agree to our{" "}
+        <a href="/terms-of-service" className="underline underline-offset-4">
+          Terms of Service
+        </a>{" "}
+        and{" "}
+        <a href="/privacy-policy" className="underline underline-offset-4">
+          Privacy Policy
+        </a>.
       </div>
     </div>
   )

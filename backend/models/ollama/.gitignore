@@ -26,6 +26,7 @@ instance/
 # ----------------------
 # Node - Frontend (Next.js)
 # ----------------------
+.venv
 node_modules/
 .next/
 out/

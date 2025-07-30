@@ -1,12 +1,22 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:experimental
+FROM python:3.13-slim AS builder
 
-FROM python:3.10-slim-buster
+WORKDIR /app
+COPY requirements.txt .
+RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
 
-WORKDIR /python-docker
+FROM python:3.13-slim
 
-COPY requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
-
+WORKDIR /app
+COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
 COPY . .
 
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+# Add /app and /app/src to PYTHONPATH
+ENV PYTHONPATH=/app:/app/src
+
+ENV FLASK_APP=app.py
+ENV FLASK_RUN_PORT=3030
+
+EXPOSE 3030
+
+CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0"]

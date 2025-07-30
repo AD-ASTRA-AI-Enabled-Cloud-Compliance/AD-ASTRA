@@ -1,10 +1,9 @@
- HEAD
 .env
 __pycache__/
 *.pyc
-__pycache__/
 
 local/
+land/
 .env
  dev
 frontend/src/app/management/resource_evalautor/*.json

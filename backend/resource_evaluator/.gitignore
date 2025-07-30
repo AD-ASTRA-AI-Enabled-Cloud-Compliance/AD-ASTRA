@@ -1,2 +1,22 @@
+
 .env
 venv
+
+.venv
+.env*
+
+.env
+__pycache__/
+*.pyc
+
+local/
+land/
+.env
+ dev
+frontend/src/app/management/resource_evalautor/*.json
+frontend/src/app/management/resource_evalautor/*.txt
+
+
+# macOS system files
+.DS_Store
+
