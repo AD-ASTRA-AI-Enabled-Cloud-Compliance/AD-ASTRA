@@ -9,6 +9,7 @@ __pycache__/
 .env
 
 # Ignore specific folders
+.vscode
 local/
 land/
 dev/
@@ -16,6 +17,9 @@ dev/
 # Ignore resource evaluator test/output files
 frontend/src/app/management/resource_evalautor/*.json
 frontend/src/app/management/resource_evalautor/*.txt
+
+backend/templatecomparator/output/
+backend/templatecomparator/uploads/
 
 # macOS system files
 .DS_Store

@@ -142,7 +142,7 @@ def generate_terraform():
         context_gen = CloudContextGenerator(session=session)
         final_tf = context_gen.generate_context(selected_frameworks, selected_providers)
 
-        print(final_tf)
+        # print(final_tf)
 
         # ✅ Add safe ObjectId conversion before jsonify
         def convert_objectid(obj):

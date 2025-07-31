@@ -1,22 +1,24 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import D3Force from "@/components/ui/d3force"
 import Link from "next/link"
+import Loader from "@/components/ui/loader"
 // Modified for enhancing management dashboard functionality
 // Added imports for real-time dashboard data fetching and API integration
 // TO REVERT: Remove these two import lines
 import { useDashboardData } from "@/hooks/useDashboardData"
-import { getDownloadUrl } from "@/lib/dashboardApi"
+// import { getDownloadUrl } from "@/lib/dashboardApi"
 // End Modified for enhancing management dashboard functionality
+
 
 export default function Page() {
   const router = useRouter()
   // Modified for enhancing management dashboard functionality
   // Added real-time data fetching for document and rules statistics
   // TO REVERT: Remove this line and the destructuring
-  const { documentStats, rulesStats, documentsList, isLoading, error, refetch } = useDashboardData()
+  const { documentStats, rulesStats, isLoading, error, refetch } = useDashboardData()
   // End Modified for enhancing management dashboard functionality
 
   useEffect(() => {
@@ -24,7 +26,18 @@ export default function Page() {
     if (role !== "management") {
       router.push("/dashboard")
     }
+    // No need to set loading state here
   }, [router])
+
+
+
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <Loader />
+    );
+  }
+
 
   return (
     <div className="h-full">

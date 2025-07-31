@@ -99,9 +99,6 @@ export default function DocumentPanel() {
             <p>{uploadMessage}</p>
           </form>
         </CardContent>
-        <CardContent>
-          <OCRProgress />
-        </CardContent>
       </Card>
 
       <Card className="mt-4">

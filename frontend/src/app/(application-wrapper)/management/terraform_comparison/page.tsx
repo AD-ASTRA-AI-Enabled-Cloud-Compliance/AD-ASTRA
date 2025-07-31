@@ -9,9 +9,10 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { GaugeChartScore } from '@/components/GaugeChartScore';
+import Loader from '@/components/ui/loader';
 
 type UploadForm = {
-  baseline_file: FileList;   // renamed from pci_file
+  // baseline_file: FileList;   // renamed from pci_file
   actual_file: FileList;
   tfvars_file?: FileList;
 };
@@ -57,13 +58,13 @@ export default function TerraformComparisonPage() {
 
   async function onUpload(data: UploadForm) {
     const formData = new FormData();
-    formData.append('baseline_file', data.baseline_file[0]);
+    // formData.append('baseline_file', data.baseline_file[0]);
     formData.append('actual_file', data.actual_file[0]);
     if (data.tfvars_file?.[0]) {
       formData.append('tfvars_file', data.tfvars_file[0]);
     }
 
-    const res = await fetch('http://localhost:5000/upload_files', {
+    const res = await fetch('http://localhost:3030/upload_files', {
       method: 'POST',
       body: formData,
     });
@@ -92,7 +93,7 @@ export default function TerraformComparisonPage() {
       selected_resources: selected.map((r) => `${r.type}::${r.name}`),
     };
 
-    const res = await fetch('http://localhost:5000/generate_patch', {
+    const res = await fetch('http://localhost:3030/generate_patch', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -126,9 +127,7 @@ export default function TerraformComparisonPage() {
   // Show loading state while checking authentication
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      </div>
+      <Loader />
     );
   }
 
@@ -149,10 +148,10 @@ export default function TerraformComparisonPage() {
       {step === 'upload' ? (
         <Card className="max-w-md mx-auto p-6 space-y-4">
           <form onSubmit={handleSubmit(onUpload)} className="space-y-4">
-            <div>
+            {/* <div>
               <Label>Baseline (.tf)</Label>
               <Input type="file" {...register('baseline_file', { required: true })} />
-            </div>
+            </div> */}
             <div>
               <Label>Actual Infra File (.tf)</Label>
               <Input type="file" {...register('actual_file', { required: true })} />
@@ -168,21 +167,21 @@ export default function TerraformComparisonPage() {
       ) : (
         <div className="flex flex-col md:flex-row gap-6">
           {/* Left: Resource Selection */}
-          <Card className="w-full md:w-1/2 p-4 overflow-y-auto h-[600px]">
-            <h2 className="text-lg font-semibold mb-2">Select Resources</h2>
+          <Card className="w-full md:w-1/2  overflow-y-auto h-[600px]">
+            <h2 className="text-lg font-semibold">Select Resources</h2>
             {resources.map((res) => (
-              <div key={`${res.type}-${res.name}`} className="flex items-center mb-2">
+              <div key={`${res.type}-${res.name}`} className="flex items-center">
                 <Checkbox
                   id={`${res.type}-${res.name}`}
                   checked={selected.some((r) => r.type === res.type && r.name === res.name)}
                   onCheckedChange={() => toggle(res)}
                 />
-                <label htmlFor={`${res.type}-${res.name}`} className="ml-2">
+                <Label htmlFor={`${res.type}-${res.name}`} className="ml-2">
                   {res.type} "{res.name}"
-                </label>
+                </Label>
               </div>
             ))}
-            <Button onClick={onGenerate} className="mt-4">
+            <Button onClick={onGenerate} className="">
               Generate Patch
             </Button>
             {message && <p className="mt-2">{message}</p>}

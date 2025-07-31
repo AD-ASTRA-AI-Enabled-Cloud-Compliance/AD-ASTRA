@@ -48,9 +48,7 @@ const OCRProgress = ({ onlyProgress }: ProgressBarProps) => {
                 <>
                     <div className="space-y-4">
                         <div className="p-4 border rounded-lg shadow-sm">
-                            <div className="mb-2">
-                                {isConnected ? '🟢 Connected' : '🔴 Disconnected'}
-                            </div>
+                            <ConnectionStatus isConnected={isConnected} />
                             <div className="mb-2">
                                 Current Progress: {lastMessage?.progress && lastMessage.progress}%
                             </div>
@@ -84,7 +82,19 @@ const OCRProgress = ({ onlyProgress }: ProgressBarProps) => {
 
 export default OCRProgress;
 
-export const ProgressBar = ({ messages }: { messages: { progress: number, message: string,session: string, id: string } }) => {
+export const ConnectionStatus = ({ isConnected }: { isConnected: boolean }) => {
+    return (
+        <Badge className="text-xs bg-foreground">
+            {isConnected ? (
+                <span className="text-green-500">🟢 Connected</span>
+            ) : (
+                <span className="text-red-500">🔴 Disconnected</span>
+            )}
+        </Badge>
+    );
+}
+
+export const ProgressBar = ({ messages }: { messages: { progress: number, message: string, session: string, id: string } }) => {
     // console.log(messages)
     return (
         messages?.progress > 0 && (

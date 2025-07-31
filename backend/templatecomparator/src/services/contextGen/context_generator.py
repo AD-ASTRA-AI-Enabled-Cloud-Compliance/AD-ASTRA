@@ -13,38 +13,22 @@ import os
 import json
 import re
 from datetime import datetime
-from pymongo import MongoClient
-from src.services.json_to_baseline_tf import BaselineTerraformGenerator
-from src.services.llm_mapper import LLMMapper
-from qdrant_client import QdrantClient
+
+from src.services.contextGen.llm_mapper import LLMMapper
+from src.services.contextGen.json_to_baseline_tf import BaselineTerraformGenerator
 
 
 class CloudContextGenerator:
-    def __init__(self, session):
+    def __init__(self, ws, session):
 
         self.session = session
         self.sessionID = session.sessionID
         self.companyID = session.companyID
         self.userID = session.userID
 
-        self.mongo_client = session.mongo
-        self.qdrant = session.qdrant
-        self.ws = session.ws
-
-        self.temperature = session.temperature
-        self.chunk_size = session.chunk_size
-        self.chunk_overlap = session.chunk_overlap
-        self.top_k = session.top_k
-        self.max_token_limit = session.max_token_limit
-
-        # self.upload_folder = storage.upload_folder
-        # self.output_folder = storage.output_folder
-        # self.terraform_folder = storage.terraform_folder
+        self.ws = ws
 
         self.llm = LLMMapper()
-
-        self.mongo_db = self.mongo_client["Skylock"]
-        self.mongo_collection = self.mongo_db["Cloud_JSON_Baselines"]
 
     def get_rules_from_qdrant(self, selected_frameworks):
         all_rules = []
@@ -69,32 +53,29 @@ class CloudContextGenerator:
             message=msg,)
 
         for provider in selected_providers:
-            baseline = self.mongo_collection.find_one(
-                {"provider": provider.lower()})
-            if not baseline:
+            
+            CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+            BASE_DIR = os.path.abspath(os.path.join(CURRENT_DIR, "..", ".."))
+
+            reference_path = os.path.join(
+                BASE_DIR,
+                "input_files",
+                "cloud_reference_context",
+                f"{provider.lower()}_context.json"
+            )
+            try:
+                with open(reference_path, 'r') as f:
+                    baseline = json.load(f)
+                self.ws.send_progress_update(
+                    message=f"✅ Loaded baseline from reference file")
+            except FileNotFoundError:
                 print(
-                    f"❌ No baseline found in MongoDB for provider: {provider}")
-                # Try loading from local reference file as fallback
-                reference_path = os.path.join(
-                    os.path.dirname(__file__),
-                    "..",
-                    "input_files",
-                    "cloud_reference_context",
-                    f"{provider.lower()}_context.json"
-                )
-                try:
-                    with open(reference_path, 'r') as f:
-                        baseline = json.load(f)
-                    self.ws.send_progress_update(message=
-                        f"✅ Loaded baseline from reference file")
-                except FileNotFoundError:
-                    print(
-                        f"❌ No reference baseline found at")
-                    continue
-                except json.JSONDecodeError:
-                    print(
-                        f"❌ Invalid JSON in reference file")
-                    continue
+                    f"❌ No reference baseline found at {reference_path}")
+                continue
+            except json.JSONDecodeError:
+                print(
+                    f"❌ Invalid JSON in reference file")
+                continue
 
             baseline_resources = baseline.get("resources", {})
 
@@ -146,39 +127,16 @@ class CloudContextGenerator:
                 "timestamp": timestamp,
                 "context": context
             }
-            result = self.mongo_client["Skylock"]["Cloud_Context_JSON"].insert_one(
-                mongo_doc)
-            self.ws.send_progress_update(session= self.sessionID, message = f"✅ Context inserted into MongoDB: Skylock.Cloud_Context_JSON")
-            self.ws.send_progress_update(session= self.sessionID, message = f"✅ Inserted with _id: {result.inserted_id}")
 
-            inserted_doc = self.mongo_client["Skylock"]["Cloud_Context_JSON"].find_one(
-                {"_id": result.inserted_id})
-            
-            self.ws.send_progress_update(message = f"Document stored")
-            print(json.dumps(inserted_doc, indent=2, default=str))
+            self.ws.send_progress_update(
+                session=self.sessionID, message=f"Context inserted into MongoDB: Skylock.Cloud_Context_JSON")
 
             # --- Validate coverage ---
-            validation_results = self.validate_against_rules(
-                selected_frameworks, provider, context)
+            # validation_results = self.validate_against_rules(
+            #     selected_frameworks, provider, context)
 
-            self.save_rule_validation_report(
-                selected_frameworks, provider, validation_results)
-
-            # --- OLD TF file output commented ---
-            # base_dir = os.path.abspath(
-            #     os.path.join(os.path.dirname(__file__), "..", "output_files", "terraform_files")
-            # )
-            # tf_output_dir = os.path.join(
-            #     base_dir,
-            #     provider,
-            #     "_".join(f.lower() for f in selected_frameworks),
-            #     timestamp
-            # )
-            # os.makedirs(tf_output_dir, exist_ok=True)
-            # tf_output_path = os.path.join(
-            #     tf_output_dir,
-            #     f"terraform_{'_'.join(f.lower() for f in selected_frameworks)}_{provider.lower()}_{timestamp}.tf"
-            # )
+            # self.save_rule_validation_report(
+            #     selected_frameworks, provider, validation_results)
 
             # --- NEW: Still using disk output folder ---
             base_dir = os.path.abspath(
@@ -200,26 +158,17 @@ class CloudContextGenerator:
 
             # --- Generate Terraform
             tf_generator = BaselineTerraformGenerator(self.session)
-            
-            self.ws.send_progress_update(message = f"🚀 Generating Terraform for unified baseline...")
-            
+
+            self.ws.send_progress_update(
+                message=f"🚀 Generating Terraform for unified baseline...")
+
             tf_result = tf_generator.generate_baseline_from_provider_json(
                 json_data=context,
                 tf_output_path=tf_output_path,
                 framework=selected_frameworks[0]
             )
-            self.ws.send_progress_update(message = f"✅ Terraform content generated.")
-
-            # --- Deduplication check before insert ---
-            existing = self.mongo_client["Skylock"]["Terraform_Files"].find_one({
-                "provider": provider.lower(),
-                "frameworks": selected_frameworks,
-                "timestamp": timestamp
-            })
-            if existing:
-                
-                self.ws.send_progress_update(message = "⚠️ Terraform file already exists for this combination—skipping insert.")
-                continue
+            self.ws.send_progress_update(
+                message=f"✅ Terraform content generated.")
 
             terraform_doc = {
                 "provider": provider.lower(),
@@ -235,17 +184,15 @@ class CloudContextGenerator:
                 "variables_tf_content": tf_result["variables"],
                 "lockfile_content": tf_result["lockfile"]
             }
+            self.ws.send_progress_update(
+                message=f"✅ Terraform file inserted into MongoDB: Skylock.Terraform_Files")
 
-            result_tf = self.mongo_client["Skylock"]["Terraform_Files"].insert_one(
-                terraform_doc)
-            
-            self.ws.send_progress_update(message = f"✅ Terraform file inserted into MongoDB: Skylock.Terraform_Files")
+            return terraform_doc
 
-           # return terraform_doc
+    def validate_against_ruless(self, selected_frameworks, provider, context):
 
-    def validate_against_rules(self, selected_frameworks, provider, context):
-        
-        self.ws.send_progress_update(message = "\n🔍 Validating technical coverage of selected baseline services...\n")
+        self.ws.send_progress_update(
+            message="\n🔍 Validating technical coverage of selected baseline services...\n")
 
         context_entry = context[0]
         selected_services = context_entry["services"]
@@ -253,8 +200,9 @@ class CloudContextGenerator:
         settings_json = json.dumps(selected_settings, indent=2)
 
         all_rules = self.get_rules_from_qdrant(selected_frameworks)
-        
-        self.ws.send_progress_update(message = f"Fetched {len(all_rules)} rules from Qdrant for frameworks: {selected_frameworks}")
+
+        self.ws.send_progress_update(
+            message=f"Fetched {len(all_rules)} rules from Qdrant for frameworks: {selected_frameworks}")
 
         validation_results = []
 
@@ -310,19 +258,14 @@ Explanation: <your explanation here>
                 user_prompt=prompt
             )
 
-            # Modified: Clean markdown formatting from LLM response for better parsing
-            thoughts_cleaned = re.sub(r'\*\*', '', thoughts)  # Remove ** markdown
-            thoughts_cleaned = re.sub(r'\n+', '\n', thoughts_cleaned)  # Normalize newlines
-
             actionable_match = re.search(
-                r"Actionable:\s*(Yes|No)", thoughts_cleaned, re.IGNORECASE)
+                r"Actionable:\s*(Yes|No)", thoughts, re.IGNORECASE)
             coverage_match = re.search(
-                r"Coverage:\s*(Satisfied|Not Satisfied)", thoughts_cleaned, re.IGNORECASE)
-            # Modified: Enhanced regex pattern to handle markdown and spacing issues in LLM responses
+                r"Coverage:\s*(Satisfied|Not Satisfied)", thoughts, re.IGNORECASE)
             further_match = re.search(
-                r"(?:\*\*)?(?:Further\s*)?Recommendations?:\s*(?:\*\*)?\s*(Yes|No)", thoughts_cleaned, re.IGNORECASE)
+                r"FurtherRecommendations:\s*(Yes|No)", thoughts, re.IGNORECASE)
             explanation_match = re.search(
-                r"Explanation:\s*(.*)", thoughts_cleaned, re.IGNORECASE | re.DOTALL)
+                r"Explanation:\s*(.*)", thoughts, re.IGNORECASE | re.DOTALL)
 
             actionable = actionable_match.group(
                 1).strip() if actionable_match else "Unknown"
@@ -337,13 +280,12 @@ Explanation: <your explanation here>
                 coverage = "Not Satisfied"
                 further_recommendations = "No"
 
-            # Modified: Replaced terminal printing with WebSocket progress updates for frontend visibility
-            self.ws.send_progress_update(
-                session=self.sessionID,
-                message=f"🧠 Validated rule: {actionable} actionable, {coverage} coverage"
-            )
+            print(f"🧠 ReAct validation for rule: '{rule_text[:60]}...'\n")
+            print(f"✅ Actionable: {actionable}")
+            print(f"✅ Coverage: {coverage}")
+            print(f"✅ Further Recommendations: {further_recommendations}")
+            print(f"📝 Explanation: {explanation}\n")
 
-            # Modified: Store all LLM validation results for complete database storage
             validation_results.append({
                 "rule": rule_text,
                 "actionable": actionable,
@@ -356,34 +298,15 @@ Explanation: <your explanation here>
 
     def save_rule_validation_report(self, selected_frameworks, provider, validation_results):
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        
-        # Added: Calculate comprehensive summary statistics for all LLM validation results
-        total_rules = len(validation_results)
-        actionable_rules = len([r for r in validation_results if r["actionable"] == "Yes"])
-        satisfied_rules = len([r for r in validation_results if r["coverage"] == "Satisfied"])
-        not_satisfied_rules = len([r for r in validation_results if r["coverage"] == "Not Satisfied"])
-        needs_further_recommendations = len([r for r in validation_results if r["further_recommendations"] == "Yes"])
-        
-        # Modified: Enhanced report structure to store ALL LLM analysis results in database
         report_data = {
             "report_metadata": {
                 "provider": provider,
                 "frameworks": selected_frameworks,
-                "generated_at": timestamp,
-                "total_rules_evaluated": total_rules,
-                "summary_stats": {
-                    "actionable_rules": actionable_rules,
-                    "non_actionable_rules": total_rules - actionable_rules,
-                    "satisfied_coverage": satisfied_rules,
-                    "not_satisfied_coverage": not_satisfied_rules,
-                    "needs_further_recommendations": needs_further_recommendations
-                }
+                "generated_at": timestamp
             },
-            "all_validation_results": validation_results,  # Added: Complete LLM output storage
             "rules_needing_recommendations": []
         }
 
-        # Keep the existing filtered logic for backward compatibility
         for r in validation_results:
             if (
                 r["actionable"] == "Yes" and (
@@ -401,18 +324,4 @@ Explanation: <your explanation here>
                     }
                 })
 
-        result = self.mongo_client["Skylock"]["Rule_Validation_Reports"].insert_one(
-            report_data)
-        
-        # Print confirmation in backend terminal
-        print(f"✅ Rule Validation Report inserted into MongoDB: Skylock.Rule_Validation_Reports")
-        print(f"✅ Document ID: {result.inserted_id}")
-        
-        self.ws.send_progress_update(
-            session=self.sessionID,
-            message=f"✅ Compliance report saved: {total_rules} rules evaluated, {satisfied_rules} satisfied, {not_satisfied_rules} need attention"
-        )
-        self.ws.send_progress_update(
-            session=self.sessionID,
-            message=f"✅ Report ID: {result.inserted_id}"
-        )
+        print(f"✅ Compliance report inserted into MongoDB: Skylock.Rule_Validation_Reports")

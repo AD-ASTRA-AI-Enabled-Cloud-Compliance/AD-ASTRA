@@ -94,7 +94,8 @@ class QdrantDB():
                 "framework_chunks_308": 308,  # ← example dimension
                 "framework_rules_308": 308,
                 "framework_chunks_4544": 4544,  # ← example dimension
-                "framework_rules_4544": 4544
+                "framework_rules_4544": 4544,
+                "framework_rules_gemma2b": 308
 
 
 

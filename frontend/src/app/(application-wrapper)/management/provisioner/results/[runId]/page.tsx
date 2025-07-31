@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import styles from '../../provisioner.module.css';
 import { FiCheckCircle, FiTrash2, FiLoader, FiAlertTriangle, FiArrowLeft } from 'react-icons/fi';
+import Loader from '@/components/ui/loader';
 
 interface Resource {
   type: string;
@@ -75,6 +76,7 @@ export default function ResultsPage() {
         <FiCheckCircle className={styles.successIcon} />
         <h2 className={styles.successTitle}>Deployment Successful</h2>
         <p className={styles.successSubtitle}>Your infrastructure has been provisioned.</p>
+        <Loader />
       </div>
       <div className={styles.tableContainer}>
         <h3 className={styles.tableTitle}>Created Resources</h3>

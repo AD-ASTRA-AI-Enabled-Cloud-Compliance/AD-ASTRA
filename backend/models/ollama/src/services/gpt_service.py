@@ -21,13 +21,14 @@ def call_ollama(system_prompt: str, user_prompt: str, model: str, temperature: f
     session = GlobalRequestGenerate()
     ws = WebsocketService(session)
     prompt = f"{system_prompt.strip()}\n\n{user_prompt.strip()}"
-    OLLAMA_API = os.getenv("OLLAMA_API_URL")
+    OLLAMA_API = os.getenv("OLLAMA_API_URL") 
+    OLLAMA_API_PORT = os.getenv("OLLAMA_API_PORT") 
 
     ws.send_progress_update(
         message=f"Call made to Ollama API model {model}.",
     )
     try:
-        url = f"{OLLAMA_API}/api/generate"
+        url = f"{OLLAMA_API}:{OLLAMA_API_PORT}/api/generate"
         payload = {
             "model": model,
             "prompt": prompt,
@@ -79,8 +80,10 @@ def call_ollama(system_prompt: str, user_prompt: str, model: str, temperature: f
 
 
 class OllamaEmbedder:
-    def __init__(self, host: str = "http://localhost:11434", model: str = "gemma:2b") -> None:
-        self.host = host
+    def __init__(self, host: str = None, model: str = "gemma:2b") -> None:
+        OLLAMA_API = os.getenv("OLLAMA_API_URL")
+        OLLAMA_PORT = os.getenv("OLLAMA_API_PORT")
+        self.host = f"{OLLAMA_API}:{OLLAMA_PORT}" 
         self.model = model
         
         self.session = requests.Session()
