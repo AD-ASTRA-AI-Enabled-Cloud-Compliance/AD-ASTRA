@@ -5,7 +5,6 @@ import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/texta
 
 import { frameworks, providers } from '@/utils/commons'
 import GeneratedResult from './GeneratedResult'
