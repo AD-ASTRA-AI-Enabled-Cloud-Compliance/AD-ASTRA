@@ -5,7 +5,8 @@ import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
+import { Textarea } from '@/components/ui/texta
+
 import { frameworks, providers } from '@/utils/commons'
 import GeneratedResult from './GeneratedResult'
 
@@ -28,7 +29,7 @@ export default function RuleSelectorForm() {
   }
 
   const handleSubmit = async () => {
-    setTF('')
+    setTF('') 
     const res = await fetch('http://127.0.0.1:3001/generate_terraform', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

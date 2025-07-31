@@ -10,6 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { GaugeChartScore } from '@/components/GaugeChartScore';
 import Loader from '@/components/ui/loader';
+
 import RuleSelectorForm from '../terraform/components/RuleSelectorForm';
 import { frameworks, providers } from '@/utils/commons';
 import { Divider } from '@chakra-ui/react';
@@ -76,7 +77,7 @@ export default function TerraformComparisonPage() {
       })
     );
 
-
+    
     const res = await fetch('http://localhost:3030/upload_files', {
       method: 'POST',
       body: formData,
@@ -169,6 +170,7 @@ export default function TerraformComparisonPage() {
         <Card className="mx-auto p-6 space-y-4 flex flex-row">
           {/* <RuleSelectorForm /> */}
           <form onSubmit={handleSubmit(onUpload)} className="space-y-4">
+
             <CardTitle>
               Generate Terraform Baselines
             </CardTitle>
