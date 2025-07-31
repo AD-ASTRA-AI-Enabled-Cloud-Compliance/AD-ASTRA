@@ -148,8 +148,8 @@ class CloudContextGenerator:
             }
             result = self.mongo_client["Skylock"]["Cloud_Context_JSON"].insert_one(
                 mongo_doc)
-            self.ws.send_progress_update(session= self.sessionID, message = f"✅ Context inserted into MongoDB: Skylock.Cloud_Context_JSON")
-            self.ws.send_progress_update(session= self.sessionID, message = f"✅ Inserted with _id: {result.inserted_id}")
+            self.ws.send_progress_update(session= self.sessionID, message = f"Context inserted into MongoDB: Skylock.Cloud_Context_JSON")
+            self.ws.send_progress_update(session= self.sessionID, message = f"Inserted with _id: {result.inserted_id}")
 
             inserted_doc = self.mongo_client["Skylock"]["Cloud_Context_JSON"].find_one(
                 {"_id": result.inserted_id})

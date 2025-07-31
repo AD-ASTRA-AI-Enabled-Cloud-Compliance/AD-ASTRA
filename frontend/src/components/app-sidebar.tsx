@@ -13,6 +13,7 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
+  UploadCloudIcon,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -65,21 +66,10 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
       title: "Explore Rules",
       url: "/explore_rules",
     },
-    // {
-    //   title: "Chat",
-    //   url: "/chat",
-    // },
-  ];
-
-  const managementOnly = [
     {
-      title: "New Document",
-      url: "/process_documentation",
+      title: "Chat",
+      url: "/chat",
     },
-    // {
-    //   title: "Explore Documents",
-    //   url: "/explore_documents",
-    // },
     {
       title: "Generate Terraform",
       url: "/terraform",
@@ -94,9 +84,40 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
     }
   ];
 
+  const commonDeployRoutes = [
+    {
+      title: "Deployments",
+      url: "/deployments",
+      icon: UploadCloudIcon,
+    },
+    {
+      title: "Models",
+      url: "/models",
+      icon: Bot,
+    },
+    {
+      title: "Documentation",
+      url: "/documentation",
+      icon: BookOpen,
+    },
+  ];
+
+  const managementOnly = [
+    {
+      title: "New Document",
+      url: "/process_documentation",
+    },
+    {
+      title: "Explore Documents",
+      url: "/explore_documents",
+    },
+  ];
+
   // Select appropriate routes based on role
   const routes =
-    role === "management" ? [...commonRoutes, ...managementOnly] : commonRoutes;
+    role === "management"
+      ? [...commonRoutes, ...managementOnly]
+      : [...commonRoutes, ...commonDeployRoutes];
 
   // Add path prefix to each route
   const prefixedRoutes = routes.map((route) => ({
@@ -112,34 +133,29 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
       isActive: true,
       items: prefixedRoutes,
     },
-    // {
-    //   title: "Models",
-    //   url: "#",
-    //   icon: Bot,
-    //   items: [{ title: "System Prompts", url: "#" }],
-    // },
-    // {
-    //   title: "Documentation",
-    //   url: "#",
-    //   icon: BookOpen,
-    //   items: [
-    //     { title: "Introduction", url: "#" },
-    //     { title: "Get Started", url: "#" },
-    //     { title: "Tutorials", url: "#" },
-    //     { title: "Changelog", url: "#" },
-    //   ],
-    // },
-    // {
-    //   title: "Settings",
-    //   url: "#",
-    //   icon: Settings2,
-    //   items: [
-    //     { title: "General", url: "#" },
-    //     { title: "Team", url: "#" },
-    //     { title: "Billing", url: "#" },
-    //     { title: "Limits", url: "#" },
-    //   ],
-    // },
+    {
+      title: "Deployments",
+      url: "#",
+      icon: UploadCloudIcon,
+      items: commonDeployRoutes,
+    },
+    {
+      title: "Models",
+      url: "#",
+      icon: Bot,
+      items: [{ title: "System Prompts", url: "#" }],
+    },
+    {
+      title: "Documentation",
+      url: "#",
+      icon: BookOpen,
+      items: [
+        { title: "Introduction", url: "#" },
+        { title: "Get Started", url: "#" },
+        { title: "Tutorials", url: "#" },
+
+      ],
+    },
   ];
 }
 
@@ -175,15 +191,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={[]} />
+        <NavUser user={user} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navItems} />
-        {/* <NavProjects projects={projects} /> */}
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={user} />
-      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );
