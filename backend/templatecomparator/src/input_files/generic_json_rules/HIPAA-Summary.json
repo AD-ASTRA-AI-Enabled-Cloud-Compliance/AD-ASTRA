@@ -1,0 +1,22 @@
+[
+  {
+    "rule": "Implement appropriate security measures to protect protected health information from unauthorized access, use, or disclosure.",
+    "category": "Data Protection",
+    "framework": "HIPAA-Summary"
+  },
+  {
+    "rule": "Train employees on their obligations under the Privacy Rule.",
+    "category": "Identity and Access Management",
+    "framework": "HIPAA-Summary"
+  },
+  {
+    "rule": "Develop and implement a privacy notice that informs individuals about the covered entities' privacy practices and their rights.",
+    "category": "Data Protection",
+    "framework": "HIPAA-Summary"
+  },
+  {
+    "rule": "Implement a process for individuals to complain about a covered entity's compliance with the Privacy Rule.",
+    "category": "Data Protection",
+    "framework": "HIPAA-Summary"
+  }
+]
