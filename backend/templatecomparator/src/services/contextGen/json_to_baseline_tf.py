@@ -6,14 +6,13 @@
 # provider blocks, and automatic formatting and validation of the
 # ---------------------------------------------------------------------------------------------------------------
 
-import json
 import os
 import subprocess
-from datetime import datetime
 from io import StringIO
 
-from bson import ObjectId  # ✅ Added for ObjectId serialization
 from src.utils.templates import TerraformTemplateWriter
+from src.services.websocket.ServiceWebsocket import WebsocketService
+
 
 INDENT = "  "
 
@@ -23,17 +22,8 @@ class BaselineTerraformGenerator:
         self.sessionID = session.sessionID
         self.companyID = session.companyID
         self.userID = session.userID
+        self.ws = WebsocketService(session=session).send_progress_update
 
-        self.mongo = session.mongo
-        self.qdrant = session.qdrant
-
-        self.ws = session.ws.send_progress_update
-
-        self.temperature = session.temperature
-        self.chunk_size = session.chunk_size
-        self.chunk_overlap = session.chunk_overlap
-        self.top_k = session.top_k
-        self.max_token_limit = session.max_token_limit
 
     def generate_baseline_from_provider_json(self, json_data, tf_output_path=None, framework=None):
         data = json_data

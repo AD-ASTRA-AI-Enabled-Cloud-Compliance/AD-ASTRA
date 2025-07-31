@@ -68,7 +68,7 @@ export default function UploadForm() {
 >>>>>>> origin/dev
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.formIcon}><FiTool /></div>
-        <h2>Launch Infrastructure</h2>
+        <h2>Deploy Infrastructure</h2>
         <p>Provision cloud resources by uploading your Terraform files.</p>
         <div className={styles.fileInputGroup}>
           <label htmlFor="main_tf" className={styles.fileInputLabel}>
@@ -86,7 +86,7 @@ export default function UploadForm() {
           {status === 'loading' ? <><FiLoader className={styles.spinner}/> Deploying...</> : '🚀 Launch Infrastructure'}
         </button>
         <Button type="submit" disabled={status === 'loading'} >
-          {status === 'loading' ? <><FiLoader className={styles.spinner}/> Deploying...</> : '🚀 Launch Infrastructure'}
+          {status === 'loading' ? <><FiLoader className={styles.spinner}/> Deploying...</> : '🚀 Deploy Infrastructure'}
         </Button>
       </form>
       {status === 'error' && (

@@ -1,6 +1,8 @@
 commands
 .env
 .vscode
+.venv
+.env*
 
 .env
 __pycache__/

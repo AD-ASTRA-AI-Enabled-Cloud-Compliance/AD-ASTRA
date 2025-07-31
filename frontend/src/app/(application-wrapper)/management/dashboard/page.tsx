@@ -1,11 +1,13 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import D3Force from "@/components/ui/d3force"
 import Link from "next/link"
+import Loader from "@/components/ui/loader"
 
 export default function Page() {
+  const [isLoading, setIisLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
@@ -13,7 +15,18 @@ export default function Page() {
     if (role !== "management") {
       router.push("/dashboard")
     }
+    setIisLoading(false)
   }, [router])
+
+
+
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <Loader />
+    );
+  }
+
 
   return (
     <div>

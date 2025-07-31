@@ -17,6 +17,8 @@ export const GaugeChartScore: React.FC<Props> = ({ score }) => {
       textColor="#333"
       needleColor="#464A4F"
       needleBaseColor="#464A4F"
+
+      colors={['#EA4228', '#F5CD19', '#5BE12C']}
       formatTextValue={() => `${score}%`}
     />
   );

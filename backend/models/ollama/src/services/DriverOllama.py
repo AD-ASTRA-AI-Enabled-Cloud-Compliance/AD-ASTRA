@@ -3,6 +3,7 @@ import os
 from typing import List
 
 import requests
+import subprocess
 
 class DriverOllama():
     def __init__(self, session, model: str, temperature: float = 0.1,system_prompt: str = None, user_prompt: str = None):
@@ -49,6 +50,22 @@ class DriverOllama():
         """List available models on the Ollama server"""
         response = self.session.get(f"{self.url}/api/tags")
         response.raise_for_status()
+
+        # # Replace with your actual container name or ID
+        # container_name = "my_container"
+
+        # # Command to pull gemma:2b using ollama inside the container
+        # command = ["docker", "exec", container_name, "ollama", "pull", "gemma:2b"]
+
+        # # Run the command
+        # try:
+        #     subprocess.run(command, check=True)
+        #     print("Model pulled successfully.")
+        # except subprocess.CalledProcessError as e:
+        #     print(f"Error occurred: {e}")
+
+        print([m['name'] for m in response.json().get("models", [])])
+
         return [m['name'] for m in response.json().get("models", [])]
     
     def embed(self, text: str | List[str]) -> List[float] | List[List[float]]:
