@@ -549,7 +549,13 @@ const D3Force = () => {
             .text((d: any) => d.id)
             .attr("font-size", "14px")
             .attr("font-weight", "600")
-            .attr("fill", "#2d3748");
+            // Modified for enhancing management dashboard functionality
+            // Original hardcoded dark color (commented out): .attr("fill", "#2d3748");
+            // Fixed dark mode text visibility by using theme-aware colors instead of hardcoded values
+            // TO REVERT: Uncomment the line above and remove the two lines below
+            .attr("fill", "currentColor")
+            .attr("class", "text-foreground");
+            // End Modified for enhancing management dashboard functionality
 
         // Update positions on tick
         simulation.on("tick", () => {

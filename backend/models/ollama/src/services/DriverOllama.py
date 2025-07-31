@@ -27,8 +27,6 @@ class DriverOllama():
 
         print(f"📏 Context Length: {self.context_length}")
         print(f"📐 Embedding Length: {self.embedding_length}")
-        self.context_length = self.context_length
-        self.embedding_length = self.embedding_length
 
     def get_model_dimensions(self, model_info): 
         context_length = None
@@ -43,11 +41,12 @@ class DriverOllama():
         return context_length, embedding_length
         # "llama.context_length": 4096,
         # "llama.embedding_length": 5120,
-        pass
+        # pass
     
     def list_models(self) -> List[str]:
         """List available models on the Ollama server"""
-        response = self.session.get(f"{self.url}/api/tags")
+        # response = self.session.get(f"{self.url}/api/tags")
+        response = requests.get(f"{self.url}/api/tags")
         response.raise_for_status()
         return [m['name'] for m in response.json().get("models", [])]
     
@@ -80,7 +79,6 @@ class DriverOllama():
                 response = requests.post(url, json=payload)
                 print(f"Embedding for text: {response}")  # Debug print
                 embeddings.append(response.json()["embedding"])
-            # break
             except:
                 response.raise_for_status()
 
@@ -92,18 +90,18 @@ class DriverOllama():
     def chat(self):
 
         try:
-            url = f"{self.url}api/chat"
+            url = f"{self.url}/api/chat"
             self.ws.send_progress_update(message=url)
             payload = {
                 "model": self.model,
                 "messages": [
                     {
                         "role": "system",
-                        "content": system_prompt
+                        "content": self.system_prompt
                     },
                     {
                         "role": "user",
-                        "content": user_prompt
+                        "content": self.user_prompt
                     }
                 ],
                 "stream": False,

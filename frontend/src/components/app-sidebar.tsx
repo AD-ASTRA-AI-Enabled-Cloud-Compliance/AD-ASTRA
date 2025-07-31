@@ -35,23 +35,23 @@ const user = {
 };
 
 // Static project list (optional)
-const projects = [
-  {
-    name: "Design Engineering",
-    url: "#",
-    icon: Frame,
-  },
-  {
-    name: "Sales & Marketing",
-    url: "#",
-    icon: PieChart,
-  },
-  {
-    name: "Travel",
-    url: "#",
-    icon: Map,
-  },
-];
+// const projects = [
+//   {
+//     name: "Design Engineering",
+//     url: "#",
+//     icon: Frame,
+//   },
+//   {
+//     name: "Sales & Marketing",
+//     url: "#",
+//     icon: PieChart,
+//   },
+//   {
+//     name: "Travel",
+//     url: "#",
+//     icon: Map,
+//   },
+// ];
 
 // Sidebar items per role with path prefixing
 function getNavItemsByRole(role: string, pathPrefix: string) {
@@ -65,10 +65,10 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
       title: "Explore Rules",
       url: "/explore_rules",
     },
-    {
-      title: "Chat",
-      url: "/chat",
-    },
+    // {
+    //   title: "Chat",
+    //   url: "/chat",
+    // },
   ];
 
   const managementOnly = [
@@ -76,10 +76,10 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
       title: "New Document",
       url: "/process_documentation",
     },
-    {
-      title: "Explore Documents",
-      url: "/explore_documents",
-    },
+    // {
+    //   title: "Explore Documents",
+    //   url: "/explore_documents",
+    // },
     {
       title: "Generate Terraform",
       url: "/terraform",
@@ -106,40 +106,40 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
 
   return [
     {
-      title: "Frameworks",
+      title: "Sections",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: prefixedRoutes,
     },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [{ title: "System Prompts", url: "#" }],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        { title: "Introduction", url: "#" },
-        { title: "Get Started", url: "#" },
-        { title: "Tutorials", url: "#" },
-        { title: "Changelog", url: "#" },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        { title: "General", url: "#" },
-        { title: "Team", url: "#" },
-        { title: "Billing", url: "#" },
-        { title: "Limits", url: "#" },
-      ],
-    },
+    // {
+    //   title: "Models",
+    //   url: "#",
+    //   icon: Bot,
+    //   items: [{ title: "System Prompts", url: "#" }],
+    // },
+    // {
+    //   title: "Documentation",
+    //   url: "#",
+    //   icon: BookOpen,
+    //   items: [
+    //     { title: "Introduction", url: "#" },
+    //     { title: "Get Started", url: "#" },
+    //     { title: "Tutorials", url: "#" },
+    //     { title: "Changelog", url: "#" },
+    //   ],
+    // },
+    // {
+    //   title: "Settings",
+    //   url: "#",
+    //   icon: Settings2,
+    //   items: [
+    //     { title: "General", url: "#" },
+    //     { title: "Team", url: "#" },
+    //     { title: "Billing", url: "#" },
+    //     { title: "Limits", url: "#" },
+    //   ],
+    // },
   ];
 }
 
@@ -179,7 +179,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navItems} />
-        <NavProjects projects={projects} />
+        {/* <NavProjects projects={projects} /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />
