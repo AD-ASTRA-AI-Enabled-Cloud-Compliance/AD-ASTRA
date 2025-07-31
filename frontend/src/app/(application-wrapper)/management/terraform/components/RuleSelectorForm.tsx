@@ -5,10 +5,11 @@ import { Card, CardContent, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
+import { Textarea } from '@/components/ui/texta
 
-const frameworks = ['GDPR', 'PCI', 'HIPAA', 'NIST']
-const providers = ['aws', 'azure', 'gcp']
+import { frameworks, providers } from '@/utils/commons'
+import GeneratedResult from './GeneratedResult'
+
 
 export default function RuleSelectorForm() {
   const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([])
@@ -48,160 +49,58 @@ export default function RuleSelectorForm() {
     <div>
       <Card>
         <CardTitle>
-          Generate Terraform Bas elines
+          Generate Terraform Baselines
         </CardTitle>
         <CardContent>
-          <p >
-            Select the frameworks and cloud providers to generate Terraform baselines.
+          <p className=' fs-xs'>
+            *Select the frameworks and cloud providers to generate Terraform baselines for.
           </p>
 
           <p className={styles.sectionTitle}>Select Framework(s)</p>
-          <div>
+          <div className='flex flex-row gap-1 pb-1'>
             {frameworks.map((fw) => (
-              <div key={fw} >
+              <div key={fw} className='flex flex-row gap-1 pb-1'>
                 <Checkbox
                   id={`${fw}-checkbox`}
                   checked={selectedFrameworks.includes(fw)}
                   onCheckedChange={() => handleToggle(fw, selectedFrameworks, setSelectedFrameworks)}
-
-
                 />
-                <Label
-                  htmlFor={`${fw}-checkbox`}
-                >
-                  {fw}
-                </Label>
+                <Label htmlFor={`${fw}-checkbox`}>{fw}</Label>
               </div>
             ))}
           </div>
 
           <p className={styles.sectionTitle}>Select Framework(s)</p>
-          <div>
+          <div className='flex flex-row gap-1 pb-1'>
 
             {providers.map((provider) => (
-              <div key={provider} >
+              <div key={provider} className='flex flex-row gap-1 pb-1'>
                 <Checkbox
+                  disabled={provider !== "azure"}
                   id={`${provider}-checkbox`}
                   checked={selectedProviders.includes(provider)}
                   onCheckedChange={() =>
                     handleToggle(provider, selectedProviders, setSelectedProviders)}
-
-
                 />
-                <Label
-                  htmlFor={`${provider}-checkbox`}
-                >
+                <Label htmlFor={`${provider}-checkbox`}>
                   {provider.toUpperCase()}
+                  <span className='text-xs '>
+                  {provider != "azure" ? "(Coming soon...)" : ""}
+
+                  </span>
                 </Label>
               </div>
             ))}
           </div>
 
 
-          <Button className={styles.button} onClick={handleSubmit}>
+          <Button onClick={handleSubmit}>
             Generate Terraform Baselines
           </Button>
 
         </CardContent>
       </Card>
-      {tf && (
-
-        <Card>
-          <CardContent className='whitespace-pre-wrap text-xs'>
-            <Textarea>
-
-            {tf}
-            </Textarea>
-          </CardContent>
-        </Card>
-      )}
-      <div className={styles.formContainer}>
-        {/* Framework selection */}
-        <div>
-          <p className={styles.sectionTitle}>Select Framework(s)</p>
-          <div className={styles.checkboxGroup}>
-            {frameworks.map((fw) => (
-              <label key={fw} className={styles.checkboxItem}>
-                <input
-                  type="checkbox"
-                  checked={selectedFrameworks.includes(fw)}
-                  onChange={() => handleToggle(fw, selectedFrameworks, setSelectedFrameworks)}
-                />
-                {fw}
-              </label>
-            ))}
-          </div>
-        </div>
-
-        {/* Provider selection */}
-        <div>
-          <p className={styles.sectionTitle}>Select Cloud Provider(s)</p>
-          <div className={styles.checkboxGroup}>
-            {providers.map((provider) => (
-              <label key={provider} className={styles.checkboxItem}>
-                <input
-                  type="checkbox"
-                  checked={selectedProviders.includes(provider)}
-                  onChange={() =>
-                    handleToggle(provider, selectedProviders, setSelectedProviders)
-                  }
-                />
-                {provider.toUpperCase()}
-              </label>
-            ))}
-          </div>
-        </div>
-
-        {/* Format selection – Temporarily Disabled */}
-        {/* 
-      <div>
-        <p className={styles.sectionTitle}>Select Output Format(s)</p>
-        <div className={styles.checkboxGroup}>
-          {formats.map((fmt) => (
-            <label key={fmt.value} className={styles.checkboxItem}>
-              <input
-                type="checkbox"
-                checked={selectedFormats.includes(fmt.value)}
-                onChange={() =>
-                  handleToggle(fmt.value, selectedFormats, setSelectedFormats)
-                }
-              />
-              {fmt.label}
-            </label>
-          ))}
-        </div>
-      </div>
-      */}
-
-        {/* Submit Button */}
-        <button className={styles.button} onClick={handleSubmit}>
-          Generate Terraform Baselines
-        </button>
-
-        {/* Download links */}
-        {downloadLinks.length > 0 && (
-          <div className={styles.downloadList}>
-            <strong>Download Files:</strong>
-            <ul>
-              {downloadLinks.map((link, idx) => {
-                const filename = link.split('/').pop()
-                return (
-                  <li key={idx}>
-                    <a
-                      href={`http://localhost:3001/${link}`}
-                      download
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {filename}
-                    </a>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-        )}
-      </div>
+      <GeneratedResult result={tf}/>
     </div>
   )
 }

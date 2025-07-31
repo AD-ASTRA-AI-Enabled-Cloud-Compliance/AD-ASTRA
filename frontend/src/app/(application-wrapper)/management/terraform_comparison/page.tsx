@@ -3,13 +3,17 @@
 import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { GaugeChartScore } from '@/components/GaugeChartScore';
 import Loader from '@/components/ui/loader';
+
+import RuleSelectorForm from '../terraform/components/RuleSelectorForm';
+import { frameworks, providers } from '@/utils/commons';
+import { Divider } from '@chakra-ui/react';
 
 type UploadForm = {
   // baseline_file: FileList;   // renamed from pci_file
@@ -24,7 +28,7 @@ type Resource = {
 
 export default function TerraformComparisonPage() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [unauthorized, setUnauthorized] = useState(false);
   const { register, handleSubmit } = useForm<UploadForm>();
   const [resources, setResources] = useState<Resource[]>([]);
@@ -34,27 +38,23 @@ export default function TerraformComparisonPage() {
   const [step, setStep] = useState<'upload' | 'select'>('upload');
   const [message, setMessage] = useState('');
 
-  // Authentication and authorization check
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
-    
-    if (!token) {
-      // No token, redirect to login
-      router.push("/login");
-      return;
-    }
-    
-    // Only management role can access this page
-    if (role !== "management") {
-      setUnauthorized(true);
-      setTimeout(() => {
-        router.push("/user/dashboard");
-      }, 2000); // wait 2 seconds before redirect
-    } else {
-      setIsLoading(false);
-    }
-  }, [router]);
+
+  const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([])
+  const [selectedProviders, setSelectedProviders] = useState<string[]>([])
+  const [downloadLinks, setDownloadLinks] = useState<string[]>([])
+  const [tf, setTF] = useState<string>()
+
+  const handleToggle = (
+    value: string,
+    group: string[],
+    setGroup: (group: string[]) => void
+  ) => {
+    const updatedGroup = group.includes(value)
+      ? group.filter((item) => item !== value)
+      : [...group, value]
+    setGroup(updatedGroup)
+  }
+
 
   async function onUpload(data: UploadForm) {
     const formData = new FormData();
@@ -63,18 +63,36 @@ export default function TerraformComparisonPage() {
     if (data.tfvars_file?.[0]) {
       formData.append('tfvars_file', data.tfvars_file[0]);
     }
+    // Add selected frameworks/providers as JSON string
+    formData.append(
+      'frameworks',
+      JSON.stringify({
+        frameworks: selectedFrameworks,
+      })
+    );
+    formData.append(
+      'providers',
+      JSON.stringify({
+        providers: selectedProviders,
+      })
+    );
 
+    
     const res = await fetch('http://localhost:3030/upload_files', {
       method: 'POST',
       body: formData,
-    });
 
+    });
+    console.log(res)
     if (!res.ok) {
       setMessage('Upload failed.');
-      return;
+      const errorText = await res.text();
+      console.error("Server responded with an error:", errorText);
+      throw new Error(`Upload failed: ${res.status}`);
     }
 
     const json = await res.json();
+    console.log(json.gaps);
     setResources(json.gaps);
     setStep('select');
     setMessage('✅ Files uploaded. Select resources to patch.');
@@ -89,6 +107,8 @@ export default function TerraformComparisonPage() {
   }
 
   async function onGenerate() {
+
+    setMergedContent('');
     const body = {
       selected_resources: selected.map((r) => `${r.type}::${r.name}`),
     };
@@ -144,20 +164,78 @@ export default function TerraformComparisonPage() {
   }
 
   return (
-    <div className="p-6 space-y-4">
+    <div className="p-6 space-y-4 ">
+      {step}
       {step === 'upload' ? (
-        <Card className="max-w-md mx-auto p-6 space-y-4">
+        <Card className="mx-auto p-6 space-y-4 flex flex-row">
+          {/* <RuleSelectorForm /> */}
           <form onSubmit={handleSubmit(onUpload)} className="space-y-4">
+
+            <CardTitle>
+              Generate Terraform Baselines
+            </CardTitle>
+
+            <div>
+              <Label className='pb-1 text-xs'>
+                *Select the frameworks and cloud providers to generate Terraform baselines for.
+              </Label>
+              <Divider />
+
+              <Label className='pb-1'>Select Framework(s)</Label>
+
+              <div className='flex flex-row gap-1 pb-1'>
+                {frameworks.map((fw) => (
+                  <div key={fw} className='flex flex-row gap-1 pb-1'>
+                    <Checkbox
+                      id={`${fw}-checkbox`}
+                      checked={selectedFrameworks.includes(fw)}
+                      onCheckedChange={() => handleToggle(fw, selectedFrameworks, setSelectedFrameworks)}
+                    />
+                    <Label htmlFor={`${fw}-checkbox`}>{fw}</Label>
+                  </div>
+                ))}
+              </div>
+
+              <Label className='pb-1'>Select Framework(s)</Label>
+              <div className='flex flex-row gap-1'>
+
+                {providers.map((provider) => (
+                  <div key={provider} className='flex flex-row gap-1 pb-1'>
+                    <Checkbox
+                      disabled={provider !== "azure"}
+                      id={`${provider}-checkbox`}
+                      checked={selectedProviders.includes(provider)}
+                      onCheckedChange={() =>
+                        handleToggle(provider, selectedProviders, setSelectedProviders)}
+                    />
+                    <Label htmlFor={`${provider}-checkbox`}>
+                      {provider.toUpperCase()}
+                      <span className='text-xs '>
+                        {provider != "azure" ? "(Coming soon...)" : ""}
+
+                      </span>
+                    </Label>
+                  </div>
+                ))}
+              </div>
+
+              <Divider />
+
+              {/* <Button onClick={handleSubmit}>
+            Generate Terraform Baselines
+          </Button> */}
+
+            </div>
             {/* <div>
               <Label>Baseline (.tf)</Label>
               <Input type="file" {...register('baseline_file', { required: true })} />
             </div> */}
             <div>
-              <Label>Actual Infra File (.tf)</Label>
+              <Label className='pb-1 '>Actual Infra File (.tf)</Label>
               <Input type="file" {...register('actual_file', { required: true })} />
             </div>
             <div>
-              <Label>Optional tfvars</Label>
+              <Label className='pb-1'>tfvars<span className='text-xs text-muted-foreground'>(Optional)</span></Label>
               <Input type="file" {...register('tfvars_file')} />
             </div>
             <Button type="submit">Upload & Compare</Button>

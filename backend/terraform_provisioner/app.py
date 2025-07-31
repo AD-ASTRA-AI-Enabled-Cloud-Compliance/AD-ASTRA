@@ -132,4 +132,6 @@ def destroy_infrastructure():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
+    
+    print("Provisioner")
     app.run(debug=True, port=5001)
