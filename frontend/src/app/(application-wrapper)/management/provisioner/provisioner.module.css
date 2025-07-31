@@ -23,7 +23,7 @@
   justify-content: center;
   min-height: 80vh;
   font-size: 1.25rem;
-  color: white;
+  color: var(--text-secondary);
   gap: 1rem;
 }
 

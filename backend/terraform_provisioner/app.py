@@ -20,7 +20,6 @@ def parse_terraform_json_output(json_data):
     if not json_data or "values" not in json_data or "root_module" not in json_data["values"]:
         return resources
 
-
     for resource in json_data["values"]["root_module"].get("resources", []):
         details = ""
         if resource["type"] == "azurerm_public_ip":
@@ -38,19 +37,6 @@ def parse_terraform_json_output(json_data):
     return resources
 
 # Endpoint for the new results page to fetch deployment data
-
-
-@app.route('/')
-def health_check():
-    return {
-        "data": {
-            "status": "ok",
-            "message": "Server is running",
-            "data": "Welcome to the TF Provisioner API"
-        }
-    }
-
-
 @app.route('/api/deployment/<run_id>', methods=['GET'])
 def get_deployment_status(run_id):
     run_dir = os.path.abspath(os.path.join(DEPLOYMENTS_DIR, run_id))
@@ -69,44 +55,25 @@ def get_deployment_status(run_id):
 @app.route('/api/provision', methods=['POST'])
 def provision_infrastructure():
     if 'main_tf' not in request.files:
-        print("main.tf file is required.")
         return jsonify({"status": "error", "message": "main.tf file is required."}), 400
 
     main_tf_file = request.files['main_tf']
     vars_file = request.files.get('variables_tf')
     run_id = str(uuid.uuid4())
     run_dir = os.path.join(DEPLOYMENTS_DIR, run_id)
-    if not os.path.exists(run_dir):
-        os.makedirs(run_dir)
-    if main_tf_file:
-        main_tf_file.save(os.path.join(run_dir, 'main.tf'))
-    if vars_file:
-        vars_file.save(os.path.join(run_dir, 'terraform.tfvars'))
-    # return 'asd'
+    os.makedirs(run_dir)
     try:
+        main_tf_file.save(os.path.join(run_dir, 'main.tf'))
+        if vars_file:
+            vars_file.save(os.path.join(run_dir, 'terraform.tfvars'))
         script_path = os.path.join(BASE_DIR, 'provision.sh')
-        print(script_path)
-        
-        # subprocess.run(['bash', script_path, run_dir], capture_output=True, text=True, check=True)
-        # subprocess.run(['sh', script_path, run_dir],capture_output=True, text=True, check=True)
-        # subprocess.run(['wsl', 'bash', script_path, run_dir], capture_output=True, text=True, check=True)
-        bash_path = r"C:\Program Files\Git\bin\bash.exe"  # adjust if different
-
-        subprocess.run([bash_path, script_path, run_dir], capture_output=True, text=True, check=True)
-
-
+        subprocess.run(['bash', script_path, run_dir], capture_output=True, text=True, check=True)
         return jsonify({"status": "success", "message": "Redirecting to results...", "run_id": run_id}), 200
     except subprocess.CalledProcessError as e:
         shutil.rmtree(run_dir)
-        print(e.stdout)
-        print(e.stderr)
-        print("Terraform execution failed.")
         return jsonify({"status": "error", "message": "Terraform execution failed.", "log": f"{e.stdout}\n{e.stderr}"}), 500
     except Exception as e:
         shutil.rmtree(run_dir)
-        
-        print("Terraform execution failed 2.")
-        print(e)
         return jsonify({"status": "error", "message": str(e)}), 500
 
 # Endpoint for destroying resources

@@ -4,10 +4,7 @@ import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from '../provisioner.module.css';
 import { FiUploadCloud, FiTool, FiAlertTriangle, FiLoader } from 'react-icons/fi';
-<<<<<<< HEAD
-=======
 import { Button } from '@/components/ui/button';
->>>>>>> origin/dev
 
 type Status = 'idle' | 'loading' | 'error';
 
@@ -61,14 +58,11 @@ export default function UploadForm() {
   };
 
   return (
-<<<<<<< HEAD
     <div className={styles.formWrapper}>
-=======
     <div >
->>>>>>> origin/dev
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.formIcon}><FiTool /></div>
-        <h2>Deploy Infrastructure</h2>
+        <h2>Launch Infrastructure</h2>
         <p>Provision cloud resources by uploading your Terraform files.</p>
         <div className={styles.fileInputGroup}>
           <label htmlFor="main_tf" className={styles.fileInputLabel}>
@@ -83,11 +77,9 @@ export default function UploadForm() {
           <input id="variables_tf" type="file" accept=".tfvars" onChange={(e) => setVarsFile(e.target.files ? e.target.files[0] : null)} />
         </div>
         <button type="submit" disabled={status === 'loading'} className={styles.button}>
-          {status === 'loading' ? <><FiLoader className={styles.spinner}/> Deploying...</> : '🚀 Launch Infrastructure'}
+          {status === 'loading' ? <><FiLoader className={styles.spinner}/> Deploying...</> : 'Launch Infrastructure'}
         </button>
-        <Button type="submit" disabled={status === 'loading'} >
-          {status === 'loading' ? <><FiLoader className={styles.spinner}/> Deploying...</> : '🚀 Deploy Infrastructure'}
-        </Button>
+      
       </form>
       {status === 'error' && (
         <div className={styles.errorContainer}>
@@ -99,6 +91,7 @@ export default function UploadForm() {
             </div>
         </div>
       )}
+    </div>
     </div>
   );
 }
