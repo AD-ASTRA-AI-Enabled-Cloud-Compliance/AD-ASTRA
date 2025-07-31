@@ -44,5 +44,6 @@ def health_check():
 
 # ✅ Run the app
 if __name__ == "__main__":
+    print("RBAC")
     port = int(os.getenv("PORT", 3010))
     app.run(host="0.0.0.0", port=port, debug=True)

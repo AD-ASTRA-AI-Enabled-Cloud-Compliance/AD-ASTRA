@@ -3,6 +3,7 @@ import React from 'react';
 
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
+import RuleSelectorForm from '../terraform/components/RuleSelectorForm';
 
 type FormData = {
   pci_file: FileList;
@@ -66,6 +67,7 @@ export  function TerraformForm() {
         </div>
 
         <br />
+        <RuleSelectorForm />
         <button type="submit">Upload & Compare</button>
       </form>
 
