@@ -6,7 +6,7 @@ import io
 
 
 def load_terraform_file(path):
-    with open(path, 'r') as f:
+    with open(path, "r", encoding="utf-8") as f:
         return hcl2.load(f)
 
 

@@ -37,16 +37,17 @@ def merge_patch_into_actual(actual_path, patch_path, final_output_path):
         raise FileNotFoundError(f"Actual infra file not found: {actual_path}")
 
     if not os.path.exists(patch_path):
+        print(f"Patch file not found: {patch_path}")
         raise FileNotFoundError(f"Patch file not found: {patch_path}")
 
-    with open(actual_path, 'r') as f1:
+    with open(actual_path, 'r', encoding="utf-8" ) as f1:
         actual = f1.read()
 
-    with open(patch_path, 'r') as f2:
+    with open(patch_path, 'r', encoding="utf-8") as f2:
         patch = f2.read()
 
-    with open(final_output_path, 'w') as f_out:
-        f_out.write(actual.strip())
+    with open(final_output_path, 'w', encoding='utf-8') as f_out:
+        f_out.write(actual.strip()) 
         f_out.write("\n\n# --- Patch from PCI Compliance ---\n\n")
         f_out.write(patch.strip())
         f_out.write("\n")

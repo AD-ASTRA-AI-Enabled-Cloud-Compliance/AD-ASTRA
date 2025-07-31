@@ -1,10 +1,15 @@
 
 
+from datetime import datetime
+from flask_cors import CORS
+from flask import Flask, request, jsonify, render_template
 import json
 import os
 import sys
 
+import requests
 
+from src.services.contextGen.context_generator import CloudContextGenerator
 from src.utils.utils import apply_variables_to_patch_text, parse_tfvars_file
 from src.services.GlobalController import GlobalRequestGenerate
 from src.utils.db_connection import MongoDB
@@ -13,18 +18,16 @@ from src.patcher import generate_patch_file, merge_patch_into_actual
 from src.tf_parser import load_terraform_file, parse_terraform_from_string
 from src.services.websocket.ServiceWebsocket import WebsocketService
 
+from bson import ObjectId
+from flask import session
+
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-from flask import Flask, request, jsonify, render_template
-from flask_cors import CORS
-from datetime import datetime
-
-
-
-
 
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key_here'
+
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 # Define absolute paths for folders and output files
@@ -50,7 +53,7 @@ app.config['tfvars_path'] = ''
 @app.route('/')
 def index():
     # Serve a simple landing page or UI (optional)
-    
+
     return {
         "data": {
             "status": "ok",
@@ -58,6 +61,7 @@ def index():
             "data": "Welcome to the TF template comparator API"
         }
     }
+
 
 @app.route('/upload_files', methods=['POST'])
 def upload_files():
@@ -70,11 +74,61 @@ def upload_files():
     # baseline_file = request.files.get('baseline_file')
     actual_file = request.files.get('actual_file')
     tfvars_file = request.files.get('tfvars_file')  # Optional
-    
+
+    print("🔔 /generate_terraform endpoint called")
+    final_tf = None
+    session = GlobalRequestGenerate()
+
+    frameworks_raw = request.form.get('frameworks')
+    print(f"frameworks_raw type {type(frameworks_raw)}")
+    print(frameworks_raw)
+    if frameworks_raw:
+        try:
+            frameworks_data = json.loads(frameworks_raw)
+            selected_frameworks = [f.strip().upper() for f in frameworks_data.get('frameworks', [])]
+        except Exception as e:
+            return jsonify({"error": f"Invalid frameworks format: {e}"}), 400
+    else:
+        selected_frameworks = []
+
+    # Parse providers
+    providers_raw = request.form.get('providers')
+    if providers_raw:
+        try:
+            providers_data = json.loads(providers_raw)
+            selected_providers = [p.strip().lower() for p in providers_data.get('providers', [])]
+        except Exception as e:
+            return jsonify({"error": f"Invalid providers format: {e}"}), 400
+    else:
+        selected_providers = []
+
+    print("Frameworks:", selected_frameworks)
+    print("Providers:", selected_providers)
+
+    print("✅ Backend: /generate_terraform called")
+    print("📂 Frameworks selected:", selected_frameworks)
+    print("📦 Providers selected:", selected_providers)
+
+    # ✅ Generate cloud context + Terraform all in one step
+    context_gen = CloudContextGenerator(ws=ws, session=session)
+    final_tf = context_gen.generate_context(
+        selected_frameworks, selected_providers)
+
+    # print(final_tf)
+
+    def convert_objectid(obj):
+        if isinstance(obj, ObjectId):
+            return str(obj)
+        if isinstance(obj, dict):
+            return {k: convert_objectid(v) for k, v in obj.items()}
+        if isinstance(obj, list):
+            return [convert_objectid(i) for i in obj]
+        return obj
+
+
     ws.send_progress_update(
         message=" Uploading files..."
     )
-
     # Validate required files presence
     # if not baseline_file or not actual_file:
     #     return jsonify({"error": "Baseline and actual files are required"}), 400
@@ -82,11 +136,13 @@ def upload_files():
     # Define local file paths for saving uploads
     baseline_path = os.path.join(UPLOAD_FOLDER, 'baseline.tf')
     actual_path = os.path.join(UPLOAD_FOLDER, 'actual.tf')
-    tfvars_path = os.path.join(UPLOAD_FOLDER, 'vars.tfvars') if tfvars_file else None
+    tfvars_path = os.path.join(
+        UPLOAD_FOLDER, 'vars.tfvars') if tfvars_file else None
 
     # Save uploaded files to disk
     # baseline_file.save(baseline_path)
     actual_file.save(actual_path)
+    
     if tfvars_file:
         tfvars_file.save(tfvars_path)
 
@@ -95,11 +151,12 @@ def upload_files():
     ws.send_progress_update(
         message=" Validation Start TF file..."
     )
-    baseline_data = parse_terraform_from_string("terraform_hipaa_azure_20250710_204619.tf")
+    baseline_data = parse_terraform_from_string(
+        "terraform_hipaa_azure_20250710_204619.tf")
     actual_data = load_terraform_file(actual_path)
 
     ws.send_progress_update(
-        message=" Evaluationg TF file..."
+        message=f"Evaluating TF file... {actual_path}"
     )
 
     # Find gaps between baseline and actual infrastructure resources
@@ -108,15 +165,21 @@ def upload_files():
     # Calculate total baseline resources and initial compliance score
     total_baseline = len(baseline_data.get("resource", []))
     matched = total_baseline - len(gaps)
-    initial_score = round((matched / total_baseline) * 100) if total_baseline else 0
+    initial_score = round((matched / total_baseline) *
+                          100) if total_baseline else 0
 
     # Store state for later patch generation
     app.config['last_gaps'] = gaps
     app.config['baseline_total'] = total_baseline
     app.config['actual_path'] = actual_path
     app.config['tfvars_path'] = tfvars_path
-
+    
     # Return gaps and initial score for frontend UI display
+    ws.send_progress_update(
+        message="Validation completed."
+    )
+    print(gaps)
+    print(initial_score)
     return jsonify({
         "gaps": gaps,
         "initial_score": initial_score
@@ -130,14 +193,19 @@ def generate_patch():
     apply variable substitution, merge patch into actual infra file,
     calculate updated compliance score, and save result in MongoDB.
     """
+    session = GlobalRequestGenerate()
+    ws = WebsocketService(session)
     data = request.get_json()
     selected = data.get('selected_resources', [])
     selected_pairs = [s.split("::") for s in selected]
 
+
     all_gaps = app.config.get('last_gaps', [])
     # Filter only selected gaps to patch
-    filtered_gaps = [g for g in all_gaps if [g['type'], g['name']] in selected_pairs]
+    filtered_gaps = [g for g in all_gaps if [
+        g['type'], g['name']] in selected_pairs]
 
+    print(filtered_gaps)
     # Generate patch Terraform file for filtered gaps
     generate_patch_file(filtered_gaps, OUTPUT_PATCH)
 
@@ -156,12 +224,16 @@ def generate_patch():
     with open(FINAL_PATCH, 'w') as f:
         f.write(final_patch)
 
-    actual_path = app.config.get('actual_path')
-    # Merge final patch into actual Terraform file to produce merged infra file
+    actual_path = os.path.join(BASE_DIR, 'uploads', 'actual.tf')
+   
+    ws.send_progress_update(
+        message=f"Evaluating TF file... {actual_path}"
+    )
+    # Merge final patch into actual Terraform file to produce merg
     merge_patch_into_actual(actual_path, FINAL_PATCH, FINAL_INFRA)
 
     # Read merged infra file content
-    with open(FINAL_INFRA, 'r') as f:
+    with open(FINAL_INFRA, 'r', encoding="utf-8") as f:
         merged_content = f.read()
 
     # Calculate compliance score after patching
@@ -177,6 +249,8 @@ def generate_patch():
     # })
 
     # Return merged content and updated compliance score for frontend display
+
+    print("score" ,score)
     return jsonify({
         "merged_patch": merged_content,
         "compliance_score": score
@@ -184,7 +258,7 @@ def generate_patch():
 
 
 if __name__ == '__main__':
-    
+    print("Template Comparator")
     MongoDB().healthCheck()
     app.run(debug=True,
             port=3030)
