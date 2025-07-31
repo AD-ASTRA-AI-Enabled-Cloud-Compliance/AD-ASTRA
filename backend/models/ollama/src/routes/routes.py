@@ -128,9 +128,9 @@ from bson import ObjectId
 def generate_terraform():
     print("🔔 /generate_terraform endpoint called")
     try:
-        data = request.get_json()
         session = GlobalRequestGenerate()
 
+        data = request.get_json()
         selected_frameworks = [f.strip().upper() for f in data.get("frameworks", [])]
         selected_providers = [p.strip().lower() for p in data.get("providers", [])]
 
