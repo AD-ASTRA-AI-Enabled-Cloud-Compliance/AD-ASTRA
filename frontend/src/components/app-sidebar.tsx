@@ -36,23 +36,23 @@ const user = {
 };
 
 // Static project list (optional)
-// const projects = [
-//   {
-//     name: "Design Engineering",
-//     url: "#",
-//     icon: Frame,
-//   },
-//   {
-//     name: "Sales & Marketing",
-//     url: "#",
-//     icon: PieChart,
-//   },
-//   {
-//     name: "Travel",
-//     url: "#",
-//     icon: Map,
-//   },
-// ];
+const projects = [
+  {
+    name: "Design Engineering",
+    url: "#",
+    icon: Frame,
+  },
+  {
+    name: "Sales & Marketing",
+    url: "#",
+    icon: PieChart,
+  },
+  {
+    name: "Travel",
+    url: "#",
+    icon: Map,
+  },
+];
 
 // Sidebar items per role with path prefixing
 function getNavItemsByRole(role: string, pathPrefix: string) {
@@ -85,21 +85,6 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
   ];
 
   const commonDeployRoutes = [
-    {
-      title: "Deployments",
-      url: "/deployments",
-      icon: UploadCloudIcon,
-    },
-    {
-      title: "Models",
-      url: "/models",
-      icon: Bot,
-    },
-    {
-      title: "Documentation",
-      url: "/documentation",
-      icon: BookOpen,
-    },
   ];
 
   const managementOnly = [
@@ -127,7 +112,7 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
 
   return [
     {
-      title: "Sections",
+      title: "Frameworks",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
