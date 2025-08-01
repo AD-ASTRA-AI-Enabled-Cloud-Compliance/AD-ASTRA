@@ -4,641 +4,376 @@
     "azuread_service_principal": {
       "resource_type": "azuread_service_principal",
       "creation_strategy": "reference_only",
-      "compliance_tags": [
-        "pci",
-        "hipaa",
-        "nist",
-        "gdpr"
-      ],
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
       "settings": {
-        "client_id": "${var.azuread_service_principal_client_id}"
-      },
-      "category": "iam",
-      "description": "Represents an identity in Azure AD used for app authentication and authorization."
+        "client_id": "${var.service_principal_application_id}"
+      }
     },
     "azurerm_role_definition": {
       "resource_type": "azurerm_role_definition",
       "creation_strategy": "always_create",
-      "compliance_tags": [
-        "pci",
-        "hipaa",
-        "nist",
-        "gdpr"
-      ],
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
       "settings": {
-        "assignable_scopes": "${var.azurerm_role_definition_assignable_scopes}",
-        "description": "${var.azurerm_role_definition_description}",
-        "name": "${var.azurerm_role_definition_name}",
-        "role_definition_id": "${var.azurerm_role_definition_role_definition_id}",
-        "scope": "${var.azurerm_role_definition_scope}"
-      },
-      "category": "iam",
-      "description": "Defines custom roles for fine-grained access control in Azure."
+        "name": "${var.role_definition_name}",
+        "scope": "${var.role_definition_scope}",
+        "description": "Custom role definition for compliance.",
+        "permissions": [
+          {
+            "actions": "${var.role_definition_actions}",
+            "not_actions": "${var.role_definition_not_actions}",
+            "data_actions": "${var.role_definition_data_actions}",
+            "not_data_actions": "${var.role_definition_not_data_actions}"
+          }
+        ],
+        "assignable_scopes": ["${var.role_definition_scope}"]
+      }
     },
     "azurerm_role_assignment": {
       "resource_type": "azurerm_role_assignment",
       "creation_strategy": "always_create",
-      "compliance_tags": [
-        "pci",
-        "hipaa",
-        "nist",
-        "gdpr"
-      ],
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
       "settings": {
-        "condition": "${var.azurerm_role_assignment_condition}",
-        "condition_version": "${var.azurerm_role_assignment_condition_version}",
-        "delegated_managed_identity_resource_id": "${var.azurerm_role_assignment_delegated_managed_identity_resource_id}",
-        "description": "${var.azurerm_role_assignment_description}",
-        "name": "${var.azurerm_role_assignment_name}",
-        "principal_id": "${var.azurerm_role_assignment_principal_id}",
-        "principal_type": "${var.azurerm_role_assignment_principal_type}",
-        "role_definition_id": "${var.azurerm_role_assignment_role_definition_id}",
-        "role_definition_name": "${var.azurerm_role_assignment_role_definition_name}",
-        "scope": "${var.azurerm_role_assignment_scope}",
-        "skip_service_principal_aad_check": "${var.azurerm_role_assignment_skip_service_principal_aad_check}"
-      },
-      "category": "iam",
-      "description": "Assigns users or identities to roles for enforcing RBAC policies."
+        "scope": "${var.role_assignment_scope}",
+        "role_definition_name": "${var.role_definition_name}",
+        "principal_id": "${var.principal_id}"
+      }
     },
     "azurerm_policy_definition": {
       "resource_type": "azurerm_policy_definition",
       "creation_strategy": "always_create",
-      "compliance_tags": [
-        "pci",
-        "hipaa",
-        "nist",
-        "gdpr"
-      ],
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
       "settings": {
-        "description": "${var.azurerm_policy_definition_description}",
-        "display_name": "${var.azurerm_policy_definition_display_name}",
-        "management_group_id": "${var.azurerm_policy_definition_management_group_id}",
-        "metadata": "${var.azurerm_policy_definition_metadata}",
-        "mode": "${var.azurerm_policy_definition_mode}",
-        "name": "${var.azurerm_policy_definition_name}",
-        "parameters": "${var.azurerm_policy_definition_parameters}",
-        "policy_rule": "${var.azurerm_policy_definition_policy_rule}",
-        "policy_type": "${var.azurerm_policy_definition_policy_type}"
-      },
-      "category": "policy",
-      "description": "Defines rules and effects to enforce compliance across resources."
+        "name": "${var.policy_name}",
+        "policy_type": "Custom",
+        "mode": "All",
+        "display_name": "${var.policy_display_name}",
+        "description": "${var.policy_description}",
+        "policy_rule": "${var.policy_rule_json}"
+      }
     },
     "azurerm_resource_policy_assignment": {
       "resource_type": "azurerm_resource_policy_assignment",
       "creation_strategy": "always_create",
-      "compliance_tags": [
-        "pci",
-        "hipaa",
-        "nist",
-        "gdpr"
-      ],
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
       "settings": {
-        "description": "${var.azurerm_resource_policy_assignment_description}",
-        "display_name": "${var.azurerm_resource_policy_assignment_display_name}",
-        "enforce": "${var.azurerm_resource_policy_assignment_enforce}",
-        "location": "${var.azurerm_resource_policy_assignment_location}",
-        "metadata": "${var.azurerm_resource_policy_assignment_metadata}",
-        "name": "${var.azurerm_resource_policy_assignment_name}",
-        "not_scopes": "${var.azurerm_resource_policy_assignment_not_scopes}",
-        "parameters": "${var.azurerm_resource_policy_assignment_parameters}",
-        "policy_definition_id": "${var.azurerm_resource_policy_assignment_policy_definition_id}",
-        "resource_id": "${var.azurerm_resource_policy_assignment_resource_id}"
-      },
-      "category": "policy",
-      "description": "Applies a policy to a specific scope like a resource group or subscription."
+        "name": "${var.policy_assignment_name}",
+        "policy_definition_id": "${var.policy_definition_id}",
+        "resource_id": "${var.resource_id}"
+      }
     },
     "azurerm_key_vault": {
       "resource_type": "azurerm_key_vault",
       "creation_strategy": "check_if_exists_then_create",
-      "compliance_tags": [
-        "pci",
-        "hipaa",
-        "nist",
-        "gdpr"
-      ],
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
       "settings": {
-        "access_policy": "${var.azurerm_key_vault_access_policy}",
-        "enable_rbac_authorization": true,
-        "enabled_for_deployment": true,
-        "enabled_for_disk_encryption": true,
-        "enabled_for_template_deployment": true,
-        "location": "${var.azurerm_key_vault_location}",
-        "name": "${var.azurerm_key_vault_name}",
-        "public_network_access_enabled": false,
-        "purge_protection_enabled": true,
-        "resource_group_name": "${var.azurerm_key_vault_resource_group_name}",
-        "sku_name": "${var.azurerm_key_vault_sku_name}",
+        "name": "${var.key_vault_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "location": "${var.location}",
+        "tenant_id": "${var.tenant_id}",
+        "sku_name": "${var.key_vault_sku_name}",
         "soft_delete_retention_days": 90,
-        "tags": "${var.azurerm_key_vault_tags}",
-        "tenant_id": "${var.azurerm_key_vault_tenant_id}"
-      },
-      "category": "storage",
-      "description": "Securely stores keys, secrets, and certificates with RBAC and soft-delete capabilities."
+        "purge_protection_enabled": true,
+        "enabled_for_disk_encryption": true,
+        "enable_rbac_authorization": true
+      }
     },
     "azurerm_storage_account": {
       "resource_type": "azurerm_storage_account",
       "creation_strategy": "check_if_exists_then_create",
-      "compliance_tags": [
-        "pci",
-        "hipaa",
-        "nist",
-        "gdpr"
-      ],
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
       "settings": {
-        "access_tier": "${var.azurerm_storage_account_access_tier}",
-        "account_kind": "${var.azurerm_storage_account_account_kind}",
-        "account_replication_type": "${var.azurerm_storage_account_account_replication_type}",
-        "account_tier": "${var.azurerm_storage_account_account_tier}",
-        "allow_nested_items_to_be_public": false,
-        "allowed_copy_scope": "${var.azurerm_storage_account_allowed_copy_scope}",
-        "cross_tenant_replication_enabled": "${var.azurerm_storage_account_cross_tenant_replication_enabled}",
-        "default_to_oauth_authentication": true,
-        "dns_endpoint_type": "${var.azurerm_storage_account_dns_endpoint_type}",
-        "edge_zone": "${var.azurerm_storage_account_edge_zone}",
-        "https_traffic_only_enabled": true,
-        "infrastructure_encryption_enabled": true,
-        "is_hns_enabled": "${var.azurerm_storage_account_is_hns_enabled}",
-        "large_file_share_enabled": "${var.azurerm_storage_account_large_file_share_enabled}",
-        "local_user_enabled": "${var.azurerm_storage_account_local_user_enabled}",
-        "location": "${var.azurerm_storage_account_location}",
+        "name": "${var.storage_account_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "location": "${var.location}",
+        "account_tier": "Standard",
+        "account_replication_type": "LRS",
         "min_tls_version": "TLS1_2",
-        "name": "${var.azurerm_storage_account_name}",
-        "nfsv3_enabled": "${var.azurerm_storage_account_nfsv3_enabled}",
-        "provisioned_billing_model_version": "${var.azurerm_storage_account_provisioned_billing_model_version}",
-        "public_network_access_enabled": false,
-        "queue_encryption_key_type": "${var.azurerm_storage_account_queue_encryption_key_type}",
-        "resource_group_name": "${var.azurerm_storage_account_resource_group_name}",
-        "sftp_enabled": "${var.azurerm_storage_account_sftp_enabled}",
-        "shared_access_key_enabled": false,
-        "table_encryption_key_type": "${var.azurerm_storage_account_table_encryption_key_type}",
-        "tags": "${var.azurerm_storage_account_tags}"
-      },
-      "category": "storage",
-      "description": "Provides secure storage for blobs, files, queues, and tables with encryption and access control."
+        "shared_access_key_enabled": false
+      }
     },
     "azurerm_network_security_group": {
       "resource_type": "azurerm_network_security_group",
       "creation_strategy": "check_if_exists_then_create",
-      "compliance_tags": [
-        "pci",
-        "hipaa",
-        "nist"
-      ],
+      "compliance_tags": ["pci", "hipaa", "nist"],
       "settings": {
-        "location": "${var.azurerm_network_security_group_location}",
-        "name": "${var.azurerm_network_security_group_name}",
-        "resource_group_name": "${var.azurerm_network_security_group_resource_group_name}",
-        "security_rule": "${var.azurerm_network_security_group_security_rule}",
-        "tags": "${var.azurerm_network_security_group_tags}"
-      },
-      "category": "network",
-      "description": "Controls inbound/outbound traffic using security rules to protect resources."
+        "name": "${var.network_security_group_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "location": "${var.location}",
+        "security_rule": [
+          {
+            "name": "AllowSSHRestricted",
+            "priority": 100,
+            "direction": "Inbound",
+            "access": "Allow",
+            "protocol": "Tcp",
+            "source_port_range": "*",
+            "destination_port_range": "22",
+            "source_address_prefix": "${var.allowed_admin_ip}",
+            "destination_address_prefix": "*"
+          }
+        ]
+      }
     },
     "azurerm_firewall": {
       "resource_type": "azurerm_firewall",
       "creation_strategy": "check_if_exists_then_create",
-      "compliance_tags": [
-        "pci",
-        "nist"
-      ],
+      "compliance_tags": ["pci", "nist"],
       "settings": {
-        "dns_proxy_enabled": true,
-        "dns_servers": "${var.azurerm_firewall_dns_servers}",
-        "firewall_policy_id": "${var.azurerm_firewall_firewall_policy_id}",
-        "location": "${var.azurerm_firewall_location}",
-        "name": "${var.azurerm_firewall_name}",
-        "private_ip_ranges": "${var.azurerm_firewall_private_ip_ranges}",
-        "resource_group_name": "${var.azurerm_firewall_resource_group_name}",
-        "sku_name": "${var.azurerm_firewall_sku_name}",
-        "sku_tier": "${var.azurerm_firewall_sku_tier}",
-        "tags": "${var.azurerm_firewall_tags}",
-        "threat_intel_mode": "Alert",
-        "zones": "${var.azurerm_firewall_zones}"
-      },
-      "category": "network",
-      "description": "Stateful firewall that controls and logs traffic flows across virtual networks."
+        "name": "${var.firewall_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "location": "${var.location}",
+        "sku_name": "AZFW_VNet",
+        "sku_tier": "Standard"
+      }
     },
     "azurerm_virtual_network_gateway": {
       "resource_type": "azurerm_virtual_network_gateway",
       "creation_strategy": "check_if_exists_then_create",
-      "compliance_tags": [
-        "pci",
-        "nist"
-      ],
+      "compliance_tags": ["pci", "nist"],
       "settings": {
-        "active_active": "${var.azurerm_virtual_network_gateway_active_active}",
-        "bgp_route_translation_for_nat_enabled": "${var.azurerm_virtual_network_gateway_bgp_route_translation_for_nat_enabled}",
-        "default_local_network_gateway_id": "${var.azurerm_virtual_network_gateway_default_local_network_gateway_id}",
-        "dns_forwarding_enabled": "${var.azurerm_virtual_network_gateway_dns_forwarding_enabled}",
-        "edge_zone": "${var.azurerm_virtual_network_gateway_edge_zone}",
-        "enable_bgp": "${var.azurerm_virtual_network_gateway_enable_bgp}",
-        "generation": "${var.azurerm_virtual_network_gateway_generation}",
-        "ip_sec_replay_protection_enabled": "${var.azurerm_virtual_network_gateway_ip_sec_replay_protection_enabled}",
-        "location": "${var.azurerm_virtual_network_gateway_location}",
-        "name": "${var.azurerm_virtual_network_gateway_name}",
-        "private_ip_address_enabled": "${var.azurerm_virtual_network_gateway_private_ip_address_enabled}",
-        "remote_vnet_traffic_enabled": "${var.azurerm_virtual_network_gateway_remote_vnet_traffic_enabled}",
-        "resource_group_name": "${var.azurerm_virtual_network_gateway_resource_group_name}",
-        "sku": "${var.azurerm_virtual_network_gateway_sku}",
-        "tags": "${var.azurerm_virtual_network_gateway_tags}",
-        "type": "${var.azurerm_virtual_network_gateway_type}",
-        "virtual_wan_traffic_enabled": "${var.azurerm_virtual_network_gateway_virtual_wan_traffic_enabled}",
-        "vpn_type": "${var.azurerm_virtual_network_gateway_vpn_type}",
+        "name": "${var.vnet_gateway_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "location": "${var.location}",
+        "type": "Vpn",
+        "vpn_type": "RouteBased",
+        "sku": "VpnGw1",
+        "enable_bgp": false,
+        "active_active": false,
         "ip_configuration": [
           {
-            "name": "${var.azurerm_virtual_network_gateway_ip_config_name}",
-            "public_ip_address_id": "${var.azurerm_virtual_network_gateway_public_ip_id}",
-            "subnet_id": "${var.azurerm_virtual_network_gateway_subnet_id}"
+            "name": "vnetGatewayConfig",
+            "public_ip_address_id": "${var.vnet_gateway_public_ip_id}",
+            "subnet_id": "${var.vnet_gateway_subnet_id}"
           }
         ]
-      },
-      "category": "network",
-      "description": "Manages encrypted cross-premises or VNet-to-VNet connectivity via VPN."
+      }
     },
     "azurerm_recovery_services_vault": {
       "resource_type": "azurerm_recovery_services_vault",
       "creation_strategy": "check_if_exists_then_create",
-      "compliance_tags": [
-        "hipaa"
-      ],
+      "compliance_tags": ["hipaa"],
       "settings": {
-        "classic_vmware_replication_enabled": "${var.azurerm_recovery_services_vault_classic_vmware_replication_enabled}",
-        "cross_region_restore_enabled": "${var.azurerm_recovery_services_vault_cross_region_restore_enabled}",
-        "immutability": "${var.azurerm_recovery_services_vault_immutability}",
-        "location": "${var.azurerm_recovery_services_vault_location}",
-        "name": "${var.azurerm_recovery_services_vault_name}",
-        "public_network_access_enabled": "${var.azurerm_recovery_services_vault_public_network_access_enabled}",
-        "resource_group_name": "${var.azurerm_recovery_services_vault_resource_group_name}",
-        "sku": "${var.azurerm_recovery_services_vault_sku}",
-        "soft_delete_enabled": "${var.azurerm_recovery_services_vault_soft_delete_enabled}",
-        "storage_mode_type": "${var.azurerm_recovery_services_vault_storage_mode_type}",
-        "tags": "${var.azurerm_recovery_services_vault_tags}"
-      },
-      "category": "storage",
-      "description": "Manages backup and disaster recovery for Azure resources."
+        "name": "${var.recovery_vault_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "location": "${var.location}",
+        "sku": "${var.recovery_vault_sku}",
+        "soft_delete_enabled": true
+      }
     },
     "azurerm_backup_policy_vm": {
       "resource_type": "azurerm_backup_policy_vm",
       "creation_strategy": "always_create",
-      "compliance_tags": [
-        "hipaa"
-      ],
+      "compliance_tags": ["hipaa"],
       "settings": {
-        "instant_restore_retention_days": "${var.azurerm_backup_policy_vm_instant_restore_retention_days}",
-        "name": "${var.azurerm_backup_policy_vm_name}",
-        "policy_type": "${var.azurerm_backup_policy_vm_policy_type}",
-        "recovery_vault_name": "${var.azurerm_backup_policy_vm_recovery_vault_name}",
-        "resource_group_name": "${var.azurerm_backup_policy_vm_resource_group_name}",
-        "timezone": "${var.azurerm_backup_policy_vm_timezone}",
+        "name": "${var.vm_backup_policy_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "recovery_vault_name": "${var.recovery_vault_name}",
         "backup": [
           {
-            "frequency": "${var.azurerm_backup_policy_vm_frequency}",
-            "time": "${var.azurerm_backup_policy_vm_time}"
+            "frequency": "Daily",
+            "time": "23:00"
+          }
+        ],
+        "retention_daily": [
+          {
+            "count": 7
           }
         ]
-      },
-      "category": "backup",
-      "description": "Defines backup policies for virtual machines, including retention and restore settings."
+      }
     },
     "azurerm_backup_protected_vm": {
       "resource_type": "azurerm_backup_protected_vm",
       "creation_strategy": "always_create",
-      "compliance_tags": [
-        "hipaa"
-      ],
+      "compliance_tags": ["hipaa"],
       "settings": {
-        "backup_policy_id": "${var.azurerm_backup_protected_vm_backup_policy_id}",
-        "exclude_disk_luns": [],
-        "include_disk_luns": [],
-        "protection_state": "Protected",
-        "recovery_vault_name": "${var.azurerm_backup_protected_vm_recovery_vault_name}",
-        "resource_group_name": "${var.azurerm_backup_protected_vm_resource_group_name}",
-        "source_vm_id": "${var.azurerm_backup_protected_vm_source_vm_id}"
-      },
-      "category": "backup",
-      "description": "Enables protection of VMs under defined backup policies."
+        "resource_group_name": "${var.resource_group_name}",
+        "recovery_vault_name": "${var.recovery_vault_name}",
+        "source_vm_id": "${var.vm_id}",
+        "backup_policy_id": "${var.vm_backup_policy_id}"
+      }
     },
     "azurerm_virtual_machine_extension": {
       "resource_type": "azurerm_virtual_machine_extension",
       "creation_strategy": "always_create",
-      "compliance_tags": [
-        "pci",
-        "hipaa",
-        "nist"
-      ],
+      "compliance_tags": ["pci", "hipaa", "nist"],
       "settings": {
-        "auto_upgrade_minor_version": true,
-        "automatic_upgrade_enabled": true,
-        "failure_suppression_enabled": false,
-        "name": "${var.azurerm_virtual_machine_extension_name}",
-        "protected_settings": "${var.azurerm_virtual_machine_extension_protected_settings}",
-        "provision_after_extensions": "${var.azurerm_virtual_machine_extension_provision_after_extensions}",
-        "publisher": "${var.azurerm_virtual_machine_extension_publisher}",
-        "settings": "${var.azurerm_virtual_machine_extension_settings}",
-        "tags": "${var.azurerm_virtual_machine_extension_tags}",
-        "type": "${var.azurerm_virtual_machine_extension_type}",
-        "type_handler_version": "${var.azurerm_virtual_machine_extension_type_handler_version}",
-        "virtual_machine_id": "${var.azurerm_virtual_machine_extension_virtual_machine_id}"
-      },
-      "category": "compute",
-      "description": "Adds VM agents or extensions for monitoring, security, or configuration management."
+        "name": "IaaSAntimalware",
+        "virtual_machine_id": "${var.vm_id}",
+        "publisher": "Microsoft.Azure.Security",
+        "type": "IaaSAntimalware",
+        "type_handler_version": "1.5",
+        "settings": "{\"AntimalwareEnabled\": true, \"RealtimeProtectionEnabled\": true, \"ScheduledScanSettings\": {\"isEnabled\": true, \"day\": 1, \"time\": 120}}"
+      }
     },
     "azurerm_monitor_diagnostic_setting": {
       "resource_type": "azurerm_monitor_diagnostic_setting",
       "creation_strategy": "always_create",
-      "compliance_tags": [
-        "pci",
-        "hipaa",
-        "nist",
-        "gdpr"
-      ],
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
       "settings": {
-        "eventhub_authorization_rule_id": "${var.azurerm_monitor_diagnostic_setting_eventhub_authorization_rule_id}",
-        "eventhub_name": "${var.azurerm_monitor_diagnostic_setting_eventhub_name}",
-        "log_analytics_destination_type": "Dedicated",
-        "log_analytics_workspace_id": "${var.azurerm_monitor_diagnostic_setting_log_analytics_workspace_id}",
-        "name": "${var.azurerm_monitor_diagnostic_setting_name}",
-        "partner_solution_id": "${var.azurerm_monitor_diagnostic_setting_partner_solution_id}",
-        "storage_account_id": "${var.azurerm_monitor_diagnostic_setting_storage_account_id}",
-        "target_resource_id": "${var.azurerm_monitor_diagnostic_setting_target_resource_id}",
-        "enabled_metric": [
+        "name": "${var.diagnostic_setting_name}",
+        "target_resource_id": "${var.target_resource_id}",
+        "log_analytics_workspace_id": "${var.log_analytics_workspace_id}",
+        "enabled_log": [
+          { "category": "AuditEvent" }
+        ],
+        "metric": [
           {
-            "category": "AllMetrics"
+            "category": "AllMetrics",
+            "enabled": true
           }
         ]
-      },
-      "category": "monitoring",
-      "description": "Sends diagnostic logs and metrics to Log Analytics, Event Hubs, or Storage."
+      }
     },
     "azurerm_monitor_action_group": {
       "resource_type": "azurerm_monitor_action_group",
       "creation_strategy": "always_create",
-      "compliance_tags": [
-        "pci",
-        "nist"
-      ],
+      "compliance_tags": ["pci", "nist"],
       "settings": {
-        "enabled": "${var.azurerm_monitor_action_group_enabled}",
-        "location": "${var.azurerm_monitor_action_group_location}",
-        "name": "${var.azurerm_monitor_action_group_name}",
-        "resource_group_name": "${var.azurerm_monitor_action_group_resource_group_name}",
-        "short_name": "${var.azurerm_monitor_action_group_short_name}",
-        "tags": "${var.azurerm_monitor_action_group_tags}"
-      },
-      "category": "monitoring",
-      "description": "Defines groups to receive alerts and notifications from Azure Monitor."
+        "name": "${var.monitor_action_group_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "short_name": "${var.monitor_action_group_short_name}",
+        "email_receiver": [
+          {
+            "name": "default",
+            "email_address": "${var.monitor_email_address}"
+          }
+        ]
+      }
     },
     "azurerm_monitor_activity_log_alert": {
       "resource_type": "azurerm_monitor_activity_log_alert",
       "creation_strategy": "always_create",
-      "compliance_tags": [
-        "pci",
-        "nist"
-      ],
+      "compliance_tags": ["pci", "nist"],
       "settings": {
-        "description": "${var.azurerm_monitor_activity_log_alert_description}",
-        "enabled": "${var.azurerm_monitor_activity_log_alert_enabled}",
-        "location": "${var.azurerm_monitor_activity_log_alert_location}",
-        "name": "${var.azurerm_monitor_activity_log_alert_name}",
-        "resource_group_name": "${var.azurerm_monitor_activity_log_alert_resource_group_name}",
-        "scopes": "${var.azurerm_monitor_activity_log_alert_scopes}",
-        "tags": "${var.azurerm_monitor_activity_log_alert_tags}",
+        "name": "${var.activity_log_alert_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "scopes": ["${var.activity_log_alert_scope}"],
         "criteria": [
           {
-            "category": "${var.azurerm_monitor_activity_log_alert_criteria_category}",
-            "operation_name": "${var.azurerm_monitor_activity_log_alert_criteria_operation_name}"
+            "category": "Administrative",
+            "operation_name": "Microsoft.Resources/subscriptions/resourceGroups/write",
+            "level": "Error"
+          }
+        ],
+        "action": [
+          {
+            "action_group_id": "${var.alert_action_group_id}"
           }
         ]
-      },
-      "category": "monitoring",
-      "description": "Triggers alerts based on activity log events for auditing and incident response."
+      }
     },
     "azurerm_security_center_contact": {
       "resource_type": "azurerm_security_center_contact",
       "creation_strategy": "always_create",
-      "compliance_tags": [
-        "pci",
-        "nist"
-      ],
+      "compliance_tags": ["pci", "nist"],
       "settings": {
+        "email": "${var.security_contact_email}",
+        "phone": "${var.security_contact_phone}",
         "alert_notifications": true,
-        "alerts_to_admins": true,
-        "email": "${var.azurerm_security_center_contact_email}",
-        "name": "${var.azurerm_security_center_contact_name}",
-        "phone": "${var.azurerm_security_center_contact_phone}"
-      },
-      "category": "security",
-      "description": "Registers contact for Azure Security Center alerts and notifications."
+        "alerts_to_admins": true
+      }
     },
     "azurerm_security_center_subscription_pricing": {
       "resource_type": "azurerm_security_center_subscription_pricing",
       "creation_strategy": "always_create",
-      "compliance_tags": [
-        "pci",
-        "nist"
-      ],
+      "compliance_tags": ["pci", "nist"],
       "settings": {
-        "resource_type": "${var.azurerm_security_center_subscription_pricing_resource_type}",
-        "subplan": "${var.azurerm_security_center_subscription_pricing_subplan}",
-        "tier": "${var.azurerm_security_center_subscription_pricing_tier}"
-      },
-      "category": "security",
-      "description": "Sets pricing tier for Azure Defender and security center coverage."
+        "tier": "${var.security_center_tier}",
+        "resource_type": "VirtualMachines"
+      }
     },
     "azurerm_log_analytics_workspace": {
       "resource_type": "azurerm_log_analytics_workspace",
       "creation_strategy": "check_if_exists_then_create",
-      "compliance_tags": [
-        "pci",
-        "nist"
-      ],
+      "compliance_tags": ["pci", "nist"],
       "settings": {
-        "allow_resource_only_permissions": "${var.azurerm_log_analytics_workspace_allow_resource_only_permissions}",
-        "cmk_for_query_forced": "${var.azurerm_log_analytics_workspace_cmk_for_query_forced}",
-        "daily_quota_gb": "${var.azurerm_log_analytics_workspace_daily_quota_gb}",
-        "data_collection_rule_id": "${var.azurerm_log_analytics_workspace_data_collection_rule_id}",
-        "immediate_data_purge_on_30_days_enabled": "${var.azurerm_log_analytics_workspace_immediate_data_purge_on_30_days_enabled}",
-        "internet_ingestion_enabled": false,
-        "internet_query_enabled": false,
-        "local_authentication_enabled": false,
-        "location": "${var.azurerm_log_analytics_workspace_location}",
-        "name": "${var.azurerm_log_analytics_workspace_name}",
-        "reservation_capacity_in_gb_per_day": "${var.azurerm_log_analytics_workspace_reservation_capacity_in_gb_per_day}",
-        "resource_group_name": "${var.azurerm_log_analytics_workspace_resource_group_name}",
-        "retention_in_days": 365,
-        "sku": "${var.azurerm_log_analytics_workspace_sku}",
-        "tags": "${var.azurerm_log_analytics_workspace_tags}"
-      },
-      "category": "monitoring",
-      "description": "Central log store for diagnostics and monitoring of Azure resources."
+        "name": "${var.log_analytics_workspace_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "location": "${var.location}",
+        "sku": "${var.log_analytics_workspace_sku}",
+        "retention_in_days": "${var.log_analytics_retention_days}"
+      }
     },
     "azurerm_mssql_server": {
       "resource_type": "azurerm_mssql_server",
       "creation_strategy": "check_if_exists_then_create",
-      "compliance_tags": [
-        "pci",
-        "hipaa",
-        "nist",
-        "gdpr"
-      ],
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
       "settings": {
-        "administrator_login": "${var.azurerm_mssql_server_administrator_login}",
-        "administrator_login_password": "${var.azurerm_mssql_server_administrator_login_password}",
-        "administrator_login_password_wo": "${var.azurerm_mssql_server_administrator_login_password_wo}",
-        "administrator_login_password_wo_version": "${var.azurerm_mssql_server_administrator_login_password_wo_version}",
-        "connection_policy": "${var.azurerm_mssql_server_connection_policy}",
-        "express_vulnerability_assessment_enabled": true,
-        "location": "${var.azurerm_mssql_server_location}",
+        "name": "${var.mssql_server_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "location": "${var.location}",
+        "version": "12.0",
+        "administrator_login": "${var.mssql_admin_login}",
+        "administrator_login_password": "${var.mssql_admin_password}",
         "minimum_tls_version": "1.2",
-        "name": "${var.azurerm_mssql_server_name}",
-        "outbound_network_restriction_enabled": true,
-        "primary_user_assigned_identity_id": "${var.azurerm_mssql_server_primary_user_assigned_identity_id}",
-        "public_network_access_enabled": false,
-        "resource_group_name": "${var.azurerm_mssql_server_resource_group_name}",
-        "tags": "${var.azurerm_mssql_server_tags}",
-        "transparent_data_encryption_key_vault_key_id": "${var.azurerm_mssql_server_transparent_data_encryption_key_vault_key_id}",
-        "version": "${var.azurerm_mssql_server_version}",
-        "identity": {
-          "type": "UserAssigned",
-          "identity_ids": [
-            "${var.azurerm_mssql_server_primary_user_assigned_identity_id}"
-          ]
-        }
-      },
-      "category": "database",
-      "description": "Manages a logical SQL Server including admin credentials and encryption settings."
+        "public_network_access_enabled": false
+      }
     },
     "azurerm_mssql_database": {
       "resource_type": "azurerm_mssql_database",
       "creation_strategy": "check_if_exists_then_create",
-      "compliance_tags": [
-        "pci",
-        "hipaa",
-        "nist",
-        "gdpr"
-      ],
+      "compliance_tags": ["pci", "hipaa", "nist", "gdpr"],
       "settings": {
-        "auto_pause_delay_in_minutes": "${var.azurerm_mssql_database_auto_pause_delay_in_minutes}",
-        "collation": "${var.azurerm_mssql_database_collation}",
-        "create_mode": "${var.azurerm_mssql_database_create_mode}",
-        "creation_source_database_id": "${var.azurerm_mssql_database_creation_source_database_id}",
-        "elastic_pool_id": "${var.azurerm_mssql_database_elastic_pool_id}",
-        "enclave_type": "${var.azurerm_mssql_database_enclave_type}",
-        "geo_backup_enabled": true,
-        "ledger_enabled": true,
-        "license_type": "${var.azurerm_mssql_database_license_type}",
-        "maintenance_configuration_name": "${var.azurerm_mssql_database_maintenance_configuration_name}",
-        "max_size_gb": "${var.azurerm_mssql_database_max_size_gb}",
-        "min_capacity": "${var.azurerm_mssql_database_min_capacity}",
-        "name": "${var.azurerm_mssql_database_name}",
-        "read_replica_count": "${var.azurerm_mssql_database_read_replica_count}",
-        "read_scale": "${var.azurerm_mssql_database_read_scale}",
-        "recover_database_id": "${var.azurerm_mssql_database_recover_database_id}",
-        "recovery_point_id": "${var.azurerm_mssql_database_recovery_point_id}",
-        "restore_dropped_database_id": "${var.azurerm_mssql_database_restore_dropped_database_id}",
-        "restore_long_term_retention_backup_id": "${var.azurerm_mssql_database_restore_long_term_retention_backup_id}",
-        "restore_point_in_time": "${var.azurerm_mssql_database_restore_point_in_time}",
-        "sample_name": "${var.azurerm_mssql_database_sample_name}",
-        "secondary_type": "${var.azurerm_mssql_database_secondary_type}",
-        "server_id": "${var.azurerm_mssql_database_server_id}",
-        "sku_name": "${var.azurerm_mssql_database_sku_name}",
-        "storage_account_type": "${var.azurerm_mssql_database_storage_account_type}",
-        "tags": "${var.azurerm_mssql_database_tags}",
-        "transparent_data_encryption_enabled": true,
-        "transparent_data_encryption_key_automatic_rotation_enabled": true,
-        "transparent_data_encryption_key_vault_key_id": "${var.azurerm_mssql_database_transparent_data_encryption_key_vault_key_id}",
-        "zone_redundant": true
-      },
-      "category": "database",
-      "description": "Creates secure SQL databases with encryption, redundancy, and performance settings."
+        "name": "${var.mssql_database_name}",
+        "server_id": "${azurerm_mssql_server.mssql_server.id}",
+        "sku_name": "${var.mssql_sku_name}",
+        "transparent_data_encryption_enabled": true
+      }
     },
     "azurerm_mssql_server_security_alert_policy": {
       "resource_type": "azurerm_mssql_server_security_alert_policy",
       "creation_strategy": "always_create",
-      "compliance_tags": [
-        "pci",
-        "hipaa",
-        "nist"
-      ],
+      "compliance_tags": ["pci", "hipaa", "nist"],
       "settings": {
-        "disabled_alerts": "${var.azurerm_mssql_server_security_alert_policy_disabled_alerts}",
-        "email_account_admins": "${var.azurerm_mssql_server_security_alert_policy_email_account_admins}",
-        "email_addresses": "${var.azurerm_mssql_server_security_alert_policy_email_addresses}",
-        "resource_group_name": "${var.azurerm_mssql_server_security_alert_policy_resource_group_name}",
-        "retention_days": "${var.azurerm_mssql_server_security_alert_policy_retention_days}",
-        "server_name": "${var.azurerm_mssql_server_security_alert_policy_server_name}",
-        "state": "${var.azurerm_mssql_server_security_alert_policy_state}",
-        "storage_account_access_key": "${var.azurerm_mssql_server_security_alert_policy_storage_account_access_key}",
-        "storage_endpoint": "${var.azurerm_mssql_server_security_alert_policy_storage_endpoint}"
-      },
-      "category": "database",
-      "description": "Configures security alerts for suspicious activities on SQL Servers."
+        "resource_group_name": "${var.resource_group_name}",
+        "server_name": "${var.mssql_server_name}",
+        "state": "Enabled",
+        "email_account_admins": true,
+        "email_addresses": ["${var.security_contact_email}"],
+        "retention_days": 30,
+        "storage_endpoint": "${var.alert_storage_endpoint}",
+        "storage_account_access_key": "${var.alert_storage_access_key}"
+      }
     },
     "azurerm_mssql_firewall_rule": {
       "resource_type": "azurerm_mssql_firewall_rule",
       "creation_strategy": "always_create",
-      "compliance_tags": [
-        "pci",
-        "hipaa",
-        "nist"
-      ],
+      "compliance_tags": ["pci", "hipaa", "nist"],
       "settings": {
-        "end_ip_address": "${var.azurerm_mssql_firewall_rule_end_ip_address}",
-        "name": "${var.azurerm_mssql_firewall_rule_name}",
-        "server_id": "${var.azurerm_mssql_firewall_rule_server_id}",
-        "start_ip_address": "${var.azurerm_mssql_firewall_rule_start_ip_address}"
-      },
-      "category": "database",
-      "description": "Defines IP address-based firewall rules for SQL Server access."
+        "name": "AllowAzureServices",
+        "server_id": "${var.mssql_server_id}",
+        "start_ip_address": "${var.allowed_admin_ip}",
+        "end_ip_address": "${var.allowed_admin_ip}"
+      }
     },
-    "azurerm_postgresql_flexible_server": {
-      "resource_type": "azurerm_postgresql_flexible_server",
+    "azurerm_postgresql_server": {
+      "resource_type": "azurerm_postgresql_server",
       "creation_strategy": "check_if_exists_then_create",
-      "compliance_tags": [
-        "pci",
-        "hipaa",
-        "nist"
-      ],
+      "compliance_tags": ["pci", "hipaa", "nist"],
       "settings": {
-        "name": "${var.azurerm_postgresql_flexible_server_name}",
-        "location": "${var.azurerm_postgresql_flexible_server_location}",
-        "resource_group_name": "${var.azurerm_postgresql_flexible_server_resource_group_name}",
-        "administrator_login": "${var.azurerm_postgresql_flexible_server_administrator_login}",
-        "administrator_password": "${var.azurerm_postgresql_flexible_server_administrator_password}",
-        "sku_name": "${var.azurerm_postgresql_flexible_server_sku_name}",
-        "storage_mb": "${var.azurerm_postgresql_flexible_server_storage_mb}",
-        "zone": "${var.azurerm_postgresql_flexible_server_zone}",
-        "delegated_subnet_id": "${var.azurerm_postgresql_flexible_server_delegated_subnet_id}",
-        "private_dns_zone_id": "${var.azurerm_postgresql_flexible_server_private_dns_zone_id}",
-        "tags": "${var.azurerm_postgresql_flexible_server_tags}",
-        "high_availability": {
-          "mode": "${var.ha_mode}",
-          "standby_availability_zone": "${var.standby_zone}"
-        },
-        "maintenance_window": {
-          "day_of_week": "${var.maintenance_day}",
-          "start_hour": "${var.maintenance_hour}"
-        }
-      },
-      "category": "database",
-      "description": "Flexible PostgreSQL server deployment with high availability, backup, and scaling options."
+        "name": "${var.pgsql_server_name}",
+        "resource_group_name": "${var.resource_group_name}",
+        "location": "${var.location}",
+        "sku_name": "${var.pgsql_sku_name}",
+        "storage_mb": 5120,
+        "administrator_login": "${var.pgsql_admin_login}",
+        "administrator_login_password": "${var.pgsql_admin_password}",
+        "version": "11",
+        "ssl_enforcement_enabled": true,
+        "public_network_access_enabled": false
+      }
     },
-    "azurerm_postgresql_flexible_server_firewall_rule": {
+    "azurerm_postgresql_firewall_rule": {
       "resource_type": "azurerm_postgresql_firewall_rule",
       "creation_strategy": "always_create",
-      "compliance_tags": [
-        "pci",
-        "hipaa",
-        "nist"
-      ],
+      "compliance_tags": ["pci", "hipaa", "nist"],
       "settings": {
-        "end_ip_address": "${var.azurerm_postgresql_flexible_server_firewall_rule_end_ip}",
-        "name": "${var.azurerm_postgresql_flexible_server_firewall_rule_name}",
-        "start_ip_address": "${var.azurerm_postgresql_flexible_server_firewall_rule_start_ip}",
-        "server_id": "${var.azurerm_postgresql_flexible_server_firewall_rule_server_id}"
-      },
-      "category": "database",
-      "description": "Manages firewall rules for PostgreSQL server to control IP-based access."
+        "name": "AllowSpecificIP",
+        "resource_group_name": "${var.resource_group_name}",
+        "server_name": "${var.pgsql_server_name}",
+        "start_ip_address": "${var.allowed_admin_ip}",
+        "end_ip_address": "${var.allowed_admin_ip}"
+      }
     }
   }
 }
