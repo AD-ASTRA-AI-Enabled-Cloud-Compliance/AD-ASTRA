@@ -27,7 +27,6 @@ export default function Page() {
     if (role !== "management") {
       router.push("/dashboard")
     }
-    // No need to set loading state here
   }, [router])
 
 
