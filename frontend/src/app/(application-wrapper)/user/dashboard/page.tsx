@@ -4,10 +4,15 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import D3Force from "@/components/ui/d3force"
 import Link from "next/link"
+import Loader from "@/components/ui/loader"
+import { CountsCard } from "../components/CountsCard"
+// Using the same data hooks as management dashboard
+import { useDashboardData } from "@/hooks/useDashboardData"
 
 export default function UserDashboardPage() {
   const router = useRouter()
-  const [isLoading, setIsLoading] = useState(true)
+  // Using the same data fetching as management dashboard
+  const { documentStats, rulesStats, isLoading, error, refetch } = useDashboardData()
 
   useEffect(() => {
     // Check both for authentication and role
@@ -31,74 +36,66 @@ export default function UserDashboardPage() {
     if (!role || (role !== "user" && role !== "management")) {
       localStorage.setItem("role", "user")
     }
-    
-    setIsLoading(false)
   }, [router])
 
   // Show loading state while checking authentication
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    )
+      <Loader />
+    );
   }
 
   return (
-    <div>
-      <div className="grid auto-rows-min gap-4 md:grid-cols-2">
-        <div className="bg-muted/50 aspect-video rounded-sm">
-          <D3Force />
-          <Link href="/user/explore_rules" className="text-sm muted">
-            Explore...
-          </Link>
-        </div>
-        <div className="bg-muted/50 aspect-video rounded-sm">
-          {/* Placeholder for future user-specific content */}
-          <div className="p-4">
-            <h3 className="text-lg font-medium mb-2">Quick Actions</h3>
-            <div className="space-y-2">
-              <Link 
-                href="/user/chat" 
-                className="block w-full p-2 bg-primary/10 hover:bg-primary/20 rounded text-center"
-              >
-                Open Chat Assistant
-              </Link>
-              {/* Removed the "My Documents" button as it's not mapped to anything */}
+    <div className="h-full">
+      <div className="grid gap-4 md:grid-cols-2 h-[80vh]">
+        {/* Statistics Card - Left Side */}
+        <div className="bg-muted/50 rounded-sm p-4 h-full">
+          <div className="h-full flex flex-col">
+            <h3 className="text-lg font-semibold mb-8">Compliance Rules Overview</h3>
+            
+            {/* Rules Statistics Section */}
+            <div className="mt-4">
+              <h4 className="text-md font-medium mb-2">Compliance Rules</h4>
+              <div className="space-y-4">
+                <CountsCard
+                  data={rulesStats?.collection_exists && Array.isArray(rulesStats.frameworks) && Array.isArray(rulesStats.frameworks_rules_count)
+                    ? rulesStats.frameworks.map((fw, idx) => ({
+                        framework: fw,
+                        count: rulesStats.frameworks_rules_count[idx] || 0
+                      }))
+                    : []}
+                  isLoading={isLoading}
+                  error={error ? "Error loading data" : null}
+                  totalRules={rulesStats?.total_rules}
+                />
+                <Link 
+                  href="/user/explore_rules" 
+                  className="block w-full p-4 bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/30 rounded text-center text-sm border mt-4"
+                >
+                  🔍 Explore Rules Database
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="bg-muted/50 min-h-[60vh] flex-1 rounded-sm md:min-h-min p-4">
-        {/* Framework for adding more content in the future */}
-        <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
-        <div className="space-y-2">
-          <div className="p-3 border rounded-md bg-card">
-            <span className="text-sm text-muted-foreground">No recent activity to display</span>
+
+        {/* D3 Visualization Card - Right Side */}
+        <div className="bg-muted/50 rounded-sm p-4 flex flex-col h-full">
+          {/* Description section for D3 visualization */}
+          <div className="mb-4 p-3 bg-card border rounded-lg">
+            <h3 className="text-lg font-semibold mb-2">Compliance Framework Visualization</h3>
+            <p className="text-foreground text-sm">
+              This interactive network diagram displays the relationships between AI models and compliance frameworks. 
+              Each node represents either an AI model (like Gemma, Llama) or a compliance framework (like GDPR, HIPAA). 
+              The connections show which models have been used to generate compliance rules for specific frameworks.
+            </p>
           </div>
-          {/* Placeholder for future activity items */}
-        </div>
-        
-        {/* Commented section for future features */}
-        {/* 
-        <div className="mt-6">
-          <h2 className="text-xl font-bold mb-4">Your Compliance Status</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 border rounded-md bg-card">
-              <h3 className="font-medium">Documents</h3>
-              <p className="text-2xl font-bold text-primary">0</p>
-            </div>
-            <div className="p-4 border rounded-md bg-card">
-              <h3 className="font-medium">Pending Reviews</h3>
-              <p className="text-2xl font-bold text-amber-500">0</p>
-            </div>
-            <div className="p-4 border rounded-md bg-card">
-              <h3 className="font-medium">Compliance Score</h3>
-              <p className="text-2xl font-bold text-green-500">N/A</p>
-            </div>
+          
+          {/* D3 Visualization */}
+          <div className="flex-1">
+            <D3Force />
           </div>
         </div>
-        */}
       </div>
     </div>
   )
