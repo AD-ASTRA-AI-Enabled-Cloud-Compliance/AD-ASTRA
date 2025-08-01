@@ -1,3 +1,5 @@
+// src/components/ThemeToggle.tsx
+
 "use client"
 
 import * as React from "react"
@@ -18,11 +20,13 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={toggleTheme}
-      className="text-white dark:text-white hover:bg-white/10"
+      // This is the key change: text-foreground makes the icon color
+      // automatically adapt to the current theme.
+      className="text-foreground hover:bg-accent"
       aria-label="Toggle theme"
     >
-      <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90 drop-shadow-md" />
-      <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0 drop-shadow-md" />
+      <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+      <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
       <span className="sr-only">Toggle theme</span>
     </Button>
   )
