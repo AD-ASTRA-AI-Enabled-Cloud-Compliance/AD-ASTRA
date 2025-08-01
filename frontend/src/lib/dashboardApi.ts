@@ -21,6 +21,7 @@ export interface RulesStats {
   total_rules: number;
   frameworks: string[];
   frameworks_count: number;
+  frameworks_rules_count: number[];
   models: string[];
   models_count: number;
   collection_exists: boolean;

@@ -12,6 +12,7 @@ class RulesService:
     def __init__(self):
         """Initialize Qdrant client for rules statistics"""
         qdrant_host = os.getenv("QDRANT_HOST", "localhost")
+        # qdrant_host = os.getenv("QDRANT_HOST")
         qdrant_port = int(os.getenv("QDRANT_PORT", "6333"))
         self.qdrant = QdrantClient(host=qdrant_host, port=qdrant_port)
         self.collection_name = "framework_rules"  # Adjusted to match actual Qdrant collection name
@@ -28,6 +29,7 @@ class RulesService:
                     "total_rules": 0,
                     "frameworks": [],
                     "frameworks_count": 0,
+                    "frameworks_rules_count": [],
                     "models": [],
                     "models_count": 0,
                     "collection_exists": False
@@ -46,26 +48,31 @@ class RulesService:
                 with_vectors=False
             )
             
-            frameworks = set()
+            frameworks = {}
             models = set()
-            
+
             for point in points[0]:  # points[0] contains the list of points
                 payload = point.payload or {}
-                
-                # Extract framework information
+
+                # Extract framework information and count
                 if 'framework' in payload:
-                    frameworks.add(payload['framework'])
-                
+                    fw = payload['framework']
+                    frameworks[fw] = frameworks.get(fw, 0) + 1
+
                 # Extract model information
                 if 'model' in payload:
                     models.add(payload['model'])
                 elif 'source_model' in payload:
                     models.add(payload['source_model'])
-            
+
+            framework_names = list(frameworks.keys())
+            framework_counts = [frameworks[fw] for fw in framework_names]
+
             return {
                 "total_rules": total_rules,
-                "frameworks": list(frameworks),
-                "frameworks_count": len(frameworks),
+                "frameworks": framework_names,
+                "frameworks_count": len(framework_names),
+                "frameworks_rules_count": framework_counts,
                 "models": list(models),
                 "models_count": len(models),
                 "collection_exists": True
