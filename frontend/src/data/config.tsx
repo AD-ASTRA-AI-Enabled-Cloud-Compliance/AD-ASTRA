@@ -42,7 +42,7 @@ const siteConfig = {
         label: 'Contact',
       },
       {
-        href: 'https://github.com/AIP-SkyLock',
+        href: 'https://github.com/AD-ASTRA-AI-Enabled-Cloud-Compliance/AD-ASTRA',
         label: <FaGithub size="14" />,
       },
     ],

@@ -129,7 +129,7 @@ const HeroSection: React.FC = () => {
                 <ButtonLink colorScheme="primary" size="lg" href="/signup">
                   Sign Up
                 </ButtonLink>
-                <ButtonLink
+                {/* <ButtonLink
                   size="lg"
                   href="https://bit.ly/Skylock-Promo"
                   variant="outline"
@@ -146,8 +146,8 @@ const HeroSection: React.FC = () => {
                     />
                   }
                 >
-                  View demo
-                </ButtonLink>
+                  View Promo
+                </ButtonLink> */}
               </ButtonGroup>
             </FallInPlace>
           </Hero>
