@@ -2,7 +2,7 @@
 // API service for dashboard statistics and document management
 // Provides centralized API calls for fetching document counts, rules statistics, and download functionality
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_DOCUMENT_API_URL || 'http://localhost:3030';
+const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_API_URL_DOC_PREPROCESS_PORT}` || 'http://localhost:3020';
 
 export interface DocumentStats {
   total_documents: number;
