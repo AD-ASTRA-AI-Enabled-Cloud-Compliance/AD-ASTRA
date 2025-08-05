@@ -241,7 +241,7 @@ class CloudContextGenerator:
             
             self.ws.send_progress_update(message = f"✅ Terraform file inserted into MongoDB: Skylock.Terraform_Files")
 
-            return terraform_doc
+           # return terraform_doc
 
     def validate_against_rules(self, selected_frameworks, provider, context):
         
@@ -310,14 +310,19 @@ Explanation: <your explanation here>
                 user_prompt=prompt
             )
 
+            # Modified: Clean markdown formatting from LLM response for better parsing
+            thoughts_cleaned = re.sub(r'\*\*', '', thoughts)  # Remove ** markdown
+            thoughts_cleaned = re.sub(r'\n+', '\n', thoughts_cleaned)  # Normalize newlines
+
             actionable_match = re.search(
-                r"Actionable:\s*(Yes|No)", thoughts, re.IGNORECASE)
+                r"Actionable:\s*(Yes|No)", thoughts_cleaned, re.IGNORECASE)
             coverage_match = re.search(
-                r"Coverage:\s*(Satisfied|Not Satisfied)", thoughts, re.IGNORECASE)
+                r"Coverage:\s*(Satisfied|Not Satisfied)", thoughts_cleaned, re.IGNORECASE)
+            # Modified: Enhanced regex pattern to handle markdown and spacing issues in LLM responses
             further_match = re.search(
-                r"FurtherRecommendations:\s*(Yes|No)", thoughts, re.IGNORECASE)
+                r"(?:\*\*)?(?:Further\s*)?Recommendations?:\s*(?:\*\*)?\s*(Yes|No)", thoughts_cleaned, re.IGNORECASE)
             explanation_match = re.search(
-                r"Explanation:\s*(.*)", thoughts, re.IGNORECASE | re.DOTALL)
+                r"Explanation:\s*(.*)", thoughts_cleaned, re.IGNORECASE | re.DOTALL)
 
             actionable = actionable_match.group(
                 1).strip() if actionable_match else "Unknown"
@@ -332,12 +337,13 @@ Explanation: <your explanation here>
                 coverage = "Not Satisfied"
                 further_recommendations = "No"
 
-            print(f"🧠 ReAct validation for rule: '{rule_text[:60]}...'\n")
-            print(f"✅ Actionable: {actionable}")
-            print(f"✅ Coverage: {coverage}")
-            print(f"✅ Further Recommendations: {further_recommendations}")
-            print(f"📝 Explanation: {explanation}\n")
+            # Modified: Replaced terminal printing with WebSocket progress updates for frontend visibility
+            self.ws.send_progress_update(
+                session=self.sessionID,
+                message=f"🧠 Validated rule: {actionable} actionable, {coverage} coverage"
+            )
 
+            # Modified: Store all LLM validation results for complete database storage
             validation_results.append({
                 "rule": rule_text,
                 "actionable": actionable,
@@ -350,15 +356,34 @@ Explanation: <your explanation here>
 
     def save_rule_validation_report(self, selected_frameworks, provider, validation_results):
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        
+        # Added: Calculate comprehensive summary statistics for all LLM validation results
+        total_rules = len(validation_results)
+        actionable_rules = len([r for r in validation_results if r["actionable"] == "Yes"])
+        satisfied_rules = len([r for r in validation_results if r["coverage"] == "Satisfied"])
+        not_satisfied_rules = len([r for r in validation_results if r["coverage"] == "Not Satisfied"])
+        needs_further_recommendations = len([r for r in validation_results if r["further_recommendations"] == "Yes"])
+        
+        # Modified: Enhanced report structure to store ALL LLM analysis results in database
         report_data = {
             "report_metadata": {
                 "provider": provider,
                 "frameworks": selected_frameworks,
-                "generated_at": timestamp
+                "generated_at": timestamp,
+                "total_rules_evaluated": total_rules,
+                "summary_stats": {
+                    "actionable_rules": actionable_rules,
+                    "non_actionable_rules": total_rules - actionable_rules,
+                    "satisfied_coverage": satisfied_rules,
+                    "not_satisfied_coverage": not_satisfied_rules,
+                    "needs_further_recommendations": needs_further_recommendations
+                }
             },
+            "all_validation_results": validation_results,  # Added: Complete LLM output storage
             "rules_needing_recommendations": []
         }
 
+        # Keep the existing filtered logic for backward compatibility
         for r in validation_results:
             if (
                 r["actionable"] == "Yes" and (
@@ -378,5 +403,16 @@ Explanation: <your explanation here>
 
         result = self.mongo_client["Skylock"]["Rule_Validation_Reports"].insert_one(
             report_data)
-        print(f"✅ Compliance report inserted into MongoDB: Skylock.Rule_Validation_Reports")
-        print("✅ Inserted with _id:", result.inserted_id)
+        
+        # Print confirmation in backend terminal
+        print(f"✅ Rule Validation Report inserted into MongoDB: Skylock.Rule_Validation_Reports")
+        print(f"✅ Document ID: {result.inserted_id}")
+        
+        self.ws.send_progress_update(
+            session=self.sessionID,
+            message=f"✅ Compliance report saved: {total_rules} rules evaluated, {satisfied_rules} satisfied, {not_satisfied_rules} need attention"
+        )
+        self.ws.send_progress_update(
+            session=self.sessionID,
+            message=f"✅ Report ID: {result.inserted_id}"
+        )

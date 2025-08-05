@@ -1,12 +1,20 @@
-.env
+# Ignore VS Code settings
+.vscode/
+
+# Ignore Python cache files
 __pycache__/
 *.pyc
 
+# Ignore local environment files
+.env
+
+# Ignore specific folders
 .vscode
 local/
 land/
-.env
- dev
+dev/
+
+# Ignore resource evaluator test/output files
 frontend/src/app/management/resource_evalautor/*.json
 frontend/src/app/management/resource_evalautor/*.txt
 

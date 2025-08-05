@@ -17,8 +17,6 @@ from flask import request
 from more_itertools import chunked
 from pymongo import MongoClient
 from datetime import datetime
-from pymongo import MongoClient
-from datetime import datetime
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -30,7 +28,7 @@ from .gpt_service import call_ollama
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
 from uuid import uuid4
-from src.services.gpt_service import OllamaEmbedder
+from .gpt_service import OllamaEmbedder
 from qdrant_client.http.exceptions import UnexpectedResponse
 
 class ExtractService:
@@ -308,7 +306,7 @@ DOCUMENT SECTION:
             "summary": final_summary,
             "timestamp": datetime.now()
         }
-        # self.mongo_collection.insert_one(summary_doc)
+        self.mongo_collection.insert_one(summary_doc)   # ✅ Now active
         print(f"📝 Summary saved to MongoDB for doc_id: {doc_id}")
 
         rules = self.extract_compliance_rules_from_text(final_summary, framework=doc_id)
@@ -444,7 +442,7 @@ DOCUMENT SECTION:
         )
 
         rule_results = self.qdrant.search(
-            collection_name=self.qdrant_collection_rules,
+            collection_name=self.collection_rules,
             query_vector=embedding,
             limit=top_k,
             query_filter=Filter(

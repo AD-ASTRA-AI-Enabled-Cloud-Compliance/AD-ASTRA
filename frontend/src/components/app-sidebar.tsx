@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/sidebar";
 
 // Mocked user data (can be enhanced)
-const user = {
+const defaultUser = {
   name: "Skylock User",
   email: "m@example.com",
   avatar: "/avatars/shadcn.jpg",
@@ -66,25 +66,21 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
       title: "Explore Rules",
       url: "/explore_rules",
     },
-    {
-      title: "Chat",
-      url: "/chat",
-    },
-    {
-      title: "Generate Terraform",
-      url: "/terraform",
-    },
+    // {
+    //   title: "Chat",
+    //   url: "/chat",
+    // },
+  ];
+
+  const commonDeployRoutes: { title: string; url: string }[] = [
     {
       title: "Validate Terraform",
       url: "/terraform_comparison",
     },
     {
-      title: "Deployments",
+      title: "Provision Resources",
       url: "/provisioner",
     }
-  ];
-
-  const commonDeployRoutes = [
   ];
 
   const managementOnly = [
@@ -93,19 +89,29 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
       url: "/process_documentation",
     },
     {
-      title: "Explore Documents",
-      url: "/explore_documents",
+      title: "Generate Terraform",
+      url: "/terraform",
     },
+    // {
+    //   title: "Explore Documents",
+    //   url: "/explore_documents",
+    // },
   ];
 
   // Select appropriate routes based on role
   const routes =
     role === "management"
       ? [...commonRoutes, ...managementOnly]
-      : [...commonRoutes, ...commonDeployRoutes];
+      : [...commonRoutes];
 
   // Add path prefix to each route
   const prefixedRoutes = routes.map((route) => ({
+    ...route,
+    url: route.url.startsWith("#") ? route.url : `${pathPrefix}${route.url}`,
+  }));
+
+  // Add path prefix to deployment routes
+  const prefixedDeployRoutes = commonDeployRoutes.map((route) => ({
     ...route,
     url: route.url.startsWith("#") ? route.url : `${pathPrefix}${route.url}`,
   }));
@@ -115,30 +121,31 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
       title: "Frameworks",
       url: "#",
       icon: SquareTerminal,
-      isActive: true,
+      isActive: true, // Set to true to expand by default
       items: prefixedRoutes,
     },
     {
       title: "Deployments",
       url: "#",
       icon: UploadCloudIcon,
-      items: commonDeployRoutes,
+      isActive: true, // Set to true to expand by default
+      items: prefixedDeployRoutes,
     },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [{ title: "System Prompts", url: "#" }],
-    },
+    // {
+    //   title: "Models",
+    //   url: "#",
+    //   icon: Bot,
+    //   items: [{ title: "System Prompts", url: "#" }],
+    // },
     {
       title: "Documentation",
       url: "#",
       icon: BookOpen,
+      isActive: true, // Set to true to expand by default
       items: [
-        { title: "Introduction", url: "#" },
-        { title: "Get Started", url: "#" },
-        { title: "Tutorials", url: "#" },
-
+        { title: "Introduction", url: `${pathPrefix}/documentation/introduction` },
+        { title: "Get Started", url: `${pathPrefix}/documentation/get-started` },
+        { title: "Tutorials", url: `${pathPrefix}/documentation/tutorials` },
       ],
     },
   ];
@@ -146,6 +153,7 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [role, setRole] = React.useState("user");
+  const [user, setUser] = React.useState(defaultUser);
   const pathname = usePathname();
 
   // Determine the correct path prefix based on the current path
@@ -160,10 +168,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   }, [pathname, role]);
 
   React.useEffect(() => {
-    // Get user role from localStorage
+    // Get user role and email from localStorage
     const storedRole = localStorage.getItem("role");
+    const storedEmail = localStorage.getItem("email");
+    
     if (storedRole) {
       setRole(storedRole);
+      
+      // Update user name based on role
+      const userName = localStorage.getItem("userName") || (storedRole === "management" ? "Skylock Management" : "Skylock User");
+      
+      setUser({
+        ...defaultUser,
+        name: userName,
+        email: storedEmail || defaultUser.email
+      });
     }
   }, []);
 
