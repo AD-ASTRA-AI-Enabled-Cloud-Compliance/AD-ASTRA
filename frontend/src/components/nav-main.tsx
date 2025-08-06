@@ -40,7 +40,7 @@ export function NavMain({
           <Collapsible
             key={item.title}
             asChild
-            defaultOpen={true} /* Always open by default */
+            defaultOpen={item.isActive || false} /* Only open if specifically set */
             className="group/collapsible"
           >
             <SidebarMenuItem>
