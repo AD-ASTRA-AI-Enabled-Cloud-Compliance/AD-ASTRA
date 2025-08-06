@@ -1,0 +1,42 @@
+/* Custom styles to reduce sidebar font size */
+/* Target sidebar menu items */
+
+/* Main menu items */
+[data-sidebar="menu-button"] {
+  font-size: 0.85rem !important; /* Reduce main menu item text size */
+  padding-top: 6px !important; /* Reduce top padding */
+  padding-bottom: 6px !important; /* Reduce bottom padding */
+  height: auto !important; /* Allow height to adjust with content */
+}
+
+/* Sub menu items */
+[data-sidebar="menu-sub-button"] {
+  font-size: 0.8rem !important; /* Reduce sub menu item text size */
+  padding-top: 4px !important; /* Reduce top padding */
+  padding-bottom: 4px !important; /* Reduce bottom padding */
+  height: auto !important; /* Allow height to adjust with content */
+  min-height: 28px !important; /* Minimum height for clickability */
+}
+
+/* Group labels */
+[data-sidebar="group-label"] {
+  font-size: 0.7rem !important; /* Reduce sidebar group label size */
+  margin-bottom: 4px !important; /* Reduce margin below group labels */
+}
+
+/* Reduce spacing in sidebar menu item lists */
+[data-sidebar="menu-sub"] {
+  padding-top: 4px !important; /* Less padding at top of submenu */
+  padding-bottom: 4px !important; /* Less padding at bottom of submenu */
+}
+
+/* Reduce gap between items */
+[data-sidebar="menu-item"] {
+  margin-bottom: 2px !important; /* Reduce margin between menu items */
+}
+
+/* Reduce the gap inside collapsible content */
+[data-state="open"] > [data-slot="collapsible-content"] {
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+}

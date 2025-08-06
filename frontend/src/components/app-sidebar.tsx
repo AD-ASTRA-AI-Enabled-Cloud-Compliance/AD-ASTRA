@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { usePathname } from "next/navigation";
+import "@/app/sidebar-custom.css"; // Import custom sidebar styles
 import {
   AudioWaveform,
   BookOpen,
@@ -121,14 +122,14 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
       title: "Frameworks",
       url: "#",
       icon: SquareTerminal,
-      isActive: true, // Set to true to expand by default
+      // Removed isActive: true so it's not expanded by default
       items: prefixedRoutes,
     },
     {
       title: "Deployments",
       url: "#",
       icon: UploadCloudIcon,
-      isActive: true, // Set to true to expand by default
+      // Removed isActive: true so it's not expanded by default
       items: prefixedDeployRoutes,
     },
     // {
@@ -141,7 +142,7 @@ function getNavItemsByRole(role: string, pathPrefix: string) {
       title: "Documentation",
       url: "#",
       icon: BookOpen,
-      isActive: true, // Set to true to expand by default
+      // Removed isActive: true so it's not expanded by default
       items: [
         { title: "Introduction", url: `${pathPrefix}/documentation/introduction` },
         { title: "Get Started", url: `${pathPrefix}/documentation/get-started` },
