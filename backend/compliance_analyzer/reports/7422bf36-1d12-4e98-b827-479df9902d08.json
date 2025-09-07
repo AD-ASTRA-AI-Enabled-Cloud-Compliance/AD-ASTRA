@@ -1,0 +1,21 @@
+{
+  "compliant": [],
+  "non_compliant": [],
+  "unmanaged": [
+    {
+      "name": "NetworkWatcher_canadacentral",
+      "type": "Microsoft.Network/networkWatchers",
+      "reason": "Resource exists in Azure but is not defined in the baseline."
+    },
+    {
+      "name": "NetworkWatcher_eastus2",
+      "type": "Microsoft.Network/networkWatchers",
+      "reason": "Resource exists in Azure but is not defined in the baseline."
+    },
+    {
+      "name": "NetworkWatcher_eastus",
+      "type": "Microsoft.Network/networkWatchers",
+      "reason": "Resource exists in Azure but is not defined in the baseline."
+    }
+  ]
+}

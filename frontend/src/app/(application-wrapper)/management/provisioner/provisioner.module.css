@@ -27,8 +27,8 @@
   gap: 1rem;
 }
 
-/* --- Glassmorphism Container for Form & Table --- */
-.formWrapper, .tableContainer {
+/* --- Glassmorphism Container for Table --- */
+.tableContainer {
   background: var(--bg-glass);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -39,12 +39,26 @@
 
 /* --- Form --- */
 .formWrapper {
+  /* This is a transparent container for positioning */
+  background: transparent;
+  backdrop-filter: none;
+  border: none;
+  box-shadow: none;
   max-width: 550px;
   margin: 2rem auto;
 }
+
 .form {
-  padding: 2rem 2.5rem;
+  /* This adds the glass box with a shadow */
+  background: hsl(var(--card) / 0.4); /* Semi-transparent background */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--border) / 0.2);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  padding: 2.5rem;
   text-align: center;
+  position: relative; /* This is essential for positioning the corner icons */
 }
 .formIcon {
   display: inline-flex;
@@ -82,6 +96,7 @@
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   color: var(--text-secondary);
+  width: 100%;
 }
 .fileInputLabel:hover {
   border-color: var(--primary-purple);
@@ -107,8 +122,9 @@
 }
 /* Launch Button: Green by default */
 .button {
-  color: white;
   background-color: var(--success-green);
+  color: black; /* Black text for light mode */
+  font-weight: 700; /* Made text a bit bolder */
 }
 .button:hover {
   background-color: var(--success-green-dark);
@@ -117,6 +133,9 @@
   background-color: #166534;
   color: #a3a3a3;
   cursor: not-allowed;
+}
+:global(.dark) .button {
+  color: white;
 }
 /* Destroy Button: Red by default */
 .buttonDanger {
@@ -170,6 +189,7 @@
 .log {
   margin-top: 1rem;
   background-color: #000;
+  color: #E5E5E5; /* This line makes the text light grey */
   padding: 1rem;
   border-radius: 8px;
   white-space: pre-wrap;
@@ -207,7 +227,6 @@
 }
 .tableContainer {
   padding: 1rem;
-  /* Uses the shared glassmorphism style from above */
 }
 .tableTitle {
   font-size: 1.25rem;
@@ -246,7 +265,7 @@
   gap: 1rem;
 }
 .actionsContainer .buttonSecondary, .actionsContainer .buttonDanger {
-    width: auto; /* Allow buttons to size to content */
+    width: auto;
 }
 .destroyError {
     margin-top: 1rem;
@@ -256,4 +275,104 @@
     align-items: center;
     justify-content: flex-end;
     gap: 0.5rem;
+}
+
+/* ======================================================================
+  FINAL CORNER ICONS AND TOOLTIPS STYLES
+======================================================================
+*/
+
+/* --- Container for the title in the center --- */
+.titleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* --- Base Styles for Corner Icons --- */
+.downloadLink, .helpLink {
+  color: hsl(var(--muted-foreground));
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  position: absolute; /* Position icons independently */
+  top: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.2s ease-in-out;
+}
+
+.downloadLink:hover, .helpLink:hover {
+  color: hsl(var(--foreground));
+  transform: scale(1.1);
+}
+
+/* --- Icon Specific Positioning --- */
+.helpLink {
+  left: 1.5rem; /* Position Help icon on the left */
+}
+.downloadLink {
+  right: 1.5rem; /* Position Download link on the right */
+}
+
+/* --- Download Link Content --- */
+.downloadContent {
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* --- Shared Tooltip Style --- */
+.tooltipText {
+  visibility: hidden;
+  opacity: 0;
+  width: 220px;
+  background-color: hsl(var(--popover));
+  color: hsl(var(--popover-foreground));
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%; 
+  left: 50%;
+  transform: translateX(-50%);
+  transition: opacity 0.2s;
+}
+
+/* --- Tooltip Positioning for Right-aligned Icon --- */
+.downloadLink .tooltipText {
+    left: auto; /* Unset left */
+    right: 0; /* Align with the right edge */
+    transform: translateX(0); /* Reset transform */
+}
+
+/* Show the tooltip on hover */
+.downloadLink:hover .tooltipText, .helpLink:hover .tooltipText {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* --- Debug Button --- */
+.debugButton {
+  background: none;
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 0.75rem;
+  transition: all 0.2s;
+}
+
+.debugButton:hover {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
 }

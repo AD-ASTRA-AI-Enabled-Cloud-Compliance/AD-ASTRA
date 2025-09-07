@@ -48,7 +48,7 @@ export default function RuleSelectorForm() {
     <div>
       <Card>
         <CardTitle>
-          Generate Terraform Baselines
+              Generate Terraform Baselines
         </CardTitle>
         <CardContent>
           <p className=' fs-xs'>

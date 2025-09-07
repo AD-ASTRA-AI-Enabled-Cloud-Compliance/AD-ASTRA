@@ -1,0 +1,19 @@
+/* src/app/(application-wrapper)/layout.module.css */
+
+.app_container {
+  display: flex;
+  background-color: var(--background);
+}
+
+/* src/app/(application-wrapper)/layout.module.css */
+
+.main_content_area {
+  flex-grow: 1;
+  padding: 2rem;
+  min-height: 100vh;
+  
+  /* This uses two larger gradients from opposite corners to fill the space */
+  background-image: 
+    radial-gradient(ellipse at 100% 0%, rgba(139, 92, 246, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse at 0% 100%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+}

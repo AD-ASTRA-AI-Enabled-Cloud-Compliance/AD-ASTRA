@@ -1,0 +1,11 @@
+{
+  "compliant": [],
+  "non_compliant": [],
+  "unmanaged": [
+    {
+      "name": "resources",
+      "type": null,
+      "reason": "Resource exists but is not defined in the baseline."
+    }
+  ]
+}

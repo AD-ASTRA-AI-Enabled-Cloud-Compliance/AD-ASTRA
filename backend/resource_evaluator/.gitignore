@@ -1,3 +1,7 @@
+
+.env
+venv
+
 .venv
 .env*
 
@@ -15,3 +19,4 @@ frontend/src/app/management/resource_evalautor/*.txt
 
 # macOS system files
 .DS_Store
+
